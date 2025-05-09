@@ -20,17 +20,16 @@ from email.mime.multipart import MIMEMultipart
 import shutil
 from pathlib import Path
 import json
-from asgiref.wsgi import WsgiToAsgi
 
-# Add this tiny Flask shim
+# Initialize FastAPI app
+app = FastAPI()
+
+# Add Flask fallback app
 flask_fallback = Flask(__name__)
 
 @flask_fallback.route("/")
 def home():
     return "Fallback route: FastAPI running behind Flask WSGI wrapper."
-
-# Initialize FastAPI app
-app = FastAPI()
 
 # Mount Flask fallback at /wsgi
 app.mount("/wsgi", WSGIMiddleware(flask_fallback))
@@ -40,7 +39,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://localhost:5174",
+        "http://localhost:5174", 
         "http://localhost:5175",
         "http://localhost:5176",
         "http://localhost:5177",
@@ -622,14 +621,41 @@ def kill_process_on_port(port):
         print(f"Error checking/killing process on port {port}: {str(e)}")
     return False
 
-from fastapi.middleware.wsgi import WSGIMiddleware
+# Create a WSGI application compatible with PythonAnywhere
+# Remove the existing WSGIMiddleware line and use the proper approach for running in WSGI environment
+from uvicorn.middleware.wsgi import WSGIMiddleware as UvicornWSGIMiddleware
 
-# Wrap FastAPI in WSGI so PythonAnywhere can run it
-application = WSGIMiddleware(app)
+# For PythonAnywhere WSGI environment
+def create_app():
+    # Import required libraries for ASGI->WSGI conversion
+    from asgiref.wsgi import WsgiToAsgi
+    from uvicorn.middleware.wsgi import WSGIMiddleware
+    import asyncio
+    
+    # Create an ASGI application
+    asgi_app = app
+    
+    # Return a function that PythonAnywhere can call
+    def wsgi_app(environ, start_response):
+        # Set up event loop for async operation
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        # Convert FastAPI ASGI app to WSGI
+        wsgi_app = WsgiToAsgi(app)
+        
+        # Call the WSGI application
+        return wsgi_app(environ, start_response)
+    
+    return wsgi_app
 
+# This is what PythonAnywhere will use
+application = create_app()
+
+# Only run the server directly when script is executed (not when imported)
 if __name__ == "__main__":
     import uvicorn
     # Try to kill any existing process on port 3001
     kill_process_on_port(3001)
-    # Start the server
-    uvicorn.run(app, host="127.0.0.1", port=3001) 
+    # Start the server with the AsyncAPI app
+    uvicorn.run(app, host="127.0.0.1", port=3001)
