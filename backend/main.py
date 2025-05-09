@@ -5,6 +5,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, timedelta
+from mangum import Mangum
+from fastapi.middleware.wsgi import WSGIMiddleware
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import sqlite3
@@ -22,6 +24,8 @@ import json
 # Initialize FastAPI app
 app = FastAPI()
 
+# Create ASGI handler for AWS Lambda
+handler = Mangum(app)
 
 # Add CORS middleware
 app.add_middleware(
@@ -595,4 +599,4 @@ async def get_submissions(current_user: User = Depends(get_current_user)):
 async def startup_event():
     init_db()
 
-application = app
+application = WSGIMiddleware(app)

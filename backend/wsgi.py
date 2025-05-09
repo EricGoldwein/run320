@@ -1,8 +1,5 @@
-from main import application
-from uvicorn.middleware.wsgi import WSGIMiddleware
+from main import app
+from asgiref.wsgi import WsgiToAsgi
 
 # This is the WSGI entry point PythonAnywhere will use
-app = application
-
-# Create WSGI application
-application = WSGIMiddleware(app) 
+application = WsgiToAsgi(app) 

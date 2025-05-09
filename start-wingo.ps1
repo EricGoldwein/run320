@@ -10,14 +10,16 @@ foreach ($port in $ports) {
 
 # Start backend server
 Write-Host "Starting backend server..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; python -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
+$backendPath = Join-Path $PSScriptRoot "backend"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backendPath'; python -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
 
 # Wait a few seconds for backend to initialize
 Start-Sleep -Seconds 5
 
 # Start frontend server
 Write-Host "Starting frontend server..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd wingo-bets; npm run dev"
+$frontendPath = Join-Path $PSScriptRoot "wingo-bets"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$frontendPath'; npm run dev"
 
 Write-Host "`nWingo servers are starting up..."
 Write-Host "Backend will be available at: http://localhost:3001"
