@@ -621,13 +621,6 @@ def kill_process_on_port(port):
         print(f"Error checking/killing process on port {port}: {str(e)}")
     return False
 
-# Optional: simple route to confirm it's working
-flask_app = Flask(__name__)
-
-@flask_app.route("/")
-def fallback():
-    return "Fallback WSGI route is working."
-
 # Mount entire FastAPI app onto WSGI
 application = WSGIMiddleware(app)
 
