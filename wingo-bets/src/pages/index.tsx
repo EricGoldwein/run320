@@ -1,27 +1,24 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import MineWingo from './MineWingo';
+import MineWingo from './minewingo';
 // import Navigation from '../components/Navigation';
 import { useState } from 'react';
 import Image from 'next/image';
 
 const Home: NextPage = () => {
   const [user, setUser] = useState({
-    id: '1',
-    name: 'Test User',
-    isPremium: true,
-    wingoBalance: 0,
-    correctPicks: 0,
-    totalPicks: 0,
-    unitsWon: 0,
-    unitsLost: 0
+    id: 1,
+    email: 'test@example.com',
+    username: 'TestUser',
+    wingo_balance: 0,
+    created_at: new Date().toISOString()
   });
 
   const handleMineWingo = async (amount: number) => {
     console.log(`Mined ${amount} WINGO tokens`);
     setUser(prev => ({
       ...prev,
-      wingoBalance: prev.wingoBalance + amount
+      wingo_balance: prev.wingo_balance + amount
     }));
   };
 

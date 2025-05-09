@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException, Depends, status, Header, Request, Fi
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.wsgi import WSGIMiddleware
+from flask import Flask
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, timedelta
@@ -19,13 +21,31 @@ import shutil
 from pathlib import Path
 import json
 
+# Add this tiny Flask shim
+flask_fallback = Flask(__name__)
+
+@flask_fallback.route("/")
+def home():
+    return "Fallback route: FastAPI running behind Flask WSGI wrapper."
+
 # Initialize FastAPI app
 app = FastAPI()
+
+# Mount Flask fallback at /wsgi
+app.mount("/wsgi", WSGIMiddleware(flask_fallback))
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176", "http://localhost:5177"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        "http://localhost:5176",
+        "http://localhost:5177",
+        "https://320.pythonanywhere.com",
+        "http://320.pythonanywhere.com"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

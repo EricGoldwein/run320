@@ -59,5 +59,12 @@ def upload_file():
     
     return render_template('upload.html')
 
+# WSGI wrapper for PythonAnywhere
+def simple_wsgi_app(environ, start_response):
+    return app(environ, start_response)
+
+# Mount WSGI fallback endpoint
+app.wsgi_app = simple_wsgi_app
+
 if __name__ == '__main__':
     app.run(debug=True) 
