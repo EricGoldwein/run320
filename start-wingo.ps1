@@ -10,7 +10,7 @@ foreach ($port in $ports) {
 
 # Start backend server
 Write-Host "Starting backend server..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; python -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
 
 # Wait a few seconds for backend to initialize
 Start-Sleep -Seconds 5
