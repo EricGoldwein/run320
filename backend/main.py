@@ -20,6 +20,7 @@ from email.mime.multipart import MIMEMultipart
 import shutil
 from pathlib import Path
 import json
+from asgiref.wsgi import WsgiToAsgi
 
 # Add this tiny Flask shim
 flask_fallback = Flask(__name__)
@@ -622,7 +623,7 @@ def kill_process_on_port(port):
     return False
 
 # Mount entire FastAPI app onto WSGI
-application = WSGIMiddleware(app)
+application = WsgiToAsgi(app)
 
 if __name__ == "__main__":
     import uvicorn
