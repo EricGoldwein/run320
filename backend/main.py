@@ -2,8 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends, status, Header, Request, Fi
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi.middleware.wsgi import WSGIMiddleware
-from flask import Flask
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, timedelta
@@ -24,15 +22,6 @@ import json
 # Initialize FastAPI app
 app = FastAPI()
 
-# Add Flask fallback app
-flask_fallback = Flask(__name__)
-
-@flask_fallback.route("/")
-def home():
-    return "Fallback route: FastAPI running behind Flask WSGI wrapper."
-
-# Mount Flask fallback at /wsgi
-app.mount("/wsgi", WSGIMiddleware(flask_fallback))
 
 # Add CORS middleware
 app.add_middleware(
@@ -606,27 +595,4 @@ async def get_submissions(current_user: User = Depends(get_current_user)):
 async def startup_event():
     init_db()
 
-# Add this before the if __name__ == "__main__": block
-def kill_process_on_port(port):
-    import subprocess
-    import time
-    try:
-        # Find and kill process using the port in one command
-        cmd = f'netstat -ano | findstr :{port} && for /f "tokens=5" %a in (\'netstat -ano ^| findstr :{port}\') do taskkill /F /PID %a'
-        subprocess.run(cmd, shell=True, capture_output=True)
-        # Give the system a moment to release the port
-        time.sleep(1)
-        return True
-    except Exception as e:
-        print(f"Error checking/killing process on port {port}: {str(e)}")
-    return False
-
 application = app
-
-# Only run the server directly when script is executed (not when imported)
-if __name__ == "__main__":
-    import uvicorn
-    # Try to kill any existing process on port 3001
-    kill_process_on_port(3001)
-    # Start the server with the AsyncAPI app
-    uvicorn.run(app, host="127.0.0.1", port=3001)
