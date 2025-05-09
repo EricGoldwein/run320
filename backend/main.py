@@ -622,8 +622,10 @@ def kill_process_on_port(port):
         print(f"Error checking/killing process on port {port}: {str(e)}")
     return False
 
-# Mount entire FastAPI app onto WSGI
-application = WsgiToAsgi(app)
+from fastapi.middleware.wsgi import WSGIMiddleware
+
+# Wrap FastAPI in WSGI so PythonAnywhere can run it
+application = WSGIMiddleware(app)
 
 if __name__ == "__main__":
     import uvicorn
