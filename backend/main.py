@@ -62,7 +62,7 @@ async def add_error_handling(request: Request, call_next):
         return JSONResponse(
             status_code=500,
             content={"detail": "Internal server error", "error": str(e)}
-)
+        )
 
 # Security
 SECRET_KEY = "your-secret-key-here"  # Change this in production!
@@ -621,36 +621,7 @@ def kill_process_on_port(port):
         print(f"Error checking/killing process on port {port}: {str(e)}")
     return False
 
-# Create a WSGI application compatible with PythonAnywhere
-# Remove the existing WSGIMiddleware line and use the proper approach for running in WSGI environment
-from uvicorn.middleware.wsgi import WSGIMiddleware as UvicornWSGIMiddleware
-
-# For PythonAnywhere WSGI environment
-def create_app():
-    # Import required libraries for ASGI->WSGI conversion
-    from asgiref.wsgi import WsgiToAsgi
-    from uvicorn.middleware.wsgi import WSGIMiddleware
-    import asyncio
-    
-    # Create an ASGI application
-    asgi_app = app
-    
-    # Return a function that PythonAnywhere can call
-    def wsgi_app(environ, start_response):
-        # Set up event loop for async operation
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-        # Convert FastAPI ASGI app to WSGI
-        wsgi_app = WsgiToAsgi(app)
-        
-        # Call the WSGI application
-        return wsgi_app(environ, start_response)
-    
-    return wsgi_app
-
-# This is what PythonAnywhere will use
-application = create_app()
+application = app
 
 # Only run the server directly when script is executed (not when imported)
 if __name__ == "__main__":
