@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        .form-group { margin-bottom: 10px; }
+        input { margin: 5px 0; padding: 5px; width: 200px; }
+        button { padding: 5px 10px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>API Test</h1>
+    
+    <h2>Register</h2>
+    <form id="registerForm">
+        <div class="form-group">
+            <input type="email" id="regEmail" placeholder="Email" value="newuser@example.com"><br>
+            <input type="text" id="regUsername" placeholder="Username" value="newuser"><br>
+            <input type="password" id="regPassword" placeholder="Password" value="testpass"><br>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+    <div id="registerResult" class="result"></div>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Username" value="testuser"><br>
+            <input type="password" id="password" placeholder="Password" value="testpass"><br>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+    <div id="loginResult" class="result"></div>
+
+    <h2>Get User Info</h2>
+    <button onclick="getUserInfo()">Get User Info</button>
+    <div id="userResult" class="result"></div>
+
+    <script>
+        let token = '';
+
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        username,
+                        password
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('registerResult').textContent = 'Registration successful! User: ' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('registerResult').textContent = 'Error: ' + error;
+            }
+        };
+
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://127.0.0.1:3000/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${username}&password=${password}`
+                });
+                const data = await response.json();
+                token = data.access_token;
+                document.getElementById('loginResult').textContent = 'Login successful! Token: ' + token;
+            } catch (error) {
+                document.getElementById('loginResult').textContent = 'Error: ' + error;
+            }
+        };
+
+        async function getUserInfo() {
+            try {
+                const response = await fetch('http://127.0.0.1:3000/users/me', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                const data = await response.json();
+                document.getElementById('userResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('userResult').textContent = 'Error: ' + error;
+            }
+        }
+    </script>
+</body>
+</html> 

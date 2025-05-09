@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINGO Results - {{ results.user_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .results-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .verification-badge {
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+        }
+        .wingo-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+            margin: 1rem 0;
+        }
+        .stats-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .stats-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .distance-units {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        .back-button {
+            margin-top: 2rem;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        .map-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .map-title {
+            color: #0d6efd;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .segment-info {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .segment-title {
+            color: #0d6efd;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .map-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .map-controls label {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="results-container">
+            <h1 class="text-center mb-4">WINGO Verification Results</h1>
+            
+            <div class="map-container">
+                <div class="map-title">WINGO Track at Wingate Park</div>
+                <div id="map"></div>
+            </div>
+
+            <div class="segment-info">
+                <div class="segment-title">Official WINGO Segment (Strava)</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stats-label">Segment Length</div>
+                        <div class="stats-value">319.5 meters</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stats-label">Location</div>
+                        <div class="stats-value">Wingate Park, Brooklyn</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h2 class="mb-3">{{ results.user_name }}'s Run</h2>
+                
+                {% if results.verification_status == "VERIFIED" %}
+                    <div class="verification-badge bg-success text-white d-inline-block">
+                        ✅ VERIFIED WINGO RUN
+                    </div>
+                    <div class="wingo-count">
+                        {{ "{:,.1f}".format(results.number_of_wingos) }} WINGOs
+                    </div>
+                    <div class="text-muted">
+                        (Based on official 319.5m segment)
+                    </div>
+                {% else %}
+                    <div class="verification-badge bg-danger text-white d-inline-block">
+                        ❌ NOT VERIFIED
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-label">Location Verification</div>
+                        <div class="stats-value">
+                            {% if results.location_verified %}
+                                ✅ In Wingate Park
+                            {% else %}
+                                ❌ Not in Wingate Park
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">{{ "{:,}".format(results.points_in_park) }}/{{ "{:,}".format(results.total_points) }} points in park</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-label">Total Distance</div>
+                        <div class="stats-value">{{ "{:,.1f}".format(results.total_distance_meters) }} meters</div>
+                        <div class="distance-units">
+                            {{ "{:,.2f}".format(results.total_distance_kilometers) }} kilometers<br>
+                            {{ "{:,.2f}".format(results.total_distance_miles) }} miles
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-label">Average Lap Length</div>
+                        <div class="stats-value">{{ "{:,.1f}".format(results.average_lap_length_meters) }} meters</div>
+                        <small class="text-muted">(Target: 319.5m)</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-label">Total Duration</div>
+                        <div class="stats-value">{{ results.total_duration }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center back-button">
+                <a href="/" class="btn btn-primary">Verify Another Run</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with a wider view
+        var map = L.map('map', {
+            center: [40.658200, -73.944410],
+            zoom: 17,
+            maxZoom: 19
+        });
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Define the WINGO track coordinates (exact from Strava API)
+        var trackCoords = [
+            [40.658200, -73.944410],  // Start point
+            [40.657980, -73.944370],
+            [40.657830, -73.944290],
+            [40.657730, -73.944130],
+            [40.657710, -73.943960],
+            [40.657760, -73.943780],
+            [40.657890, -73.943640],
+            [40.658060, -73.943630],
+            [40.658560, -73.943690],
+            [40.658670, -73.943730],
+            [40.658740, -73.943790],
+            [40.658830, -73.944020],
+            [40.658780, -73.944270],
+            [40.658740, -73.944360],
+            [40.658640, -73.944450],
+            [40.658490, -73.944480],
+            [40.658220, -73.944440],  // End point
+            [40.658200, -73.944410]   // Close the loop
+        ];
+
+        // Draw the WINGO track on the map
+        var wingoTrack = L.polyline(trackCoords, {
+            color: '#0d6efd',
+            weight: 3,
+            opacity: 0.8,
+            fill: true,
+            fillColor: '#0d6efd',
+            fillOpacity: 0.1
+        }).addTo(map);
+
+        // Add start/end marker for WINGO track
+        L.marker([40.658200, -73.944410])
+            .bindPopup('WINGO Start/End Point')
+            .addTo(map);
+
+        // Add map controls
+        var mapControls = L.control({position: 'topright'});
+        mapControls.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'map-controls');
+            div.innerHTML = `
+                <label>
+                    <input type="checkbox" id="showWingoTrack" checked> WINGO Track
+                </label>
+                <label>
+                    <input type="checkbox" id="showRunRoute" checked> Run Route
+                </label>
+            `;
+            return div;
+        };
+        mapControls.addTo(map);
+
+        // Add event listeners for the checkboxes
+        document.getElementById('showWingoTrack').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(wingoTrack);
+            } else {
+                map.removeLayer(wingoTrack);
+            }
+        });
+
+        document.getElementById('showRunRoute').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(runRoute);
+            } else {
+                map.removeLayer(runRoute);
+            }
+        });
+
+        // Get the run route coordinates from the template
+        var runCoords = JSON.parse('{{ run_coords | tojson | safe }}');
+        
+        // Draw the run route on the map
+        var runRoute = L.polyline(runCoords, {
+            color: '#28a745',
+            weight: 2,
+            opacity: 0.7
+        }).addTo(map);
+
+        // Calculate bounds with extra padding
+        var wingoBounds = wingoTrack.getBounds();
+        var runBounds = runRoute.getBounds();
+        var bounds = wingoBounds.extend(runBounds);
+        
+        // Add extra padding to the bounds
+        var sw = bounds.getSouthWest();
+        var ne = bounds.getNorthEast();
+        var latDiff = (ne.lat - sw.lat) * 0.3;  // 30% padding
+        var lngDiff = (ne.lng - sw.lng) * 0.3;  // 30% padding
+        
+        bounds = L.latLngBounds(
+            L.latLng(sw.lat - latDiff, sw.lng - lngDiff),
+            L.latLng(ne.lat + latDiff, ne.lng + lngDiff)
+        );
+        
+        // Fit the map to the padded bounds
+        map.fitBounds(bounds);
+    </script>
+</body>
+</html> 
