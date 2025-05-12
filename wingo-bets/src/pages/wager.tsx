@@ -16,33 +16,7 @@ export default function Wager({ user }: WagerProps) {
             $WINGO Wager
           </h1>
           <p className="text-xl text-gray-600">
-            Place bets, challenge friends, and earn more $WINGO
-          </p>
-        </div>
-
-        {/* What is WINGO Section */}
-        <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">What is $WINGO?</h2>
-          <p className="text-gray-600 mb-4">
-            $WINGO is the official token of the Wingate Track Club. It's earned by running laps at Wingate Track
-            (320 meters per lap = 1 $WINGO) and can be used to:
-          </p>
-          <ul className="list-disc list-inside text-gray-600 space-y-2">
-            <li>Place friendly wagers on track events and personal achievements</li>
-            <li>Enter exclusive track events and competitions</li>
-            <li>Vote on club decisions and event formats</li>
-            <li>Track your progress and compete with friends</li>
-          </ul>
-        </div>
-
-        {/* Disclaimer Section */}
-        <div className="bg-yellow-50 rounded-xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-yellow-800 mb-4">Important Notice</h2>
-          <p className="text-yellow-700 mb-4">
-            🎯 $WINGO is a fun, community token with no real-world monetary value. It cannot be bought, sold, or exchanged for real money.
-          </p>
-          <p className="text-yellow-700">
-            🏃‍♂️ All wagers are friendly competitions between track club members. No real money is involved in any $WINGO transactions.
+            $WINGO is the token of 320 TC. Make predictions, challenge friends, and earn more $WINGO.
           </p>
         </div>
 
@@ -51,7 +25,7 @@ export default function Wager({ user }: WagerProps) {
           <Link to="/create-bet" className="bg-white rounded-xl shadow-sm p-8 hover:shadow-md transition-shadow">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Create a Bet</h3>
             <p className="text-gray-600 mb-4">
-              Challenge your friends to beat your time, predict race outcomes, or create custom track challenges.
+              Start a challenge, call out a friend, or make a weird prediction. If you can run it, you can bet on it.
             </p>
             <div className="text-wingo-600 font-medium">Create Bet →</div>
           </Link>
@@ -59,7 +33,7 @@ export default function Wager({ user }: WagerProps) {
           <Link to="/bet-board" className="bg-white rounded-xl shadow-sm p-8 hover:shadow-md transition-shadow">
             <h3 className="text-xl font-bold text-gray-900 mb-4">View Active Bets</h3>
             <p className="text-gray-600 mb-4">
-              Browse and accept bets from other track club members. Find your next challenge!
+              Browse open bets from other club members. Pick your side. Stake some $WINGO. Stir the pot.
             </p>
             <div className="text-wingo-600 font-medium">View Bets →</div>
           </Link>

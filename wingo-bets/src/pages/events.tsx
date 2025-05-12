@@ -20,6 +20,15 @@ const Events: React.FC = () => {
       description: 'The most important day of the year.',
       image: '/wingatebw1.jpg',
       link: '/320-day'
+    },
+    {
+      id: 'wingo-wednesday',
+      title: 'WINGO Wednesdays',
+      date: 'Biweekly (see schedule)',
+      location: 'Wingate Track, Brooklyn',
+      description: 'Walk, Run, Sprint, or just hang out. Get a custom workout from Coach DAISY™ and earn WINGO. Open to all abilities. No registration required.',
+      image: '/wingowednesday.jpg',
+      link: '/wingo-wednesday'
     }
   ];
 

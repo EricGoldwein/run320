@@ -20,9 +20,20 @@ from email.mime.multipart import MIMEMultipart
 import shutil
 from pathlib import Path
 import json
+from contextlib import asynccontextmanager
 
-# Initialize FastAPI app
-app = FastAPI()
+# Initialize FastAPI app with lifespan
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    print("Initializing database...")
+    Base.metadata.create_all(bind=engine)
+    print("Database initialized successfully!")
+    yield
+    # Shutdown
+    pass
+
+app = FastAPI(lifespan=lifespan)
 
 # Create ASGI handler for AWS Lambda
 handler = Mangum(app)
@@ -593,10 +604,3 @@ async def get_submissions(current_user: User = Depends(get_current_user)):
             status_code=500,
             detail=f"Failed to get submissions: {str(e)}"
         )
-
-# Initialize database on startup
-@app.on_event("startup")
-async def startup_event():
-    init_db()
-
-application = WSGIMiddleware(app)

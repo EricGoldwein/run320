@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/auth';
+import type { User } from '../types';
 
-export default function Login() {
+interface LoginProps {
+  onLogin: (user: User) => void;
+}
+
+export default function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,6 +23,7 @@ export default function Login() {
       const response = await login(email, password);
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
+      onLogin(response.user);
       navigate('/wallet');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');

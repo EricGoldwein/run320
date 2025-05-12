@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import type { User } from './types';
 import { authService } from './services/auth';
 import Navbar from './components/navbar';
-import Home from './components/home';
-import Login from './components/login';
+import Home from './pages/home';
+import Login from './pages/login';
 import Register from './components/register';
 import { ForgotPassword } from './components/forgot-password';
 import ResetPassword from './components/reset-password';
@@ -17,6 +17,10 @@ import BetBoard from './pages/betboard';
 import WingateInvitational from './pages/wingateinvitational';
 import FAQ from './pages/faq';
 import Events from './pages/events';
+import WingoConverter from './components/WingoConverter';
+import VdotPacesTable from './components/VdotPacesTable';
+import VdotRaceTimes from './components/VdotRaceTimes';
+import WingoWednesday from './pages/wingo-wednesday';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -70,7 +74,11 @@ function App() {
             <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
             <Route path="/wingate-invitational" element={user ? <WingateInvitational user={user} /> : <Navigate to="/login" />} />
             <Route path="/events" element={user ? <Events /> : <Navigate to="/login" />} />
+            <Route path="/wingo-wednesday" element={<WingoWednesday />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/converter" element={<WingoConverter />} />
+            <Route path="/vdot-paces" element={<VdotPacesTable />} />
+            <Route path="/vdot-times" element={<VdotRaceTimes />} />
           </Routes>
         </main>
       </div>

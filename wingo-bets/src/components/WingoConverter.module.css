@@ -1,0 +1,321 @@
+.brand-heading {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 0.2rem;
+}
+
+.converter-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.input-section {
+    background: #f5faff;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pace-display {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #333;
+    margin: 1.5rem 0;
+    padding: 1.25rem 2rem;
+    background: #f5faff;
+    border-radius: 16px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.pace-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #2c3e50;
+}
+
+.pace-display span {
+    color: #1e1e1e;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.result-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.result-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+}
+
+.result-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0.5rem 0;
+}
+
+.result-label {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+.form-control:focus {
+    border-color: #222;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-convert {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.15);
+}
+
+.btn-convert:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.25);
+    background: #34495e;
+    color: white;
+}
+
+.btn-reset {
+    background: none;
+    color: #666;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+    text-decoration: underline;
+}
+
+.btn-reset:hover {
+    color: #1e1e1e;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.time-input {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.time-input input {
+    width: 60px;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.time-input input::-webkit-outer-spin-button,
+.time-input input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.time-input span {
+    color: #7f8c8d;
+    font-size: 1.2rem;
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.projections-card {
+    grid-column: 1 / -1;
+    background: #f5faff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    -webkit-user-select: all;
+    user-select: all;
+    -webkit-touch-callout: default;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-user-drag: element;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    position: relative;
+    cursor: default;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.projections-content {
+    position: relative;
+    z-index: 1;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.projections-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.projections-content p {
+    margin: 0;
+    padding: 0;
+    color: #666;
+    font-weight: 400;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+}
+
+.projections-content p span {
+    font-weight: 500;
+    color: #444;
+    letter-spacing: 0;
+}
+
+.projections-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem;
+}
+
+.projections-list li {
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.projections-list .distance {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #555;
+    text-align: left;
+}
+
+.projections-list .time {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    color: #333;
+    text-align: right;
+    font-size: 1.05rem;
+}
+
+.daisy-badge {
+    font-size: 0.95rem;
+    padding: 0.35rem 0.7rem;
+    background: #34495e;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-weight: 500;
+    letter-spacing: 0;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    position: static;
+    margin-left: 1rem;
+}
+
+.daisy-badge .ai {
+    color: #00ffeb;
+    font-weight: 600;
+    margin: 0;
+}
+
+.projections-title {
+    color: #2c3e50;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding-right: 1rem;
+    letter-spacing: -0.02em;
+}
+
+@media (max-width: 768px) {
+    .converter-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    
+    .main-result {
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+    
+    .main-result .result-value {
+        font-size: 2.5rem;
+    }
+    .daisy-badge {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+        top: 0.15rem;
+        right: 0.5rem;
+    }
+    .projections-card {
+        padding: 1.25rem;
+    }
+} 

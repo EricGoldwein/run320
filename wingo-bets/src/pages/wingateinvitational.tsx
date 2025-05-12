@@ -105,7 +105,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   NOTE: The Wingate Invitational has multiple start times throughout the day. We will provide these start times eventually, probably.
                 </p>
                 <p className="text-lg">
-                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those "mile-stones."
+                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those WINGOs."
                 </p>
               </div>
             </section>
@@ -301,7 +301,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
 
                   <div>
                     <label htmlFor="expectedPace" className="block text-sm font-medium text-gray-700">
-                      Expected Pace (minutes per mile)
+                      Expected Pace (minutes per PentaWingo (1600m))
                     </label>
                     <input
                       type="text"

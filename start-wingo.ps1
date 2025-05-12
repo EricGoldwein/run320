@@ -3,15 +3,40 @@ $ports = @(3001, 5173, 5174, 5175, 5176, 5177)
 foreach ($port in $ports) {
     $process = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
     if ($process) {
-        Write-Host "Killing process on port $port (PID: $($process.OwningProcess))"
-        Stop-Process -Id $process.OwningProcess -Force
+        $processId = $process.OwningProcess
+        # Only attempt to kill if PID is valid (non-zero and not a system process)
+        if ($processId -gt 0 -and $processId -ne 4) {  # PID 4 is System process
+            try {
+                $processInfo = Get-Process -Id $processId -ErrorAction Stop
+                if ($processInfo.ProcessName -ne "System") {
+                    Write-Host "Killing process on port $port (PID: $processId, Name: $($processInfo.ProcessName))"
+                    Stop-Process -Id $processId -Force -ErrorAction Stop
+                }
+            }
+            catch [System.Management.Automation.ActionPreferenceStopException] {
+                # Process is already terminated
+                Write-Host "Process on port $port (PID: $processId) is already terminated"
+            }
+            catch {
+                Write-Host "Could not kill process on port $port (PID: $processId) - $($_.Exception.Message)"
+            }
+        }
     }
 }
 
-# Start backend server
+# Activate virtual environment and start backend server
 Write-Host "Starting backend server..."
 $backendPath = Join-Path $PSScriptRoot "backend"
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backendPath'; python -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
+$venvPath = Join-Path $PSScriptRoot ".venv"
+$pythonPath = Join-Path $venvPath "Scripts\python.exe"
+
+if (-not (Test-Path $pythonPath)) {
+    Write-Host "Virtual environment not found. Creating one..."
+    python -m venv .venv
+    & $pythonPath -m pip install -r requirements.txt
+}
+
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backendPath'; & '$pythonPath' -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
 
 # Wait a few seconds for backend to initialize
 Start-Sleep -Seconds 5

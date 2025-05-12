@@ -107,7 +107,11 @@ const FAQ: React.FC = () => {
                 {[
                   'Strava API (preferred): Connect your account — efforts will be counted automatically',
                   'Manual upload: Submit a GPS file or public activity link showing the segment',
-                  'Message Coach DAISY™: Include timestamp, activity type, and evidence (screenshot, shoe selfie, etc.)'
+                  'Message Coach DAISY™: Include timestamp, activity type, and evidence (screenshot, shoe selfie, etc.)',
+                  <span key="daisy-game">
+                    <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium underline">Play Daisy\'s Yellowstone Adventure</a>: Complete the video game and earn <span className="font-bold">5 $WINGO</span>!<br/>
+                    <span className="text-xs text-gray-500">(Yes, really. Try it: it\'s fun and horse-approved.)</span>
+                  </span>
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
                     <span className="text-wingo-500 mr-2">•</span>
