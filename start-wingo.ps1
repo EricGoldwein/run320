@@ -29,11 +29,12 @@ Write-Host "Starting backend server..."
 $backendPath = Join-Path $PSScriptRoot "backend"
 $venvPath = Join-Path $PSScriptRoot ".venv"
 $pythonPath = Join-Path $venvPath "Scripts\python.exe"
+$requirementsPath = Join-Path $backendPath "requirements.txt"
 
 if (-not (Test-Path $pythonPath)) {
     Write-Host "Virtual environment not found. Creating one..."
     python -m venv .venv
-    & $pythonPath -m pip install -r requirements.txt
+    & $pythonPath -m pip install -r $requirementsPath
 }
 
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backendPath'; & '$pythonPath' -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
