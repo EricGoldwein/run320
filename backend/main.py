@@ -5,7 +5,6 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime, timedelta
-from mangum import Mangum
 from fastapi.middleware.wsgi import WSGIMiddleware
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -35,8 +34,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# Create ASGI handler for AWS Lambda
-handler = Mangum(app)
+if os.getenv("RUNNING_IN_LAMBDA") == "1":
+    from mangum import Mangum
+    handler = Mangum(app)
 
 # Add CORS middleware
 app.add_middleware(
