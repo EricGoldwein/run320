@@ -24,8 +24,8 @@ export default function BetBoard({ bets, user, onAcceptBet }: BetBoardProps) {
 
     if (!selectedBet) return;
 
-    if (betAmount > user.wingoBalance) {
-      setError(`You can't bet more than your current balance of ${user.wingoBalance} WINGO`);
+    if (betAmount > user.wingo_balance) {
+      setError(`You can't bet more than your current balance of ${user.wingo_balance} WINGO`);
       return;
     }
 
@@ -46,7 +46,7 @@ export default function BetBoard({ bets, user, onAcceptBet }: BetBoardProps) {
             <div className="mt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Creator:</span>
-                <span className="font-medium text-gray-900">{bet.creator.name}</span>
+                <span className="font-medium text-gray-900">{bet.creator.username}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Amount:</span>
@@ -98,7 +98,7 @@ export default function BetBoard({ bets, user, onAcceptBet }: BetBoardProps) {
                     value={betAmount}
                     onChange={(e) => setBetAmount(Number(e.target.value))}
                     min="0"
-                    max={user.wingoBalance}
+                    max={user.wingo_balance}
                     className="block w-full rounded-md border-gray-300 pr-12 focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
                     required
                   />
@@ -107,7 +107,7 @@ export default function BetBoard({ bets, user, onAcceptBet }: BetBoardProps) {
                   </div>
                 </div>
                 <p className="mt-2 text-sm text-gray-500">
-                  Available balance: {user.wingoBalance} WINGO
+                  Available balance: {user.wingo_balance} WINGO
                 </p>
               </div>
 
