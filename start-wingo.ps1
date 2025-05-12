@@ -29,7 +29,7 @@ Write-Host "Starting backend server..."
 $backendPath = Join-Path $PSScriptRoot "backend"
 $venvPath = Join-Path $PSScriptRoot ".venv"
 $pythonPath = Join-Path $venvPath "Scripts\python.exe"
-$requirementsPath = Join-Path $backendPath "requirements.txt"
+$requirementsPath = Join-Path $PSScriptRoot "requirements.txt"
 
 if (-not (Test-Path $pythonPath)) {
     Write-Host "Virtual environment not found. Creating one..."
