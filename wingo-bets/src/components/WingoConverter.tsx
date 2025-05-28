@@ -139,14 +139,13 @@ const WingoConverter: React.FC = () => {
       <div className={styles['converter-container']}>
         <div className="text-center mb-4">
           <h1 className={styles['brand-heading']}>Wingo Pace Converter</h1>
-          <p className="subheading">From Wingos to Mare-atohns, DAISY™ does the math</p>
+          <p className={styles['subheading']}>From Wingos to Mare-atohns, DAISY™ does the math</p>
         </div>
 
         <div className={styles['input-section']}>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Distance</label>
+          <div className={styles['input-row']}>
+            <div className={styles['input-group']}>
+              <label className={styles['form-label']}>Distance</label>
                 <select 
                   className={styles['form-control']} 
                   value={targetDistance}
@@ -167,10 +166,8 @@ const WingoConverter: React.FC = () => {
                   <option value="644000">Yellowstone (3,200 Furlongs)</option>
                 </select>
               </div>
-            </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Time</label>
+            <div className={styles['input-group']}>
+              <label className={styles['form-label']}>Time</label>
                 <div className={styles['time-input']}>
                   {parseFloat(targetDistance) === 644000 && (
                     <>
@@ -212,7 +209,6 @@ const WingoConverter: React.FC = () => {
                       onChange={(e) => validateTimeInput(e.target.value) && setTargetSeconds(e.target.value)}
                       placeholder="S"
                     />
-                  </div>
                 </div>
               </div>
             </div>

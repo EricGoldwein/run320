@@ -10,7 +10,7 @@ interface RegistrationForm {
   gender: string;
   expectedPace: string;
   activityProof: string;
-  activityType: 'strava' | 'file' | '';
+  activityType: 'strava' | 'file' | 'wallet' | 'earn' | 'transfer' | 'upload' | '';
 }
 
 interface WingateInvitationalProps {
@@ -62,7 +62,6 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   Sunday, September 7, 2025 at 07:20 AM
                 </p>
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Your Balance: {user.wingo_balance} $WINGO
                 </p>
               </div>
             </main>
@@ -82,55 +81,33 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Left Column - Event Details */}
           <div className="lg:col-span-2 space-y-8">
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Race Details</h2>
+              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Wingate Invitational Details</h2>
               <div className="space-y-4 text-gray-700">
                 <div className="bg-green-50 p-4 rounded-lg border border-green-100">
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  To register for races, you do NOT have to create your new NYRR account nor add a credit card. Simply complete 32 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to 320 Track Club to earn 32 <span className="relative inline-block group">
-                    <span className="text-wingo-600 font-medium cursor-help">$WINGO</span>
+                  To register for races, you do NOT have to create your new NYRR account nor add a credit card. Simply complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10 <span className="relative inline-block group">
+                    <span className="text-wingo-600 font-medium cursor-help"><span className="text-[#E6C200] font-bold">W</span>INGO</span>
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                      <p className="mb-2"><strong>$WINGO</strong> stands for Workout Independence Network Gains & Optimization</p>
+                      <p className="mb-2"><strong><span className="text-[#E6C200] font-bold">W</span>INGO</strong> stands for Workout Independence Network Gains & Optimization</p>
                       <p className="mb-2 text-xs text-gray-300">A digital token earned only by completing 320-meter segments at Wingate Track in Brooklyn.</p>
-                      <p className="mb-2 text-xs text-gray-300">Each loop = 1 $WINGO. No purchases. No shortcuts. Just WINGOs.</p>
+                      <p className="mb-2 text-xs text-gray-300">Each WINGO = 1 <span className="text-[#E6C200] font-bold">W</span>INGO. No purchases. No shortcuts. Just WINGOs.</p>
                       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
                     </div>
                   </span>.
                 </p>
                 <div className="bg-wingo-50 p-4 rounded-lg">
-                  <p className="font-medium text-wingo-700">Registration Cost: 32 $WINGO</p>
+                  <p className="font-medium text-wingo-700">Gate Unlock: 10 <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
                 <p className="text-lg">
                   NOTE: The Wingate Invitational has multiple start times throughout the day. We will provide these start times eventually, probably.
                 </p>
                 <p className="text-lg">
-                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those WINGOs."
-                </p>
-              </div>
-            </section>
-
-            <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Why Race with 320 Track Club?</h2>
-              <div className="space-y-4 text-gray-700">
-                <p className="text-lg">
-                  When you run with 320 TC, you do more than compete in a world-class race—your support and participation play a role in fulfilling our vision to build healthier lives and stronger communities through the transformative power of running.
+                  All <span className="text-[#E6C200] font-bold">W</span>INGO collected from gate unlocks will be redistributed to top finishers. Additional <span className="text-[#E6C200] font-bold">W</span>INGO can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline"><span className="text-[#E6C200] font-bold">W</span>INGO Wager Market</a>.
                 </p>
                 <p className="text-lg">
-                  Your participation benefits 320 TC's free youth and community programs, including:
-                </p>
-                <ul className="list-none space-y-2">
-                  <li className="flex items-center">
-                    <span className="text-wingo-500 mr-2">•</span>
-                    <span>Rising DAISY Runners</span>
-                  </li>
-                  <li className="flex items-center">
-                    <span className="text-wingo-500 mr-2">•</span>
-                    <span>The 320 Community Track Club</span>
-                  </li>
-                </ul>
-                <p className="text-sm text-gray-500 mt-4">
-                  All event information is subject to change.
+                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those <span className="text-[#E6C200] font-bold">W</span>INGO.
                 </p>
               </div>
             </section>
@@ -161,41 +138,21 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                     <span className="text-4xl">🥇</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">1st Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600">$WINGO Prize</p>
-                  <p className="text-gray-600 mt-2">+ Championship Trophy</p>
+                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
                     <span className="text-4xl">🥈</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">2nd Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600">$WINGO Prize</p>
-                  <p className="text-gray-600 mt-2">+ Silver Medal</p>
+                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center">
                     <span className="text-4xl">🥉</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">3rd Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600">$WINGO Prize</p>
-                  <p className="text-gray-600 mt-2">+ Bronze Medal</p>
-                </div>
-              </div>
-              <div className="mt-8 text-center">
-                <div className="relative inline-block group">
-                  <p className="text-lg text-gray-600">
-                    All prizes will be distributed in <span className="text-wingo-600 font-medium cursor-help">$WINGO</span> tokens
-                  </p>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-4 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                    <p className="mb-2"><strong>$WINGO</strong> is our community token that can be:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Earned by running on the track</li>
-                      <li>Used to register for future events</li>
-                      <li>Traded with other community members</li>
-                      <li>Converted to other assets</li>
-                    </ul>
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
-                  </div>
+                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
               </div>
             </div>
@@ -204,23 +161,22 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Right Column - Registration Form */}
           <div className="lg:sticky lg:top-8 lg:self-start">
             <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Race Registration</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span>10)</h2>
               {!isRegistering ? (
                 <div className="space-y-4">
                   <p className="text-gray-600">
-                    Ready to join the Wingate Invitational? Click below to start your registration.
                   </p>
                   <button
                     onClick={() => setIsRegistering(true)}
                     className="w-full bg-wingo-600 text-white px-4 py-2 rounded-md hover:bg-wingo-700 transition-colors"
                   >
-                    Register Now
+                    Unlock the Gate
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="name" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Full Name
                     </label>
                     <input
@@ -230,12 +186,12 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Email
                     </label>
                     <input
@@ -245,12 +201,12 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="stravaId" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="stravaId" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Strava ID (Optional)
                     </label>
                     <input
@@ -259,12 +215,12 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       name="stravaId"
                       value={formData.stravaId}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="age" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="age" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Age
                     </label>
                     <input
@@ -275,12 +231,12 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       onChange={handleInputChange}
                       required
                       min="18"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="gender" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Gender
                     </label>
                     <select
@@ -289,9 +245,9 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       value={formData.gender}
                       onChange={handleInputChange}
                       required
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     >
-                      <option value="">Select gender</option>
+                      <option value=""></option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
@@ -300,8 +256,8 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   </div>
 
                   <div>
-                    <label htmlFor="expectedPace" className="block text-sm font-medium text-gray-700">
-                      Expected Pace (minutes per PentaWingo (1600m))
+                    <label htmlFor="expectedPace" className="block text-xs font-medium text-gray-700 mb-0.5">
+                      Expected Pace (per 1600m PentaWingo)
                     </label>
                     <input
                       type="text"
@@ -311,65 +267,83 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                       onChange={handleInputChange}
                       required
                       placeholder="e.g., 8:30"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500"
+                      className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Activity Proof
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Gate Unlock: 10 <span className="text-[#E6C200] font-bold">W</span>INGO
                     </label>
-                    <div className="mt-2 space-y-2">
+                    <div className="mt-1 space-y-2">
                       <div className="flex items-center">
                         <input
                           type="radio"
-                          id="strava"
+                          id="wallet"
                           name="activityType"
-                          value="strava"
-                          checked={formData.activityType === 'strava'}
+                          value="wallet"
+                          checked={formData.activityType === 'wallet'}
                           onChange={handleInputChange}
-                          className="h-4 w-4 text-wingo-600 focus:ring-wingo-500 border-gray-300"
+                          className="h-3 w-3 text-wingo-600 focus:ring-wingo-500 border-gray-300"
                         />
-                        <label htmlFor="strava" className="ml-2 block text-sm text-gray-700">
-                          Strava Activity
+                        <label htmlFor="wallet" className="ml-2 block text-xs text-gray-700">
+                          Wallet ({user.wingo_balance} <span className="text-[#E6C200] font-bold">W</span> available)
                         </label>
                       </div>
                       <div className="flex items-center">
                         <input
                           type="radio"
-                          id="file"
+                          id="upload"
                           name="activityType"
-                          value="file"
-                          checked={formData.activityType === 'file'}
+                          value="upload"
+                          checked={formData.activityType === 'upload'}
                           onChange={handleInputChange}
-                          className="h-4 w-4 text-wingo-600 focus:ring-wingo-500 border-gray-300"
+                          className="h-3 w-3 text-wingo-600 focus:ring-wingo-500 border-gray-300"
                         />
-                        <label htmlFor="file" className="ml-2 block text-sm text-gray-700">
-                          Upload File
+                        <label htmlFor="upload" className="ml-2 block text-xs text-gray-700">
+                          WINGO Upload
                         </label>
                       </div>
                     </div>
                   </div>
 
-                  {formData.activityType === 'file' && (
-                    <div>
-                      <label htmlFor="activityProof" className="block text-sm font-medium text-gray-700">
-                        Upload Activity File
-                      </label>
-                      <input
-                        type="file"
-                        id="activityProof"
-                        name="activityProof"
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full"
-                      />
+                  {formData.activityType === 'upload' && (
+                    <div className="space-y-2">
+                      <div>
+                        <label htmlFor="wingoProof" className="block text-xs font-medium text-gray-700 mb-0.5">
+                          Upload WINGO Receipts
+                        </label>
+                        <input
+                          type="file"
+                          id="wingoProof"
+                          name="wingoProof"
+                          onChange={handleInputChange}
+                          className="mt-0.5 block w-full py-1 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="wingoLinks" className="block text-xs font-medium text-gray-700 mb-0.5">
+                          Activity Link (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          id="wingoLinks"
+                          name="wingoLinks"
+                          onChange={handleInputChange}
+                          className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
+                          placeholder="Enter link(s) to WINGO activity"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 italic">
+                        Your submission will be reviewed by Coach DAISY™
+                      </p>
                     </div>
                   )}
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full bg-wingo-600 text-white px-4 py-2 rounded-md hover:bg-wingo-700 transition-colors"
+                      className="w-full bg-wingo-600 text-white px-4 py-2 rounded-md hover:bg-wingo-700 transition-colors text-sm"
                     >
                       Complete Registration
                     </button>

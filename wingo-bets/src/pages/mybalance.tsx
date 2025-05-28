@@ -69,7 +69,7 @@ const Wallet: React.FC = () => {
             My Wallet
           </h1>
           <p className="text-xl text-gray-600">
-            Track your $WINGO balance and activity
+            Track your <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span> balance and activity
           </p>
         </div>
 
@@ -77,16 +77,16 @@ const Wallet: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h3 className="text-lg font-medium text-gray-900">Balance</h3>
-            <p className="mt-2 text-3xl font-bold text-wingo-600">{totalWingo} $WINGO</p>
+            <p className="mt-2 text-3xl font-bold text-wingo-600">{totalWingo} <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span></p>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <h3 className="text-lg font-medium text-gray-900">$WINGOs Mined</h3>
+            <h3 className="text-lg font-medium text-gray-900"><span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span>s Mined</h3>
             <p className="mt-2 text-3xl font-bold text-wingo-600">{totalWingosMined}</p>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h3 className="text-lg font-medium text-gray-900">Wagers</h3>
             <p className={`mt-2 text-3xl font-bold ${totalWagers >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {totalWagers >= 0 ? '+' : ''}{totalWagers} $WINGO
+              {totalWagers >= 0 ? '+' : ''}{totalWagers} <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span>
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
@@ -146,7 +146,7 @@ const Wallet: React.FC = () => {
                       <div className={`text-sm font-medium ${
                         activity.wingoAmount >= 0 ? 'text-green-600' : 'text-red-600'
                       }`}>
-                        {activity.wingoAmount >= 0 ? '+' : ''}{activity.wingoAmount} $WINGO
+                        {activity.wingoAmount >= 0 ? '+' : ''}{activity.wingoAmount} <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -164,16 +164,16 @@ const Wallet: React.FC = () => {
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link to="/mine" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:border-wingo-500 transition-colors text-left">
-            <h3 className="text-lg font-medium text-gray-900">Mine $WINGO</h3>
-            <p className="mt-2 text-sm text-gray-600">Run at Wingate Track to earn $WINGO</p>
+            <h3 className="text-lg font-medium text-gray-900">Mine <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span></h3>
+            <p className="mt-2 text-sm text-gray-600">Run at Wingate Track to earn <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span></p>
           </Link>
           <Link to="/bets" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:border-wingo-500 transition-colors text-left">
             <h3 className="text-lg font-medium text-gray-900">Wager</h3>
-            <p className="mt-2 text-sm text-gray-600">Use your $WINGO to place bets</p>
+            <p className="mt-2 text-sm text-gray-600">Use your <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span> to place bets</p>
           </Link>
           <Link to="/events" className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:border-wingo-500 transition-colors text-left">
             <h3 className="text-lg font-medium text-gray-900">Race</h3>
-            <p className="mt-2 text-sm text-gray-600">Use your $WINGO to enter events</p>
+            <p className="mt-2 text-sm text-gray-600">Use your <span className="inline-flex items-baseline"><span className="text-[#E6C200] font-bold">W</span><span>INGO</span></span> to enter events</p>
           </Link>
         </div>
       </div>

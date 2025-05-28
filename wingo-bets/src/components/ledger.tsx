@@ -14,7 +14,10 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             Transaction History
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-            View your $WINGO transaction history
+            View your <span className="inline-flex items-baseline">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> transaction history
           </p>
         </div>
 
@@ -22,7 +25,10 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Your Balance: {user.wingo_balance} $WINGO
+                Your Balance: {user.wingo_balance} <span className="inline-flex items-baseline">
+                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span>INGO</span>
+                </span>
               </h3>
             </div>
             <div className="border-t border-gray-200">

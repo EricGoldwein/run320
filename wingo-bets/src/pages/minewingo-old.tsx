@@ -28,23 +28,32 @@ export default function MineWingo({ user }: MineWingoProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
-          {user.username}'s $WINGO Mining
-        </h1>
-        <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
-          Current Balance: {user.wingo_balance.toLocaleString()} $WINGO
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">{user.username}'s <span className="inline-flex items-baseline">
+          <span className="text-[#E6C200] font-bold">W</span>
+          <span>INGO</span>
+        </span> Mining</h1>
+        <p className="text-lg text-gray-600 mb-8">Current Balance: {user.wingo_balance.toLocaleString()} <span className="inline-flex items-baseline">
+          <span className="text-[#E6C200] font-bold">W</span>
+          <span>INGO</span>
+        </span></p>
       </div>
 
       <div className="mt-12 max-w-lg mx-auto">
         <div className="bg-white shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Mine $WINGO
-            </h3>
-            <div className="mt-2 max-w-xl text-sm text-gray-500">
+            <h3 className="text-lg font-medium text-gray-900">Mine <span className="inline-flex items-baseline">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span></h3>
+            <div className="mt-2 text-sm text-gray-600">
               <p>
-                Click the button below to mine $WINGO tokens. Each mining session will reward you with a random amount of $WINGO.
+                Click the button below to mine <span className="inline-flex items-baseline">
+                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span>INGO</span>
+                </span> tokens. Each mining session will reward you with a random amount of <span className="inline-flex items-baseline">
+                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span>INGO</span>
+                </span>.
               </p>
             </div>
             <div className="mt-5">

@@ -1,3 +1,5 @@
+import { User } from './types/index';
+
 export interface Bet {
   title: string;
   description: string;
@@ -7,10 +9,4 @@ export interface Bet {
   odds: string;
 }
 
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  created_at: string;
-  wingo_balance: number;
-} 
+export type { User }; 

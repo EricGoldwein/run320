@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { User, BetType, Bet } from '../types/bet';
+import React, { useState, useEffect, useRef } from 'react';
+import { BetType, Bet } from '../types/bet';
+import { User } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { FaInfoCircle } from 'react-icons/fa';
 import Papa from 'papaparse';
+import html2canvas from 'html2canvas';
 
 const DISTANCES = [
   { label: '5k', value: 5 },
@@ -42,6 +44,7 @@ if (!(Math as any).erf) {
 
 export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
   const navigate = useNavigate();
+  const slipRef = useRef<HTMLDivElement>(null);
   const [vdot, setVdot] = useState('');
   const [distance, setDistance] = useState('5');
   const [customDistance, setCustomDistance] = useState('');
@@ -54,6 +57,7 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
   const [stdevTable, setStdevTable] = useState<{ [vdot: string]: { [distance: string]: number } }>({});
   const [loading, setLoading] = useState(true);
   const [showSlip, setShowSlip] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   // Load CSVs on mount
   useEffect(() => {
@@ -301,193 +305,399 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
     }
   }, [projectedTime, targetTime, vdot, distance]);
 
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default navigation
+    if (!slipRef.current) {
+      console.log('No slip reference found');
+      return;
+    }
+    
+    try {
+      console.log('Starting to capture slip...');
+      const canvas = await html2canvas(slipRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: true,
+        useCORS: true,
+        allowTaint: true
+      });
+      
+      console.log('Canvas created, converting to blob...');
+      canvas.toBlob((blob: Blob | null) => {
+        if (!blob) {
+          console.log('Failed to create blob');
+          return;
+        }
+        
+        console.log('Blob created, creating file...');
+        const file = new File([blob], 'wingo-bet.png', { type: 'image/png' });
+        
+        if (navigator.share) {
+          console.log('Web Share API available, opening share dialog...');
+          navigator.share({
+            title: 'WINGO Bet',
+            text: `Check out my ${DISTANCES.find(d => String(d.value) === String(distance))?.label || distance} bet!`,
+            files: [file]
+          }).catch((error) => {
+            console.error('Share failed:', error);
+            setShowShareMenu(true);
+          });
+        } else {
+          console.log('Web Share API not available, showing menu...');
+          setShowShareMenu(true);
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('Error in handleShare:', error);
+    }
+  };
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default navigation
+    if (!slipRef.current) return;
+    try {
+      console.log('Starting download...');
+      const canvas = await html2canvas(slipRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: true,
+        useCORS: true,
+        allowTaint: true
+      });
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.download = 'wingo-bet.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setShowShareMenu(false);
+    } catch (error) {
+      console.error('Error in handleDownload:', error);
+    }
+  };
+
+  const handleCopyImage = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default navigation
+    if (!slipRef.current) return;
+    try {
+      console.log('Starting copy...');
+      const canvas = await html2canvas(slipRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: true,
+        useCORS: true,
+        allowTaint: true
+      });
+      
+      canvas.toBlob(async (blob: Blob | null) => {
+        if (!blob) {
+          console.log('Failed to create blob for copy');
+          return;
+        }
+        
+        try {
+          console.log('Attempting to copy to clipboard...');
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'image/png': blob
+            })
+          ]);
+          console.log('Successfully copied to clipboard');
+          setShowShareMenu(false);
+        } catch (error) {
+          console.error('Error copying to clipboard:', error);
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('Error in handleCopyImage:', error);
+    }
+  };
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showShareMenu && !(event.target as Element).closest('.share-menu')) {
+        setShowShareMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showShareMenu]);
+
   if (loading) {
     return <div className="max-w-xl mx-auto text-center text-lg py-12">Loading VDOT tables...</div>;
   }
 
   return (
-    <div className="max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Create Bet</h1>
-      <div className="bg-white shadow rounded-lg p-6">
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">VDOT</label>
-            <input
-              type="number"
-              value={vdot}
-              onChange={e => setVdot(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-              placeholder="e.g., 61"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Distance</label>
-            <select
-              value={distance}
-              onChange={e => setDistance(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-            >
-              {DISTANCES.map(d => (
-                <option key={d.label} value={d.value}>{d.label}</option>
-              ))}
-            </select>
-            {distance === 'custom' && (
-              <input
-                type="number"
-                value={customDistance}
-                onChange={e => setCustomDistance(e.target.value)}
-                className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-                placeholder="Enter distance in km"
-              />
-            )}
-          </div>
-          <div className="md:col-span-2 flex items-center gap-2 mt-2">
-            <button
-              type="button"
-              onClick={handleProject}
-              className="px-4 py-2 bg-wingo-600 text-white rounded-md font-bold hover:bg-wingo-700 shadow"
-            >
-              Project Time
-            </button>
-            {projectedTime && (
-              <div className="flex items-center gap-2">
-                <div className="text-xs text-gray-500">Projection:</div>
-                <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-center font-mono text-lg text-gray-800">
-                  {projectedTime ? <span className="font-bold">{projectedTime}</span> : <span className="text-gray-400">—</span>}
-                </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8">
+            Create a{' '}
+            <span className="inline-flex items-center">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> Bet
+          </h1>
+          <p className="text-xl text-gray-600">
+            Set your target time, stake some{' '}
+            <span className="inline-flex items-center">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span>, and let the games begin.
+          </p>
+        </div>
+        <div className="bg-white shadow rounded-lg p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">VDOT</label>
+                <input
+                  type="number"
+                  value={vdot}
+                  onChange={e => setVdot(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                  placeholder="e.g., 61"
+                  required
+                />
               </div>
-            )}
-          </div>
-          {projectedTime && (
-            <div className="md:col-span-2 mt-4 flex flex-col md:flex-row md:items-start md:gap-6">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">$WINGO Wager Line</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Distance</label>
+                <select
+                  value={distance}
+                  onChange={e => setDistance(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                >
+                  {DISTANCES.map(d => (
+                    <option key={d.label} value={d.value}>{d.label}</option>
+                  ))}
+                </select>
+                {distance === 'custom' && (
+                  <input
+                    type="number"
+                    value={customDistance}
+                    onChange={e => setCustomDistance(e.target.value)}
+                    className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                    placeholder="Enter distance in km"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="md:col-span-2 flex items-center gap-2 mt-2">
+              <button
+                type="button"
+                onClick={handleProject}
+                className="px-4 py-2 bg-wingo-600 text-white rounded-md font-bold hover:bg-wingo-700 shadow"
+              >
+                Project Time
+              </button>
+              {projectedTime && (
                 <div className="flex items-center gap-2">
-                  <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, -10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">-</button>
-                  <div className="flex-1 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 text-center font-mono text-lg">
-                    {targetTime ? <span className="font-bold">{targetTime}</span> : <span className="text-gray-400">—</span>}
+                  <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-center font-mono text-lg text-gray-800">
+                    {projectedTime ? <span className="font-bold">{projectedTime}</span> : <span className="text-gray-400">—</span>}
                   </div>
-                  <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, 10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">+</button>
+                  <div className="ml-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <span className="inline-flex items-center">
+                        <span className="text-[#E6C200] font-bold">W</span>
+                        <span>INGO</span>
+                      </span> Wager Line
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, -10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">-</button>
+                      <div className="flex-1 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 text-center font-mono text-lg">
+                        {targetTime ? <span className="font-bold">{targetTime}</span> : <span className="text-gray-400">—</span>}
+                      </div>
+                      <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, 10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">+</button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
-                <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 shadow min-w-[180px]">
-                  <span className="font-bold text-blue-800">DAISY™ Odds:</span>
-                  <span className="font-mono text-lg text-blue-900">{odds ? odds : <span className='text-gray-400'>—</span>}</span>
-                  <span className="text-blue-700">{odds ? `(${getImpliedProbability(odds)})` : ''}</span>
-                  <div className="relative group">
-                    <span className="ml-1 text-blue-400 cursor-help"><FaInfoCircle /></span>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                      DAISY™ Odds show the probability of running under the WINGO Wager Line. For example, +100 means 50% chance of running under the target time.
+              )}
+            </div>
+            {projectedTime && (
+              <div className="md:col-span-2 flex flex-col md:flex-row md:items-start md:gap-6">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span> Wager Line
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, -10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">-</button>
+                    <div className="flex-1 bg-blue-50 border border-blue-200 rounded-md px-3 py-2 text-center font-mono text-lg">
+                      {targetTime ? <span className="font-bold">{targetTime}</span> : <span className="text-gray-400">—</span>}
+                    </div>
+                    <button type="button" onClick={() => handleTargetTimeChange(adjustTime(targetTime, 10))} className="px-2 py-1 bg-gray-200 rounded h-[42px]">+</button>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
+                  <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 shadow min-w-[180px]">
+                    <span className="font-bold text-blue-800">DAISY™ Odds:</span>
+                    <span className="font-mono text-lg text-blue-900">{odds ? odds : <span className='text-gray-400'>—</span>}</span>
+                    <span className="text-blue-700">{odds ? `(${getImpliedProbability(odds)})` : ''}</span>
+                    <div className="relative group">
+                      <span className="ml-1 text-blue-400 cursor-help"><FaInfoCircle /></span>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                        DAISY™ Odds show the probability of running under the <span className="text-[#E6C200] font-bold">W</span>INGO Wager Line. For example, +100 means 50% chance of running under the target time.
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          {projectedTime && (
-            <div className="md:col-span-2 mt-2 flex flex-col md:flex-row md:items-center md:gap-6">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Wager ($WINGO)</label>
-                <input
-                  type="number"
-                  value={wager}
-                  onChange={e => setWager(e.target.value)}
-                  className="w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-                  placeholder="e.g., 100"
-                  min="0"
-                />
-              </div>
-              {wager && odds && (
-                <div className="flex items-center mt-2 md:mt-6 text-blue-700 font-medium bg-blue-50 border border-blue-200 rounded px-3 py-2">
-                  You win {getPayout(odds, wager)} $WINGO if run is under {targetTime}
-                </div>
-              )}
-            </div>
-          )}
-          {projectedTime && (
-            <div className="md:col-span-2 flex justify-end mt-4">
-              <button
-                type="button"
-                onClick={() => setShowSlip(true)}
-                className="px-4 py-2 bg-gray-900 text-white rounded-md font-bold hover:bg-gray-800 shadow"
-              >
-                Generate Betting Slip
-              </button>
-            </div>
-          )}
-          {showSlip && (
-            <div className="md:col-span-2 mt-6 flex justify-center">
-              <div style={{background: 'rgba(30,30,30,0.92)', borderRadius: '16px', color: 'white', padding: '2rem', minWidth: 320, maxWidth: 440, boxShadow: '0 4px 24px rgba(0,0,0,0.18)'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
-                  <span style={{display: 'inline-block', padding: '0.25rem 0.75rem', background: 'rgba(255,255,255,0.13)', borderRadius: 4, color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', letterSpacing: '0.1em', marginBottom: '1rem', fontWeight: 500, textTransform: 'uppercase', fontStyle: 'italic'}}>Wager</span>
-                  <span style={{fontSize: '0.8rem', padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.5)', borderRadius: 6}}>
-                    D<span style={{color: '#00CED1'}}>AI</span>SY™
-                  </span>
-                </div>
-                <h4 style={{fontSize: '1.4rem', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.01em'}}>
-                  {DISTANCES.find(d => String(d.value) === String(distance))?.label || distance} Run
-                </h4>
-                <div style={{fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.2rem'}}>
-                  <div style={{marginBottom: '0.7rem'}}>
-                    <b>Event:</b> Runner racing {DISTANCES.find(d => String(d.value) === String(distance))?.label || distance}, {new Date().toLocaleDateString()}
+            )}
+            {projectedTime && (
+              <div className="md:col-span-2 mt-2 flex flex-col md:flex-row md:items-center md:gap-6">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Wager ({' '}
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span>)</label>
+                  <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                      value={wager}
+                      onChange={e => setWager(e.target.value)}
+                      className="w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                      placeholder="e.g., 100"
+                    min="0"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setVdot('');
+                        setDistance('5');
+                        setCustomDistance('');
+                        setProjectedTime('');
+                        setTargetTime('');
+                        setOdds('+100');
+                        setError('');
+                        setWager('');
+                      }}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
+                    >
+                      Create Bet
+                    </button>
                   </div>
-                  <div><b>Projection:</b> {projectedTime}</div>
-                  <div><b>$WINGO Wager Line:</b> {targetTime} <span style={{fontFamily: 'monospace', fontWeight: 700, marginLeft: 8}}>{odds}</span></div>
                 </div>
-                <hr style={{borderColor: 'rgba(255,255,255,0.13)', margin: '1.5rem 0'}} />
-                <div style={{fontSize: '1.1rem', marginBottom: '1.2rem'}}>
-                  <b>{user?.username || 'User'}</b> wins <b>{getPayout(odds, wager)} $WINGO</b> if runner finishes <b>under {targetTime}</b>.
-                </div>
-                <div style={{fontStyle: 'italic', color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '1.2rem'}}>
-                  Odds determined by Coach DAISY™.
-                </div>
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                  <button type="button" onClick={() => {/* TODO: implement share functionality */}} style={{background: 'none', border: 'none', color: 'rgba(0,206,209,0.95)', fontSize: '1.1rem', cursor: 'pointer', fontWeight: 600}}>Share</button>
+                {wager && odds && (
+                  <div className="flex items-center mt-2 md:mt-6 text-blue-700 font-medium bg-blue-50 border border-blue-200 rounded px-3 py-2">
+                    You win {getPayout(odds, wager)}{' '}
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span> if run is under {targetTime}
+                  </div>
+                )}
+              </div>
+            )}
+            {projectedTime && (
+              <div className="md:col-span-2 flex justify-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowSlip(true)}
+                  className="px-4 py-2 bg-gray-900 text-white rounded-md font-bold hover:bg-gray-800 shadow"
+                >
+                  Generate Betting Slip
+                </button>
+              </div>
+            )}
+            {showSlip && (
+              <div className="md:col-span-2 mt-6 flex justify-center">
+                <div ref={slipRef} style={{background: 'rgba(30,30,30,0.92)', borderRadius: '16px', color: 'white', padding: '2rem', minWidth: 320, maxWidth: 440, boxShadow: '0 4px 24px rgba(0,0,0,0.18)'}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
+                    <span style={{display: 'inline-block', padding: '0.25rem 0.75rem', background: 'rgba(255,255,255,0.13)', borderRadius: 4, color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', letterSpacing: '0.1em', marginBottom: '1rem', fontWeight: 500, textTransform: 'uppercase', fontStyle: 'italic'}}>Wager</span>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <button
+                          onClick={handleShare}
+                          className="px-3 py-1 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors flex items-center gap-1"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                          </svg>
+                          Share
+                        </button>
+                        {showShareMenu && (
+                          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 share-menu">
+                            <button
+                              onClick={handleDownload}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              Download Image
+                            </button>
+                            <button
+                              onClick={handleCopyImage}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                              </svg>
+                              Copy Image
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <span style={{fontSize: '0.8rem', padding: '0.4rem 0.8rem', background: 'rgba(0,0,0,0.5)', borderRadius: 6}}>
+                        D<span style={{color: '#00CED1'}}>AI</span>SY™
+                      </span>
+                    </div>
+                  </div>
+                  <h4 style={{fontSize: '1.4rem', marginBottom: '1.5rem', fontWeight: 700, letterSpacing: '-0.01em'}}>
+                    {DISTANCES.find(d => String(d.value) === String(distance))?.label || distance} Run
+                  </h4>
+                  <div style={{fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.2rem'}}>
+                    <div style={{marginBottom: '0.7rem'}}>
+                      <b>Event:</b> Runner racing {DISTANCES.find(d => String(d.value) === String(distance))?.label || distance}, {new Date().toLocaleDateString()}
+                    </div>
+                    <div><b>Projection:</b> {projectedTime}</div>
+                    <div><b><span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span> Wager Line:</b> {targetTime} <span style={{fontFamily: 'monospace', fontWeight: 700, marginLeft: 8}}>{odds}</span></div>
+                  </div>
+                  <hr style={{borderColor: 'rgba(255,255,255,0.13)', margin: '1.5rem 0'}} />
+                  <div style={{fontSize: '1.1rem', marginBottom: '1.2rem'}}>
+                    <b>{user?.username || 'User'}</b> wins <b>{getPayout(odds, wager)}{' '}
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span></b> if runner finishes <b>under {targetTime}</b>.
+                  </div>
+                  <div style={{fontStyle: 'italic', color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '1.2rem'}}>
+                    Odds determined by Coach DAISY™.
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          {error && (
-            <div className="md:col-span-2 rounded-md bg-red-50 p-4 mt-2">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
+            )}
+            {error && (
+              <div className="md:col-span-2 rounded-md bg-red-50 p-4 mt-2">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          <div className="md:col-span-2 flex justify-end gap-3 mt-6">
-            <button
-              type="button"
-              onClick={() => {
-                setVdot('');
-                setDistance('5');
-                setCustomDistance('');
-                setProjectedTime('');
-                setTargetTime('');
-                setOdds('+100');
-                setError('');
-                setWager('');
-              }}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
-            >
-              Clear
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
-            >
-              Create Bet
-            </button>
-          </div>
-        </form>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );

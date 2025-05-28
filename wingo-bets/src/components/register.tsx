@@ -14,10 +14,8 @@ export default function Register({ onRegister }: RegisterProps) {
     username: '',
     full_name: '',
     password: '',
-    strava_id: '',
-    strava_access_token: '',
-    strava_refresh_token: '',
-    strava_token_expires_at: ''
+    strava_activity_url: '',
+    wingo_receipts: [] as File[]
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -28,6 +26,20 @@ export default function Register({ onRegister }: RegisterProps) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setFormData(prev => ({ ...prev, wingo_receipts: [...prev.wingo_receipts, ...files] }));
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      wingo_receipts: prev.wingo_receipts.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -35,19 +47,39 @@ export default function Register({ onRegister }: RegisterProps) {
     setIsLoading(true);
 
     try {
+      // First register the user
       const { user, token } = await register(
         formData.email,
         formData.password,
         formData.username,
-        formData.full_name,
-        formData.strava_id || undefined,
-        formData.strava_access_token || undefined,
-        formData.strava_refresh_token || undefined,
-        formData.strava_token_expires_at || undefined
+        formData.full_name
       );
       
       // Store the token
       localStorage.setItem('token', token);
+      
+      // Then upload any WINGO receipts if provided
+      if (formData.strava_activity_url || formData.wingo_receipts.length > 0) {
+        const uploadData = new FormData();
+        if (formData.strava_activity_url) {
+          uploadData.append('strava_activity_url', formData.strava_activity_url);
+        }
+        formData.wingo_receipts.forEach((file, index) => {
+          uploadData.append(`wingo_receipt_${index}`, file);
+        });
+
+        const uploadResponse = await fetch('http://127.0.0.1:3001/upload-wingo', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: uploadData
+        });
+
+        if (!uploadResponse.ok) {
+          console.error('Failed to upload WINGO receipts');
+        }
+      }
       
       // Update user state first
       onRegister(user);
@@ -104,8 +136,15 @@ export default function Register({ onRegister }: RegisterProps) {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+            Register for 320 Track Club
           </h2>
+          <p className="text-gray-600">
+            Requires 10{' '}
+            <span className="inline-flex items-center">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> to join
+          </p>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <a href="/login" className="font-medium text-wingo-600 hover:text-wingo-500">
@@ -114,129 +153,127 @@ export default function Register({ onRegister }: RegisterProps) {
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column - Basic Info */}
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                  Username <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="full_name"
+                  name="full_name"
+                  type="text"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                placeholder="Choose a username"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
-              <input
-                id="full_name"
-                name="full_name"
-                type="text"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your full name"
-                value={formData.full_name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                placeholder="Create a password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
 
-          <div className="mt-8">
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Strava Integration (optional)</h3>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="strava_id" className="block text-sm font-medium text-gray-700 mb-1">
-                    Strava ID
-                  </label>
+            {/* Right Column - WINGO Receipts */}
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="strava_activity_url" className="block text-sm font-medium text-gray-700 mb-1">
+                  Activity URL
+                </label>
+                <input
+                  id="strava_activity_url"
+                  name="strava_activity_url"
+                  type="url"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
+                  placeholder="https://www.strava.com/activities/..."
+                  value={formData.strava_activity_url}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="wingo_receipts" className="block text-sm font-medium text-gray-700 mb-1">
+                  WINGO Receipts
+                </label>
+                <div className="relative">
                   <input
-                    id="strava_id"
-                    name="strava_id"
-                    type="text"
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                    placeholder="Enter your Strava ID"
-                    value={formData.strava_id}
-                    onChange={handleChange}
+                    id="wingo_receipts"
+                    name="wingo_receipts"
+                    type="file"
+                    accept="image/*,.gpx"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
                   />
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('wingo_receipts')?.click()}
+                    className="w-full px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-md hover:bg-gray-200 hover:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors duration-150 text-left"
+                  >
+                    Upload File(s)
+                  </button>
                 </div>
-                <div>
-                  <label htmlFor="strava_access_token" className="block text-sm font-medium text-gray-700 mb-1">
-                    Strava Access Token
-                  </label>
-                  <input
-                    id="strava_access_token"
-                    name="strava_access_token"
-                    type="text"
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                    placeholder="Enter your Strava access token"
-                    value={formData.strava_access_token}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="strava_refresh_token" className="block text-sm font-medium text-gray-700 mb-1">
-                    Strava Refresh Token
-                  </label>
-                  <input
-                    id="strava_refresh_token"
-                    name="strava_refresh_token"
-                    type="text"
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                    placeholder="Enter your Strava refresh token"
-                    value={formData.strava_refresh_token}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="strava_token_expires_at" className="block text-sm font-medium text-gray-700 mb-1">
-                    Strava Token Expires At
-                  </label>
-                  <input
-                    id="strava_token_expires_at"
-                    name="strava_token_expires_at"
-                    type="text"
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                    placeholder="Enter token expiration date"
-                    value={formData.strava_token_expires_at}
-                    onChange={handleChange}
-                  />
-                </div>
+                <p className="mt-1 text-sm text-gray-500">
+                  (GPX, Screenshot, etc.)
+                </p>
+                {formData.wingo_receipts.length > 0 && (
+                  <div className="mt-2 space-y-2">
+                    {formData.wingo_receipts.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-md">
+                        <span className="text-sm text-gray-600 truncate">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -260,10 +297,23 @@ export default function Register({ onRegister }: RegisterProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500 disabled:opacity-50"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Creating account...' : 'Create account'}
+              {isLoading ? 'Registering...' : 'Find Your Kick'}
             </button>
+            <a 
+              href="/faq" 
+              className="mt-4 text-sm text-wingo-600 hover:text-wingo-500 block text-center"
+            >
+              WTF is{' '}
+              <span className="inline-flex items-center">
+                <span className="text-[#E6C200] font-bold">W</span>
+                <span>INGO</span>
+              </span>?
+            </a>
+            <p className="mt-2 text-sm text-gray-500 text-center">
+              <span className="text-red-500">*</span> Must submit either activity URL or proof of WINGO
+            </p>
           </div>
         </form>
       </div>

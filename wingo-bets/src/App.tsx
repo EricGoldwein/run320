@@ -18,8 +18,7 @@ import WingateInvitational from './pages/wingateinvitational';
 import FAQ from './pages/faq';
 import Events from './pages/events';
 import WingoConverter from './components/WingoConverter';
-import VdotPacesTable from './components/VdotPacesTable';
-import VdotRaceTimes from './components/VdotRaceTimes';
+import VDOTTimes from './pages/vdot-times';
 import WingoWednesday from './pages/wingo-wednesday';
 
 function App() {
@@ -77,8 +76,8 @@ function App() {
             <Route path="/wingo-wednesday" element={<WingoWednesday />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/converter" element={<WingoConverter />} />
-            <Route path="/vdot-paces" element={<VdotPacesTable />} />
-            <Route path="/vdot-times" element={<VdotRaceTimes />} />
+            <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
+            <Route path="/vdot-times" element={<VDOTTimes initialView="race" user={user} />} />
           </Routes>
         </main>
       </div>

@@ -1,14 +1,9 @@
+import { User } from './index';
+
+export type { User };
 export type BetType = 'time' | 'matchup' | 'parlay';
 
 export type BetStatus = 'active' | 'settled' | 'cancelled';
-
-export interface User {
-  id: number;
-  email: string;
-  username: string;
-  wingo_balance: number;
-  created_at: string;
-}
 
 export interface BetParticipant {
   user: User;

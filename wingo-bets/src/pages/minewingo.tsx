@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User } from '../types/bet';
+import type { User } from '../types/bet';
 
 interface MineWingoProps {
   user: User;
@@ -31,6 +31,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showDecimalPopup, setShowDecimalPopup] = useState(false);
   const [dateRange, setDateRange] = useState({
     startDate: '',
     endDate: ''
@@ -138,100 +139,113 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
     }));
   };
 
+  const handleWingoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.includes('.')) {
+      setError('DAISY™ doesn\'t do decimals');
+      e.target.value = value.replace('.', ''); // Remove the decimal point
+      return;
+    }
+    setError('');
+    setSubmissionData(prev => ({ ...prev, wingos: Math.floor(parseInt(value) || 0) }));
+  };
+
+  const handleWingoKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === '.') {
+      e.preventDefault();
+      setShowDecimalPopup(true);
+      setTimeout(() => setShowDecimalPopup(false), 2000);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">{user.username}'s $WINGO Mining</h1>
-      
+      {showDecimalPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white border-2 border-wingo-600 rounded-lg shadow-lg p-4 animate-fade-in-out">
+            <div className="flex items-center">
+              <span className="text-wingo-600 font-medium">DAISY™ doesn't do decimals</span>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="bg-white shadow-sm rounded-lg p-6 mb-8">
         <div className="flex items-baseline space-x-2 mb-4">
-          <span className="text-4xl font-bold text-wingo-600">Balance: {user.wingo_balance.toLocaleString()} $WINGO</span>
+          <span className="text-4xl font-bold text-gray-900">Balance: {user.wingo_balance.toLocaleString()} <span className="inline-flex items-baseline">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span></span>
         </div>
-        <p className="text-gray-600">Complete <a href="https://www.strava.com/segments/7831001" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 underline">Wingate Track segments</a> to mine $WINGO. Each lap = 1 $WINGO</p>
+        <p className="text-gray-600">Complete <a href="https://www.strava.com/segments/7831001" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 underline">Wingate Track segments</a> to mine <span className="inline-flex items-baseline">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span>. Each WINGO = 1 <span className="inline-flex items-baseline">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span></p>
       </div>
 
       <div className="bg-white shadow-sm rounded-lg p-6">
         <div className="flex space-x-4 mb-6">
           <button
             onClick={() => setMiningMethod('flexible')}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
+            className={`px-4 py-2 rounded-md text-sm font-medium border ${
               miningMethod === 'flexible'
-                ? 'bg-wingo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-wingo-600 text-white border-wingo-600'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             }`}
           >
             Submit Activity
           </button>
           <button
             onClick={() => setMiningMethod('strava')}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
+            className={`px-4 py-2 rounded-md text-sm font-medium border ${
               miningMethod === 'strava'
-                ? 'bg-wingo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-wingo-600 text-white border-wingo-600'
+                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             }`}
           >
-            Strava API
+            Sync with Coach DAISY™
           </button>
         </div>
 
         {miningMethod === 'flexible' && (
           <div className="space-y-6">
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Submit to DAISY™</h3>
-                  <div className="mt-2 text-sm text-blue-700">
-                    <p>Share activity with DAISY™ for verification.</p>
-                    <ul className="list-disc list-inside space-y-1 mt-2">
-                      <li>Link to activity (Strava or other platform)</li>
-                      <li>Upload file (GPX, image, and/or other proof)</li>
-                      <li>WINGOs completed*</li>
-                      <li>Additional context about your run (optional)</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="wingos" className="block text-sm font-medium text-gray-700">
-                  WINGOs Completed
+              <div className="flex items-center space-x-4 relative">
+                <label htmlFor="wingos" className="block text-sm font-medium text-gray-700 whitespace-nowrap">
+                  <span className="text-gray-900">WINGO</span>s Completed
                 </label>
                 <input
                   type="number"
                   id="wingos"
                   min="0"
                   step="1"
-                  value={submissionData.wingos}
-                  onChange={(e) => setSubmissionData(prev => ({ ...prev, wingos: Math.floor(parseInt(e.target.value) || 0) }))}
-                  className="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  value={submissionData.wingos || ''}
+                  onChange={handleWingoChange}
+                  onKeyDown={handleWingoKeyDown}
+                  className="mt-1 block w-24 rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none pl-2 border-2"
                   required
                 />
-                <p className="mt-1 text-sm text-gray-500">Total WINGOs completed in this activity</p>
               </div>
 
               <div>
                 <label htmlFor="activityLink" className="block text-sm font-medium text-gray-700">
-                  Activity Link (optional)
+                  Activity Link
                 </label>
                 <input
                   type="url"
                   id="activityLink"
                   value={submissionData.link}
                   onChange={(e) => setSubmissionData(prev => ({ ...prev, link: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-2 border-2"
                   placeholder="https://www.strava.com/activities/..."
                 />
               </div>
 
               <div>
                 <label htmlFor="activityFiles" className="block text-sm font-medium text-gray-700">
-                  Upload Files (optional)
+                  Upload Files
                 </label>
                 <input
                   type="file"
@@ -246,66 +260,49 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     file:bg-wingo-50 file:text-wingo-700
                     hover:file:bg-wingo-100"
                 />
-                <p className="mt-1 text-sm text-gray-500">Upload GPX files or images of your activity</p>
+                <p className="mt-1 text-sm text-gray-500">GPX or screenshots (optional)</p>
                 
                 {submissionData.files.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Files:</h4>
-                    <div className="grid grid-cols-1 gap-4">
-                      {submissionData.files.map((file, index) => (
-                        <div key={index} className="bg-gray-50 rounded-lg p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                              <p className="text-sm text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
-                              {file.type.startsWith('image/') && (
-                                <div className="mt-2">
-                                  <img
-                                    src={URL.createObjectURL(file)}
-                                    alt={file.name}
-                                    className="max-h-32 rounded-md object-cover"
-                                  />
-                                </div>
-                              )}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removeFile(index)}
-                              className="ml-4 flex-shrink-0 text-red-600 hover:text-red-800"
-                            >
-                              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="mt-2 space-y-2">
+                    {submissionData.files.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+                        <span className="text-sm text-gray-700">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
 
               <div>
                 <label htmlFor="context" className="block text-sm font-medium text-gray-700">
-                  Context (optional)
+                  Additional Context (optional)
                 </label>
                 <textarea
                   id="context"
                   value={submissionData.context}
                   onChange={(e) => setSubmissionData(prev => ({ ...prev, context: e.target.value }))}
-                  rows={4}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                  placeholder="Tell us about your run..."
+                  rows={3}
+                  className="mt-1 block w-full rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-2 border-2"
+                  placeholder="Tell DAISY™ about your WINGOs..."
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
-              >
-                {isLoading ? 'Submitting...' : 'Submit to DAISY™'}
-              </button>
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500 disabled:opacity-50"
+                >
+                  {isLoading ? 'Submitting...' : 'Send to Coach DAISY™ for review'}
+                </button>
+              </div>
             </form>
           </div>
         )}
@@ -320,15 +317,17 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Submit via Strava API</h3>
+                  <h3 className="text-sm font-medium text-blue-800">Record WINGOs automatically via Strava API</h3>
                   <div className="mt-2 text-sm text-blue-700">
-                    <p>Submit your Strava activities directly to DAISY™ for verification. Your activities will be automatically checked for WINGO runs.</p>
+                    <p>Sync your Strava account with Coach DAISY™ and <span className="inline-flex items-baseline">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span>s will be automatically uploaded to your account.</p>
                     <ol className="list-decimal list-inside space-y-2 mt-2">
                       <li>Go to <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener noreferrer" className="underline">Strava API Settings</a></li>
-                      <li>Log in to your Strava account</li>
                       <li>Create a new application or use an existing one</li>
                       <li>Copy your Client ID, Client Secret, Access Token, and Refresh Token</li>
-                      <li>Note: You need a Strava Premium subscription to access segment data</li>
+                      <li>Note: Strava Premium required for DAISY™ data share</li>
                     </ol>
                   </div>
                 </div>
@@ -336,9 +335,9 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 pl-2">
                 <div>
-                  <label htmlFor="clientId" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="clientId" className="block text-sm font-medium text-gray-700 mb-1">
                     Client ID
                   </label>
                   <input
@@ -346,25 +345,23 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     id="clientId"
                     value={stravaCredentials.clientId}
                     onChange={(e) => setStravaCredentials(prev => ({ ...prev, clientId: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label htmlFor="clientSecret" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="clientSecret" className="block text-sm font-medium text-gray-700 mb-1">
                     Client Secret
                   </label>
                   <input
-                    type="text"
+                    type="password"
                     id="clientSecret"
                     value={stravaCredentials.clientSecret}
                     onChange={(e) => setStravaCredentials(prev => ({ ...prev, clientSecret: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label htmlFor="accessToken" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="accessToken" className="block text-sm font-medium text-gray-700 mb-1">
                     Access Token
                   </label>
                   <input
@@ -372,12 +369,11 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     id="accessToken"
                     value={stravaCredentials.accessToken}
                     onChange={(e) => setStravaCredentials(prev => ({ ...prev, accessToken: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label htmlFor="refreshToken" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="refreshToken" className="block text-sm font-medium text-gray-700 mb-1">
                     Refresh Token
                   </label>
                   <input
@@ -385,15 +381,14 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     id="refreshToken"
                     value={stravaCredentials.refreshToken}
                     onChange={(e) => setStravaCredentials(prev => ({ ...prev, refreshToken: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 pl-2">
                 <div>
-                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
                     Start Date
                   </label>
                   <input
@@ -401,12 +396,11 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     id="startDate"
                     value={dateRange.startDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
                     End Date
                   </label>
                   <input
@@ -414,8 +408,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                     id="endDate"
                     value={dateRange.endDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm"
-                    required
+                    className="w-full px-3 py-2 border-2 border-gray-350 rounded-md focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -425,7 +418,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
               >
-                {isLoading ? 'Submitting...' : 'Submit to DAISY™'}
+                {isLoading ? 'Submitting...' : 'Authorize DAISY™ WINGO Surveillance'}
               </button>
             </form>
           </div>

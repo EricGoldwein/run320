@@ -7,11 +7,13 @@ import Image from 'next/image';
 
 const Home: NextPage = () => {
   const [user, setUser] = useState({
-    id: 1,
+    id: '1',
     email: 'test@example.com',
     username: 'TestUser',
     wingo_balance: 0,
-    created_at: new Date().toISOString()
+    total_wingos: 0,
+    created_at: new Date().toISOString(),
+    last_activity: new Date().toISOString()
   });
 
   const handleMineWingo = async (amount: number) => {
@@ -25,7 +27,10 @@ const Home: NextPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Head>
-        <title>$WINGO World</title>
+        <title><span className="inline-flex items-baseline">
+          <span className="text-[#E6C200] font-bold">W</span>
+          <span>INGO</span>
+        </span> World</title>
         <meta name="description" content="Where workout independence network gains and optimization is always 320 meters away" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -34,7 +39,10 @@ const Home: NextPage = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-4">$WINGO World</h1>
+          <h1 className="text-4xl font-bold text-center mb-4"><span className="inline-flex items-baseline">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span> World</h1>
           <p className="text-xl text-center mb-8 text-gray-600">
             Where workout independence network gains and optimization is always 320 meters away
           </p>

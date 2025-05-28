@@ -4,31 +4,47 @@ import { Link } from 'react-router-dom';
 const Events: React.FC = () => {
   const events = [
     {
+      id: 'wingo-wednesday',
+      title: 'WINGO Wednesdays',
+      date: 'Wednesday, May 28, 2025',
+      location: 'Wingate Track, Brooklyn',
+      description: (
+        <>
+          Run, walk, sprint, limp, plank, or just hang out. Get a custom workout from Coach DAISY™ and earn{' '}
+          <span className="inline-flex items-center">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span>. Gate Access: Free
+        </>
+      ),
+      image: 'http://localhost:5173/wingate1.jpg',
+      link: '/wingo-wednesday'
+    },
+    {
       id: 'wingate-invitational',
       title: 'Wingate Invitational',
-      date: 'September 7, 2025',
+      date: 'Sunday, September 7, 2025',
       location: 'Wingate Track, Brooklyn',
-      description: 'The inaugural track meet at the historic Wingate Track. Registration: 5 $WINGO',
-      image: '/wingate1.jpg',
+      description: (
+        <>
+          The inaugural track meet at the historic Wingate Track. Gate Access: 10{' '}
+          <span className="inline-flex items-center">
+            <span className="text-[#E6C200] font-bold">W</span>
+            <span>INGO</span>
+          </span>
+        </>
+      ),
+      image: 'http://localhost:5173/wingatebw1.jpg',
       link: '/wingate-invitational'
     },
     {
       id: '320-day',
       title: '320 Day',
-      date: 'March 20, 2026',
+      date: 'Friday, March 20, 2026',
       location: 'Wingate Track, Brooklyn',
-      description: 'The most important day of the year.',
-      image: '/wingatebw1.jpg',
+      description: 'The most important day of the year. 320TC Members Only',
+      image: 'http://localhost:5173/320day.jpeg',
       link: '/320-day'
-    },
-    {
-      id: 'wingo-wednesday',
-      title: 'WINGO Wednesdays',
-      date: 'Biweekly (see schedule)',
-      location: 'Wingate Track, Brooklyn',
-      description: 'Walk, Run, Sprint, or just hang out. Get a custom workout from Coach DAISY™ and earn WINGO. Open to all abilities. No registration required.',
-      image: '/wingowednesday.jpg',
-      link: '/wingo-wednesday'
     }
   ];
 
@@ -38,10 +54,10 @@ const Events: React.FC = () => {
         <div className="text-center">
           <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
             <span className="block">Upcoming</span>
-            <span className="block text-wingo-600">Events</span>
+            <span className="block text-wingo-600">Experiences</span>
           </h1>
           <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Find your kick at the next 320 Track Club competition.
+            Find your kick with Coach DAISY™ and the 320 Track Club.
           </p>
         </div>
 
