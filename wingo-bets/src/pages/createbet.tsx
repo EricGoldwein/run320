@@ -531,7 +531,7 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
                   )}
                 </div>
               </div>
-              <div className="flex items-end">
+              <div className="hidden sm:flex items-end">
                 <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-center font-mono text-lg text-gray-800 h-[42px] flex items-center">
                   Projection: {projectedTime ? <span className="font-bold">{projectedTime}</span> : <span className="text-gray-400">—</span>}
                 </div>
@@ -561,9 +561,10 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
                     <span className="font-mono text-lg text-blue-900">{odds ? odds : <span className='text-gray-400'>—</span>}</span>
                     <span className="text-blue-700">{odds ? `(${getImpliedProbability(odds)})` : ''}</span>
                     <div className="relative group">
-                      <span className="ml-1 text-blue-400 cursor-help"><FaInfoCircle /></span>
+                      <span className="ml-1 text-blue-400 cursor-help hidden sm:inline-block"><FaInfoCircle /></span>
+                      <span className="ml-1 text-blue-400 cursor-help sm:hidden" style={{ padding: '8px' }}><FaInfoCircle /></span>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                        DAISY™ Odds show probability of running under the WINGO Wager Line. For example, +100 means 50% chance of running under the target time.
+                        DAISY™ Odds show probability of running under WINGO Wager Line. Example: +100 means 50% chance of running under WWL.
                       </div>
                     </div>
                   </div>
@@ -647,7 +648,7 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
               </div>
             )}
             <div className="text-[10px] text-gray-400 text-center mt-4">
-              18+ and present in Wingate. Gambling problem? Text 929-WAX-GRIG. Terms apply.
+              18+ and present in Wingate. Gambling problem? Text 929-WAK-GRIG. Terms apply.
             </div>
           </form>
         </div>

@@ -592,42 +592,58 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
             </span>
           </div>
-          <div className="overflow-x-auto [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full relative" style={{ transform: 'rotateX(180deg)' }}>
-            <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 bg-gray-900/80 text-white px-2 py-1 rounded-l-md text-xs font-medium animate-pulse">
+          <div className="relative">
+            <div className="sm:hidden absolute top-0 left-0 right-0 text-center text-sm text-gray-500 py-2 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50">
               ← Scroll →
             </div>
-            <div style={{ transform: 'rotateX(180deg)' }}>
+            <div className="overflow-x-auto mt-12 sm:mt-0">
               {viewMode === 'race' ? (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">
                         VDOT
                       </th>
-                      {distances.map(distance => (
-                        <th key={distance} scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                          {distance === '1.6' ? <span>PentaWingo<br />(1,600m)</span> :
-                           distance === '3.2' ? <span>DecaWingo<br />(3,200m)</span> :
-                           distance === '5' ? '5 km' :
-                           distance === '10' ? '10 km' :
-                           distance === '15' ? '15 km' :
-                           distance === '21.0975' ? <span>HM</span> :
-                           'Mare-athon'}
-                        </th>
-                      ))}
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <span className="inline-flex items-center">
+                          <span className="font-bold">D</span><span className="text-[#00CED1]">AI</span><span className="font-bold">SY</span><span className="text-xl align-top ml-1">™</span>
+                        </span>
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        5k
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        10k
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Half Mare-athon
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Mare-athon
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredVdots.map(vdot => (
                       <tr key={vdot} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10">
                           {vdot}
                         </td>
-                        {distances.map(distance => (
-                          <td key={distance} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {raceTimesTable[vdot][distance] ? formatMinutesToTime(raceTimesTable[vdot][distance]) : '-'}
-                          </td>
-                        ))}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {raceTimesTable[vdot]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdot]['1.6']) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {raceTimesTable[vdot]?.['5'] ? formatMinutesToTime(raceTimesTable[vdot]['5']) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {raceTimesTable[vdot]?.['10'] ? formatMinutesToTime(raceTimesTable[vdot]['10']) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {raceTimesTable[vdot]?.['21.0975'] ? formatMinutesToTime(raceTimesTable[vdot]['21.0975']) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {raceTimesTable[vdot]?.['42.195'] ? formatMinutesToTime(raceTimesTable[vdot]['42.195']) : '-'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -661,7 +677,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         Threshold M*LE
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Interval 400m
+                        Interval 320m
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Interval km
@@ -679,7 +695,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         Rep 300m
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 400m
+                        Rep 320m
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Rep 600m
@@ -721,7 +737,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                             `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) <= 59 ? 
                               `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8)}s` :
                               `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 
-                            '-'}
+                              '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {pacesTable[vdot]?.['i_km'] || '-'}
