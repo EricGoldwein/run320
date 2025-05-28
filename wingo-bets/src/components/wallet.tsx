@@ -108,7 +108,7 @@ export default function Wallet({ user }: WalletProps) {
             </div>
             <div className="mt-5">
               <Link
-                to="/events"
+                to="/experience"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
               >
                 View Experiences

@@ -111,13 +111,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 mb-6">
           <div className="flex flex-col sm:flex-row items-center justify-between text-sm">
             <div className="flex items-center gap-1">
-              <span className="text-gray-600">Your Balance:</span>
-              <span className="text-[#E6C200] font-bold">W</span>
+              <span className="text-gray-600">Your <span className="text-[#E6C200] font-bold">W</span> Balance:</span>
               <span className="font-bold">{user.balance || 0}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-gray-600">Total in Circulation:</span>
-              <span className="text-[#E6C200] font-bold">W</span>
+              <span className="text-gray-600">Total <span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>
               <span className="font-bold">{totalWingo.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1">
@@ -135,7 +133,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <div className="relative w-full sm:w-auto">
                 <input
                   type="text"
-                  placeholder="Search users..."
+                  placeholder="Search Wingatians..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
@@ -165,7 +163,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       onClick={() => handleSort('user')}
                     >
                       <div className="flex items-center gap-1">
-                        User
+                        Runner
                         <ArrowUpDown className="w-4 h-4" />
                       </div>
                     </th>
