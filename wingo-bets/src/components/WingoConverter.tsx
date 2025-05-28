@@ -41,14 +41,23 @@ const WingoConverter: React.FC = () => {
   const updateTimeInputs = () => {
     const distance = parseFloat(targetDistance);
     if (distance === 644000) {
-      // Yellowstone case
+      // Yellowstone case - default to 4 days
+      setTargetDays('4');
+      setTargetHours('');
+      setTargetMinutes('');
       setTargetSeconds('');
     } else if (distance > 10000) {
       // Show hours for longer distances
+      setTargetDays('');
+      setTargetHours('');
+      setTargetMinutes('');
+      setTargetSeconds('');
     } else {
       // Standard case
       setTargetDays('');
       setTargetHours('');
+      setTargetMinutes('');
+      setTargetSeconds('');
     }
   };
 
@@ -103,7 +112,7 @@ const WingoConverter: React.FC = () => {
 
     setProjections(newProjections);
     setWingoTime(`${(pacePerMeter * 320).toFixed(1)}s`);
-    setSelectedDistance(`${formatTime(totalSeconds)} per ${targetDistance === '21097.5' ? 'HM' : targetDistance}`);
+    setSelectedDistance(`${formatTime(totalSeconds)} per ${targetDistance === '21097.5' ? 'HM' : targetDistance === '42195' ? 'Marathon' : targetDistance}`);
   };
 
   const resetConverter = () => {
@@ -189,28 +198,62 @@ const WingoConverter: React.FC = () => {
                           placeholder="H"
                         />
                       </div>
+                      <div className={styles['time-input-group']}>
+                        <input
+                          type="number"
+                          className={styles['form-control']}
+                          value={targetMinutes}
+                          onChange={(e) => validateTimeInput(e.target.value) && setTargetMinutes(e.target.value)}
+                          placeholder="M"
+                        />
+                      </div>
+                      <span>:</span>
+                      <div className={styles['time-input-group']}>
+                        <input
+                          type="number"
+                          className={styles['form-control']}
+                          value={targetSeconds}
+                          onChange={(e) => validateTimeInput(e.target.value) && setTargetSeconds(e.target.value)}
+                          placeholder="S"
+                        />
+                      </div>
                     </>
                   )}
-                  <div className={styles['time-input-group']}>
-                    <input
-                      type="number"
-                      className={styles['form-control']}
-                      value={targetMinutes}
-                      onChange={(e) => validateTimeInput(e.target.value) && setTargetMinutes(e.target.value)}
-                      placeholder="M"
-                    />
-                  </div>
-                  <span>:</span>
-                  <div className={styles['time-input-group']}>
-                    <input
-                      type="number"
-                      className={styles['form-control']}
-                      value={targetSeconds}
-                      onChange={(e) => validateTimeInput(e.target.value) && setTargetSeconds(e.target.value)}
-                      placeholder="S"
-                    />
+                  {parseFloat(targetDistance) > 10000 && parseFloat(targetDistance) !== 644000 && (
+                    <div className={styles['time-input-group']}>
+                      <input
+                        type="number"
+                        className={styles['form-control']}
+                        value={targetHours}
+                        onChange={(e) => validateTimeInput(e.target.value) && setTargetHours(e.target.value)}
+                        placeholder="H"
+                      />
+                    </div>
+                  )}
+                  {parseFloat(targetDistance) !== 644000 && (
+                    <>
+                      <div className={styles['time-input-group']}>
+                        <input
+                          type="number"
+                          className={styles['form-control']}
+                          value={targetMinutes}
+                          onChange={(e) => validateTimeInput(e.target.value) && setTargetMinutes(e.target.value)}
+                          placeholder="M"
+                        />
+                      </div>
+                      <span>:</span>
+                      <div className={styles['time-input-group']}>
+                        <input
+                          type="number"
+                          className={styles['form-control']}
+                          value={targetSeconds}
+                          onChange={(e) => validateTimeInput(e.target.value) && setTargetSeconds(e.target.value)}
+                          placeholder="S"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
             </div>
           </div>
           <div className="text-center">

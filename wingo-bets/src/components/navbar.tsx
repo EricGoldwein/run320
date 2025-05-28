@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User } from '../types';
+import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   user: User | null;
@@ -9,6 +10,7 @@ interface NavbarProps {
 
 const Navbar = ({ user, onLogout }: NavbarProps) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const wingoRef = useRef<HTMLDivElement>(null);
   const daisyRef = useRef<HTMLDivElement>(null);
@@ -40,10 +42,17 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
     navigate(path);
   };
 
+  // Close mobile menu on navigation
+  const handleMobileNav = (path: string) => {
+    setMobileMenuOpen(false);
+    setActiveDropdown(null);
+    navigate(path);
+  };
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-16 items-center">
           <div className="flex">
             <Link to="/" className="flex items-center space-x-2">
               <img src="/favicon.ico" alt="Daisy" className="w-8 h-8 rounded-full" />
@@ -54,7 +63,8 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-4">
+          {/* Desktop Menu */}
+          <div className="hidden sm:flex items-center space-x-4">
             {user ? (
               <div className="relative" ref={wingoRef}>
                 <button
@@ -89,15 +99,21 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     >
                       Wager
                     </button>
+                    <button
+                      onClick={() => handleNavigation('/vote')}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Vote
+                    </button>
                   </div>
                 )}
               </div>
             ) : null}
             <Link 
-              to={user ? "/events" : "/login"} 
+              to={user ? "/experience" : "/login"} 
               className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium"
             >
-              Experiences
+              Experience
             </Link>
             <div className="relative" ref={daisyRef}>
               <button
@@ -115,7 +131,10 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     onClick={() => handleNavigation('/converter')}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    Converter
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span> Converter
                   </button>
                   <button
                     onClick={() => handleNavigation('/vdot-times')}
@@ -179,8 +198,108 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               </>
             )}
           </div>
+
+          {/* Hamburger for mobile */}
+          <button
+            className="sm:hidden p-2 rounded-md text-gray-600 hover:text-wingo-600 focus:outline-none"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden bg-white border-t border-gray-200 shadow-md px-4 py-4 space-y-2">
+          {user ? (
+            <>
+              <button
+                onClick={() => handleMobileNav('/mine')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Mine
+              </button>
+              <button
+                onClick={() => handleMobileNav('/ledger')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Ledger
+              </button>
+              <button
+                onClick={() => handleMobileNav('/wager')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Wager
+              </button>
+              <button
+                onClick={() => handleMobileNav('/vote')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Vote
+              </button>
+            </>
+          ) : null}
+          <button
+            onClick={() => handleMobileNav(user ? '/experience' : '/login')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Experience
+          </button>
+          <button
+            onClick={() => handleMobileNav('/converter')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            <span className="inline-flex items-center">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> Converter
+          </button>
+          <button
+            onClick={() => handleMobileNav('/vdot-times')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Race & Pace Tables
+          </button>
+          <button
+            onClick={() => handleMobileNav('/faq')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            RAQ
+          </button>
+          {user ? (
+            <>
+              <button
+                onClick={() => handleMobileNav('/wallet')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Wallet
+              </button>
+              <button
+                onClick={onLogout}
+                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded-md"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleMobileNav('/login')}
+                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => handleMobileNav('/register')}
+                className="block w-full text-left px-4 py-2 text-white bg-wingo-600 hover:bg-wingo-700 rounded-md"
+              >
+                Register
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

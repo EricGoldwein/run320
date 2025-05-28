@@ -189,9 +189,9 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
         <div className="flex space-x-4 mb-6">
           <button
             onClick={() => setMiningMethod('flexible')}
-            className={`px-4 py-2 rounded-md text-sm font-medium border ${
+            className={`px-4 py-2 rounded-md text-sm font-medium border transition-all duration-200 ${
               miningMethod === 'flexible'
-                ? 'bg-wingo-600 text-white border-wingo-600'
+                ? 'bg-wingo-600 text-white border-wingo-600 shadow-sm'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             }`}
           >
@@ -199,9 +199,9 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
           </button>
           <button
             onClick={() => setMiningMethod('strava')}
-            className={`px-4 py-2 rounded-md text-sm font-medium border ${
+            className={`px-4 py-2 rounded-md text-sm font-medium border transition-all duration-200 ${
               miningMethod === 'strava'
-                ? 'bg-wingo-600 text-white border-wingo-600'
+                ? 'bg-wingo-600 text-white border-wingo-600 shadow-sm'
                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
             }`}
           >
@@ -211,8 +211,8 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
 
         {miningMethod === 'flexible' && (
           <div className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="flex items-center space-x-4 relative">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="flex items-center space-x-4">
                 <label htmlFor="wingos" className="block text-sm font-medium text-gray-700 whitespace-nowrap">
                   <span className="text-gray-900">WINGO</span>s Completed
                 </label>
@@ -224,13 +224,13 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   value={submissionData.wingos || ''}
                   onChange={handleWingoChange}
                   onKeyDown={handleWingoKeyDown}
-                  className="mt-1 block w-24 rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none pl-2 border-2"
+                  className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="activityLink" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="activityLink" className="block text-sm font-medium text-gray-700 mb-1">
                   Activity Link
                 </label>
                 <input
@@ -238,13 +238,13 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   id="activityLink"
                   value={submissionData.link}
                   onChange={(e) => setSubmissionData(prev => ({ ...prev, link: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-2 border-2"
+                  className="block w-96 rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-3 pr-2 py-2 border-2 transition-colors duration-200"
                   placeholder="https://www.strava.com/activities/..."
                 />
               </div>
 
               <div>
-                <label htmlFor="activityFiles" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="activityFiles" className="block text-sm font-medium text-gray-700 mb-1">
                   Upload Files
                 </label>
                 <input
@@ -253,12 +253,13 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   accept=".gpx,image/*"
                   onChange={handleFileChange}
                   multiple
-                  className="mt-1 block w-full text-sm text-gray-500
+                  className="block w-full text-sm text-gray-500
                     file:mr-4 file:py-2 file:px-4
                     file:rounded-md file:border-0
                     file:text-sm file:font-medium
                     file:bg-wingo-50 file:text-wingo-700
-                    hover:file:bg-wingo-100"
+                    hover:file:bg-wingo-100
+                    transition-colors duration-200"
                 />
                 <p className="mt-1 text-sm text-gray-500">GPX or screenshots (optional)</p>
                 
@@ -270,7 +271,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                         <button
                           type="button"
                           onClick={() => removeFile(index)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-red-600 hover:text-red-800 transition-colors duration-200"
                         >
                           Remove
                         </button>
@@ -281,7 +282,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
               </div>
 
               <div>
-                <label htmlFor="context" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="context" className="block text-sm font-medium text-gray-700 mb-1">
                   Additional Context (optional)
                 </label>
                 <textarea
@@ -289,16 +290,16 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   value={submissionData.context}
                   onChange={(e) => setSubmissionData(prev => ({ ...prev, context: e.target.value }))}
                   rows={3}
-                  className="mt-1 block w-full rounded-md border-gray-350 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-2 border-2"
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-3 pr-2 py-2 border-2 transition-colors duration-200"
                   placeholder="Tell DAISY™ about your WINGOs..."
                 />
               </div>
 
-              <div className="pt-4">
+              <div className="pt-4 flex justify-center">
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500 disabled:opacity-50"
+                  className="inline-flex justify-center py-2 px-8 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500 disabled:opacity-50 transition-all duration-200"
                 >
                   {isLoading ? 'Submitting...' : 'Send to Coach DAISY™ for review'}
                 </button>

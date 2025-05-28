@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Events: React.FC = () => {
-  const events = [
+const Experiences: React.FC = () => {
+  const experiences = [
     {
       id: 'wingo-wednesday',
       title: 'WINGO Wednesdays',
@@ -10,11 +10,11 @@ const Events: React.FC = () => {
       location: 'Wingate Track, Brooklyn',
       description: (
         <>
-          Run, walk, sprint, limp, plank, or just hang out. Get a custom workout from Coach DAISY™ and earn{' '}
+          Run, walk, sprint, limp, plank, wheel, or just hang out. Get a custom workout from Coach DAISY™ and earn{' '}
           <span className="inline-flex items-center">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
-          </span>. Gate Access: Free
+          </span>. Free
         </>
       ),
       image: 'http://localhost:5173/wingate1.jpg',
@@ -23,14 +23,12 @@ const Events: React.FC = () => {
     {
       id: 'wingate-invitational',
       title: 'Wingate Invitational',
-      date: 'Sunday, September 7, 2025',
+      date: 'Sunday, September 7, 2025 at 7:20 AM',
       location: 'Wingate Track, Brooklyn',
       description: (
         <>
-          The inaugural track meet at the historic Wingate Track. Gate Access: 10{' '}
+          Definitely not a mile and definitely not sold out. {' '}
           <span className="inline-flex items-center">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
           </span>
         </>
       ),
@@ -42,7 +40,7 @@ const Events: React.FC = () => {
       title: '320 Day',
       date: 'Friday, March 20, 2026',
       location: 'Wingate Track, Brooklyn',
-      description: 'The most important day of the year. 320TC Members Only',
+      description: 'The most important day of the year.',
       image: 'http://localhost:5173/320day.jpeg',
       link: '/320-day'
     }
@@ -62,35 +60,35 @@ const Events: React.FC = () => {
         </div>
 
         <div className="mt-12 space-y-12">
-          {events.map((event) => (
-            <div key={event.id} className="bg-white overflow-hidden shadow rounded-lg">
+          {experiences.map((experience) => (
+            <div key={experience.id} className="bg-white overflow-hidden shadow rounded-lg">
               <div className="md:flex">
                 <div className="md:flex-shrink-0">
                   <img
                     className="h-48 w-full object-cover md:w-48"
-                    src={event.image}
-                    alt={event.title}
+                    src={experience.image}
+                    alt={experience.title}
                   />
                 </div>
                 <div className="p-8">
                   <div className="uppercase tracking-wide text-sm text-wingo-600 font-semibold">
-                    {event.date}
+                    {experience.date}
                   </div>
                   <Link
-                    to={event.link}
+                    to={experience.link}
                     className="mt-1 text-xl leading-7 font-semibold text-gray-900 hover:text-wingo-600"
                   >
-                    {event.title}
+                    {experience.title}
                   </Link>
                   <p className="mt-2 text-gray-500">
-                    {event.location}
+                    {experience.location}
                   </p>
                   <p className="mt-2 text-gray-500">
-                    {event.description}
+                    {experience.description}
                   </p>
                   <div className="mt-4">
                     <Link
-                      to={event.link}
+                      to={experience.link}
                       className="text-wingo-600 hover:text-wingo-500 font-medium"
                     >
                       Learn more
@@ -107,4 +105,4 @@ const Events: React.FC = () => {
   );
 };
 
-export default Events; 
+export default Experiences; 

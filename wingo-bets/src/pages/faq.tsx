@@ -20,29 +20,22 @@ const FAQ: React.FC = () => {
             <div className="space-y-4">
               <p className="text-lg">
                 <span className="inline-flex items-center">
-                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span className="font-bold">W</span>
                   <span>INGO</span>
-                </span> is the digital token of the 320 Track Club. It's earned by completing 320-meter segments at Wingate Track in Brooklyn.
+                </span> (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing 320-meter segments at Wingate Track in Brooklyn.
               </p>
               <p className="text-lg">
                 Each WINGO (320m loop) = 1{' '}
                 <span className="inline-flex items-center">
-                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span className="font-bold">W</span>
                   <span>INGO</span>
-                </span>. No purchases. No shortcuts. Just WINGOs.
-              </p>
-            </div>
-          </section>
-
-          <section className="transform hover:scale-[1.02] transition-transform duration-200 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-            <h2 className="text-3xl font-bold mb-6 text-gray-900">Why does this exist?</h2>
-            <div className="space-y-4 text-gray-700">
-              <p className="text-lg">
-                Because no one wants to pay $60 annually for the privilege of being waitlisted for $100 races six months out.
+                </span>
               </p>
               <p className="text-lg">
-                No fees. No merch. No corporate partners. No prestige points.
-                Just a loop, a track, and a priceless, valueless token earned by showing up.
+                No fees. No purchases. No membership tier systems. Just a loop, a dream, and a priceless, valueless token.
+              </p>
+              <p className="text-lg">
+                This isn't crypto. This isn't Web3. This is Web320.
               </p>
             </div>
           </section>
@@ -57,22 +50,20 @@ const FAQ: React.FC = () => {
             <div className="space-y-4 text-gray-700">
               <p className="text-lg">
                 <span className="inline-flex items-center">
-                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span className="font-bold">W</span>
                   <span>INGO</span>
                 </span> is your key to the 320 Track Club.{' '}
                 <a href="/register" className="text-wingo-600 hover:text-wingo-500 font-medium">
-                  Membership (10{' '}
+                  Membership (1{' '}
                   <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
-                    <span>INGO</span>
                   </span>)
                 </a> unlocks:
               </p>
               <ul className="list-none space-y-3">
                 {[
-                  <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the Wingate Invitational and 320 Day' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: 'Custom workouts designed by Coach DAISY™ for the magical 320-meter WINGO loop' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: 'DAISY™-Daniels-powered race projections and pace generator tools' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the Old Balance Wingate Invitational and 320 Day' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: 'DAISY™-Daniels-powered race projections, pace generator tools, and custom workouts' }} />,
                   <span dangerouslySetInnerHTML={{ __html: 'Democracy: voting rights on club decisions — 1 <span class="inline-flex items-center"><span class="text-[#E6C200] font-bold">W</span><span class="leading-none">INGO</span></span> = 1 vote' }} />,
                   <span dangerouslySetInnerHTML={{ __html: '<span class="inline-flex items-center"><span class="text-[#E6C200] font-bold">W</span><span class="leading-none">INGO</span></span> Wager World: bet on friends using the proprietary DAISY™-degenerate formula' }} />
                 ].map((item, index) => (
@@ -85,11 +76,11 @@ const FAQ: React.FC = () => {
               <div className="mt-6 space-y-2">
                 <p className="text-lg font-medium">
                   <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span className="font-bold">W</span>
                     <span>INGO</span>
                   </span> cannot be traded or cashed out. 1 WINGO = 1{' '}
                   <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span className="font-bold">W</span>
                     <span>INGO</span>
                   </span>. That's all it will ever be.
                 </p>
@@ -139,12 +130,12 @@ const FAQ: React.FC = () => {
                 <Link to="/mine" className="text-wingo-600 hover:text-wingo-700">
                   You mine{' '}
                   <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span className="font-bold">W</span>
                     <span>INGO</span>
                   </span>
                 </Link> by completing the official 320-meter WINGO segment at Wingate Track. Each verified WINGO = 1{' '}
                 <span className="inline-flex items-center">
-                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span className="font-bold">W</span>
                   <span>INGO</span>
                 </span>.
               </p>
@@ -152,14 +143,13 @@ const FAQ: React.FC = () => {
               <ul className="list-none space-y-3">
                 {[
                   'Send to Coach DAISY™: Submit an activity link, screenshot, or GPX file showing the WINGOs',
+                  'Text Coach DAISY™: Send a screenshot of your WINGO receipt',
                   'Auto-mining via Strava (coming soon): Authorize the Coach DAISY™ WINGO surveillance program — WINGOs will be counted automatically',
                   <span key="daisy-game">
-                    <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium">Play Daisy's Yellowstone Adventure</a>: Complete the game and send us a screenshot of the dancing DAISY™ and we'll add <span className="font-bold">5{' '}
+                    <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium">Bonus: Play Daisy's Yellowstone Adventure</a>: Complete the game and send a screenshot of the dancing DAISY™ for <span className="font-bold">5{' '}
                     <span className="inline-flex items-center">
                       <span className="text-[#E6C200] font-bold">W</span>
-                      <span>INGO</span>
-                    </span></span> (one-time only) to your account!<br/>
-                    <span className="text-xs text-gray-500">(Yes, really. Try it: it's fun and glitchy and horse-approved.)</span>
+                    </span></span> (one-time only)!<br/>
                   </span>
                 ].map((item, index) => (
                   <li key={index} className="grid grid-cols-[auto_1fr] gap-2">
@@ -172,7 +162,7 @@ const FAQ: React.FC = () => {
                 Submissions are reviewed. False attempts will be rejected.
                 Persistent gaming may result in expulsion from the club and forfeiture of all{' '}
                 <span className="inline-flex items-center">
-                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span className="font-bold">W</span>
                   <span>INGO</span>
                 </span>.
               </p>
@@ -191,7 +181,7 @@ const FAQ: React.FC = () => {
               <ul className="list-none space-y-3">
                 {[
                   'Run 1 WINGO → 1 ',
-                  'Run 50 WINGOs → 50 ',
+                  'Walk 1 WINGO → 1 ',
                   'Limp a WINGO → still 1 '
                 ].map((item, index) => (
                   <li key={index} className="grid grid-cols-[auto_1fr] gap-2">
@@ -199,7 +189,7 @@ const FAQ: React.FC = () => {
                     <span className="text-lg">
                       {item}
                       <span className="inline-flex items-center">
-                        <span className="text-[#E6C200] font-bold">W</span>
+                        <span className="font-bold">W</span>
                         <span>INGO</span>
                       </span>
                     </span>
@@ -207,7 +197,7 @@ const FAQ: React.FC = () => {
                 ))}
               </ul>
               <p className="text-lg mt-6">
-                No extra credit for speed or style. Just finish the WINGO and send receipts to Coach DAISY™.
+                No extra credit for speed or style. Just finish the WINGO and send receipts to Coach DAISY™. (Bikers excluded).
               </p>
             </div>
           </section>
@@ -217,11 +207,14 @@ const FAQ: React.FC = () => {
             <div className="space-y-4 text-gray-700">
               <p className="text-lg">
                 Then it didn't happen. No data = no{' '}
-                <span className="text-[#D4AF37] font-['Cambria'] text-[1.1em] font-bold">W</span>INGO.
+                <span className="inline-flex items-center">
+                  <span className="font-bold">W</span>
+                  <span>INGO</span>
+                </span>.
                 Unless it's on video.
               </p>
               <p className="text-lg">
-                Rare exceptions may be granted at the sole discretion of Coach DAISY™.
+                Exceptions may be granted at the sole discretion of Coach DAISY™.
               </p>
             </div>
           </section>
@@ -231,8 +224,11 @@ const FAQ: React.FC = () => {
             <div className="space-y-4 text-gray-700">
               <ol className="list-decimal list-inside space-y-3 text-lg">
                 {[
-                  <span key="earn">Earn at least 10{' '}
-                    <span className="text-[#D4AF37] font-['Cambria'] text-[1.1em] font-bold">W</span>INGO
+                  <span key="earn">Complete 1{' '}
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span>
                   </span>,
                   <a key="register" href="/register" className="text-wingo-600 hover:text-wingo-500 font-medium">Click Register</a>,
                   'Connect your Strava account and/or upload your WINGO receipts',
@@ -244,7 +240,10 @@ const FAQ: React.FC = () => {
               <div className="mt-6 space-y-2">
                 <p className="text-lg">
                   No cash. No credit. No crypto. Just{' '}
-                  <span className="text-[#D4AF37] font-['Cambria'] text-[1.1em] font-bold">W</span>INGO.
+                  <span className="inline-flex items-center">
+                    <span className="font-bold">W</span>
+                    <span>INGO</span>
+                  </span>.
                 </p>
               </div>
             </div>
@@ -254,25 +253,6 @@ const FAQ: React.FC = () => {
             <h2 className="text-3xl font-bold mb-6 text-gray-900">Is this a real thing?</h2>
             <p className="text-lg text-gray-700">Yes.</p>
           </section>
-        </div>
-
-        <div className="mt-12 space-y-4">
-          <p className="text-gray-600">
-            <span className="inline-flex items-center">
-              <span className="text-[#E6C200] font-bold">W</span>
-              <span>INGO</span>
-            </span> is part of the DAISY™ Universe and a creation of 320 Track Club.
-          </p>
-          <p className="text-[10px] text-gray-400 mt-4">
-            <span className="inline-flex items-center">
-              <span className="text-[#E6C200] font-bold">W</span>
-              <span>INGO</span>
-            </span> has no monetary value and is not a form of currency, cryptocurrency, legal tender, or investment vehicle. It cannot be bought, sold, or traded for goods or services outside the{' '}
-            <span className="inline-flex items-center">
-              <span className="text-[#E6C200] font-bold">W</span>
-              <span>INGO</span>
-            </span> ecosystem. Participation in WINGO-related activities is voluntary and subject to the whims of Coach DAISY™. Please run responsibly. Void where prohibited. Consult your legs before beginning any exercise program. DAISY™ is not a licensed financial advisor, life coach, or track official.
-          </p>
         </div>
       </div>
     </div>

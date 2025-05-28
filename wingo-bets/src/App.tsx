@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import type { User } from './types';
 import { authService } from './services/auth';
+import { AuthProvider } from './contexts/AuthContext';
+import { WingoBalanceProvider } from './contexts/WingoBalanceContext';
 import Navbar from './components/navbar';
+import Footer from './components/Footer';
 import Home from './pages/home';
 import Login from './pages/login';
 import Register from './components/register';
@@ -16,10 +19,11 @@ import CreateBet from './pages/createbet';
 import BetBoard from './pages/betboard';
 import WingateInvitational from './pages/wingateinvitational';
 import FAQ from './pages/faq';
-import Events from './pages/events';
+import Experience from './pages/experience';
 import WingoConverter from './components/WingoConverter';
 import VDOTTimes from './pages/vdot-times';
 import WingoWednesday from './pages/wingo-wednesday';
+import Vote from './pages/vote';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -54,33 +58,39 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar user={user} onLogout={handleLogout} />
-        <main className="container mx-auto px-4 py-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/wallet" />} />
-            <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/wallet" />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/wallet" element={user ? <Wallet user={user} /> : <Navigate to="/login" />} />
-            <Route path="/mine" element={user ? <MineWingo user={user} onMineWingo={(amount) => {
-              setUser(prev => prev ? { ...prev, wingo_balance: prev.wingo_balance + amount } : null);
-            }} /> : <Navigate to="/login" />} />
-            <Route path="/ledger" element={user ? <Ledger user={user} /> : <Navigate to="/login" />} />
-            <Route path="/wager" element={user ? <Wager user={user} /> : <Navigate to="/login" />} />
-            <Route path="/create-bet" element={user ? <CreateBet user={user} onCreateBet={() => {}} /> : <Navigate to="/login" />} />
-            <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
-            <Route path="/wingate-invitational" element={user ? <WingateInvitational user={user} /> : <Navigate to="/login" />} />
-            <Route path="/events" element={user ? <Events /> : <Navigate to="/login" />} />
-            <Route path="/wingo-wednesday" element={<WingoWednesday />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/converter" element={<WingoConverter />} />
-            <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
-            <Route path="/vdot-times" element={<VDOTTimes initialView="race" user={user} />} />
-          </Routes>
-        </main>
-      </div>
+      <AuthProvider>
+        <WingoBalanceProvider>
+          <div className="min-h-screen bg-gray-50 flex flex-col">
+            <Navbar user={user} onLogout={handleLogout} />
+            <main className="container mx-auto px-4 py-8 flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/wallet" />} />
+                <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/wallet" />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/wallet" element={user ? <Wallet user={user} /> : <Navigate to="/login" />} />
+                <Route path="/mine" element={user ? <MineWingo user={user} onMineWingo={(amount) => {
+                  setUser(prev => prev ? { ...prev, wingo_balance: prev.wingo_balance + amount } : null);
+                }} /> : <Navigate to="/login" />} />
+                <Route path="/ledger" element={user ? <Ledger user={user} /> : <Navigate to="/login" />} />
+                <Route path="/wager" element={user ? <Wager user={user} /> : <Navigate to="/login" />} />
+                <Route path="/vote" element={user ? <Vote /> : <Navigate to="/login" />} />
+                <Route path="/create-bet" element={user ? <CreateBet user={user} onCreateBet={() => {}} /> : <Navigate to="/login" />} />
+                <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
+                <Route path="/wingate-invitational" element={user ? <WingateInvitational user={user} /> : <Navigate to="/login" />} />
+                <Route path="/experience" element={user ? <Experience /> : <Navigate to="/login" />} />
+                <Route path="/wingo-wednesday" element={<WingoWednesday />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/converter" element={<WingoConverter />} />
+                <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
+                <Route path="/vdot-times" element={<VDOTTimes initialView="race" user={user} />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </WingoBalanceProvider>
+      </AuthProvider>
     </Router>
   );
 }

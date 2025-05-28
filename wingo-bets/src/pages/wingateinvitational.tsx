@@ -62,6 +62,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   Sunday, September 7, 2025 at 07:20 AM
                 </p>
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                  Definitely not a mile and definitely not sold out.
                 </p>
               </div>
             </main>
@@ -87,27 +88,37 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  To register for races, you do NOT have to create your new NYRR account nor add a credit card. Simply complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10 <span className="relative inline-block group">
-                    <span className="text-wingo-600 font-medium cursor-help"><span className="text-[#E6C200] font-bold">W</span>INGO</span>
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 p-4 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                      <p className="mb-2"><strong><span className="text-[#E6C200] font-bold">W</span>INGO</strong> stands for Workout Independence Network Gains & Optimization</p>
-                      <p className="mb-2 text-xs text-gray-300">A digital token earned only by completing 320-meter segments at Wingate Track in Brooklyn.</p>
-                      <p className="mb-2 text-xs text-gray-300">Each WINGO = 1 <span className="text-[#E6C200] font-bold">W</span>INGO. No purchases. No shortcuts. Just WINGOs.</p>
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
-                    </div>
+                  The Wingate Invitational is the premier race of the 320 Track Club. Complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10{' '}
+                  <span className="inline-flex items-center">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
                   </span>.
                 </p>
                 <div className="bg-wingo-50 p-4 rounded-lg">
-                  <p className="font-medium text-wingo-700">Gate Unlock: 10 <span className="text-[#E6C200] font-bold">W</span>INGO</p>
+                  <p className="font-medium text-wingo-700">Gate Unlock: 10{' '}
+                    <span className="inline-flex items-center">
+                      <span className="text-[#E6C200] font-bold">W</span>
+                      <span>INGO</span>
+                    </span>
+                  </p>
                 </div>
                 <p className="text-lg">
-                  NOTE: The Wingate Invitational has multiple start times throughout the day. We will provide these start times eventually, probably.
+                  All <span className="inline-flex items-center">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
+                  </span> collected from gate unlocks will be redistributed to top finishers. Additional <span className="inline-flex items-center">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
+                  </span> can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline"><span className="inline-flex items-center">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
+                  </span> Wager Market</a>.
                 </p>
                 <p className="text-lg">
-                  All <span className="text-[#E6C200] font-bold">W</span>INGO collected from gate unlocks will be redistributed to top finishers. Additional <span className="text-[#E6C200] font-bold">W</span>INGO can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline"><span className="text-[#E6C200] font-bold">W</span>INGO Wager Market</a>.
-                </p>
-                <p className="text-lg">
-                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those <span className="text-[#E6C200] font-bold">W</span>INGO.
+                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those <span className="inline-flex items-center">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
+                  </span>.
                 </p>
               </div>
             </section>
@@ -309,12 +320,12 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
 
                   {formData.activityType === 'upload' && (
                     <div className="space-y-2">
-                      <div>
+                    <div>
                         <label htmlFor="wingoProof" className="block text-xs font-medium text-gray-700 mb-0.5">
                           Upload WINGO Receipts
-                        </label>
-                        <input
-                          type="file"
+                      </label>
+                      <input
+                        type="file"
                           id="wingoProof"
                           name="wingoProof"
                           onChange={handleInputChange}
@@ -329,10 +340,10 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                           type="text"
                           id="wingoLinks"
                           name="wingoLinks"
-                          onChange={handleInputChange}
+                        onChange={handleInputChange}
                           className="mt-0.5 block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 py-1.5 px-2 text-sm"
                           placeholder="Enter link(s) to WINGO activity"
-                        />
+                      />
                       </div>
                       <p className="text-xs text-gray-500 italic">
                         Your submission will be reviewed by Coach DAISY™

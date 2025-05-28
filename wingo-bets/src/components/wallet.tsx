@@ -7,6 +7,10 @@ interface WalletProps {
 }
 
 export default function Wallet({ user }: WalletProps) {
+  // Calculate total distance based on WINGO balance (1 WINGO = 0.32 KM)
+  const totalDistance = (user.wingo_balance * 0.32).toFixed(2);
+  const totalMined = user.total_wingos || 0;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center">
@@ -21,30 +25,26 @@ export default function Wallet({ user }: WalletProps) {
       {/* Stats Overview */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-          <h3 className="text-lg font-medium text-gray-900">Current Balance</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{user.wingo_balance.toLocaleString()} <span className="inline-flex items-center">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
+          <h3 className="text-lg font-medium text-gray-900">Balance</h3>
+          <p className="mt-2 text-3xl font-bold text-gray-900"> <span className="text-[#E6C200] font-bold">W</span> {user.wingo_balance.toLocaleString()} <span className="inline-flex items-center">
+          
           </span></p>
           <p className="mt-2 text-sm text-gray-500">Total <span className="inline-flex items-center">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
-          </span> including mining, bets, prizes, and other activities</p>
+            <span>WINGO</span>
+          </span> including mining and wagers</p>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h3 className="text-lg font-medium text-gray-900">Total Mined</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900">0 <span className="inline-flex items-center">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
+          <p className="mt-2 text-3xl font-bold text-gray-900">  <span className="text-[#E6C200] font-bold">W</span> {totalMined.toLocaleString()} <span className="inline-flex items-center">
+          
           </span></p>
           <p className="mt-2 text-sm text-gray-500"><span className="inline-flex items-center">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
+            <span>WINGO</span>
           </span> earned through mining activities only</p>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h3 className="text-lg font-medium text-gray-900">Total Distance</h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900">0 km</p>
+          <p className="mt-2 text-3xl font-bold text-gray-900">{totalDistance} KM</p>
           <p className="mt-2 text-sm text-gray-500">Distance covered while mining</p>
         </div>
       </div>
@@ -62,7 +62,6 @@ export default function Wallet({ user }: WalletProps) {
             <div className="mt-2 max-w-xl text-sm text-gray-500">
               <p>Run 320m WINGOs to earn <span className="inline-flex items-center">
                 <span className="text-[#E6C200] font-bold">W</span>
-                <span>INGO</span>
               </span>.</p>
             </div>
             <div className="mt-5">
@@ -85,7 +84,6 @@ export default function Wallet({ user }: WalletProps) {
             <div className="mt-2 max-w-xl text-sm text-gray-500">
               <p>Place bets with your <span className="inline-flex items-center">
                 <span className="text-[#E6C200] font-bold">W</span>
-                <span>INGO</span>
               </span>.</p>
             </div>
             <div className="mt-5">

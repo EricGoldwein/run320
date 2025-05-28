@@ -24,7 +24,7 @@ export default function Login({ onLogin }: LoginProps) {
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       onLogin(response.user);
-      navigate('/wallet');
+      navigate('/ledger');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {

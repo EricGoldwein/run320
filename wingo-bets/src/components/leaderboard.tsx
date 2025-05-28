@@ -4,7 +4,7 @@ import { User } from '../types';
 // Mock data
 const mockUsers: User[] = [
   {
-    id: 1,
+    id: "1",
     email: 'dave@example.com',
     username: 'dave',
     created_at: '2024-01-01',
@@ -14,9 +14,14 @@ const mockUsers: User[] = [
     total_picks: 20,
     units_won: 500,
     units_lost: 200,
+    balance: 1000,
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    total_wingos: 1000,
+    last_activity: '2024-01-01'
   },
   {
-    id: 2,
+    id: "2",
     email: 'jane@example.com',
     username: 'jane',
     created_at: '2024-01-01',
@@ -26,9 +31,14 @@ const mockUsers: User[] = [
     total_picks: 15,
     units_won: 400,
     units_lost: 150,
+    balance: 800,
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    total_wingos: 800,
+    last_activity: '2024-01-01'
   },
   {
-    id: 3,
+    id: "3",
     email: 'joan@example.com',
     username: 'joan',
     created_at: '2024-01-01',
@@ -38,10 +48,51 @@ const mockUsers: User[] = [
     total_picks: 25,
     units_won: 600,
     units_lost: 300,
+    balance: 1200,
+    isActive: true,
+    createdAt: new Date('2024-01-01'),
+    total_wingos: 1200,
+    last_activity: '2024-01-01'
   },
 ];
 
 type SortField = 'wingo_balance' | 'correct_picks' | 'win_percentage' | 'units_won';
+
+interface LeaderboardEntry {
+  rank: number;
+  user: string;
+  balance: number;
+  totalMined: number;
+  distance: number;
+  lastMined: string;
+}
+
+const leaderboardData: LeaderboardEntry[] = [
+  { 
+    rank: 1,
+    user: 'ERock', 
+    balance: 15, 
+    totalMined: 15, 
+    distance: 4.8, 
+    lastMined: '05-28-2024' 
+  },
+  { 
+    rank: 2,
+    user: 'Will Mike Lowry', 
+    balance: 15, 
+    totalMined: 15, 
+    distance: 4.8, 
+    lastMined: '05-28-2024' 
+  },
+  { 
+    rank: 3,
+    user: 'K-Money', 
+    balance: 15, 
+    totalMined: 15, 
+    distance: 4.8, 
+    lastMined: '05-28-2024' 
+  }
+];
 
 export default function Leaderboard() {
   const [users] = useState<User[]>(mockUsers);
@@ -128,7 +179,7 @@ export default function Leaderboard() {
                   {index + 1}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{user.name || user.username}</div>
+                  <div className="text-sm font-medium text-gray-900">{user.username}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">{formatNumber(user.wingo_balance)} WINGO</div>

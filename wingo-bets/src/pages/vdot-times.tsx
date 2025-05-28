@@ -53,6 +53,21 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   table[vdot][key] = parseFloat(row[key]);
                 }
               });
+              // Calculate PentaWingo and DecaWingo times based on mile pace
+              if (table[vdot]['1.6093']) {
+                const mileTime = table[vdot]['1.6093'];
+                // Calculate time for 9.34 meters (difference between mile and PentaWingo)
+                const pacePerMeter = mileTime / 1609.34;
+                const timeForDifference = pacePerMeter * 9.34;
+                // Subtract the time for 9.34 meters from mile time and apply multiplier
+                table[vdot]['1.6'] = (mileTime - timeForDifference) * 0.9995;
+                // Calculate DecaWingo time based on 2-mile projection adjusted for 3.2km
+                if (table[vdot]['3.2187']) {
+                  const twoMileTime = table[vdot]['3.2187'];
+                  const pacePerMeter = twoMileTime / 3218.7;
+                  table[vdot]['3.2'] = (pacePerMeter * 3200) * 0.999;
+                }
+              }
             });
             setRaceTimesTable(table);
             setLoading(false);
@@ -263,7 +278,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     return <div className="max-w-7xl mx-auto text-center text-lg py-12">Loading VDOT tables...</div>;
   }
 
-  const distances = ['1.5', '1.6093', '3', '3.2187', '5', '10', '15', '21.0975', '42.195'];
+  const distances = ['1.6', '3.2', '5', '10', '15', '21.0975', '42.195'];
   const vdots = Object.keys(raceTimesTable).sort((a, b) => parseInt(a) - parseInt(b));
   const filteredVdots = vdots.filter(vdot => vdot.includes(searchTerm));
 
@@ -356,8 +371,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                     <div className="absolute bottom-0 left-0 w-3/4 h-[1px] bg-gradient-to-r from-[#00ffeb] to-transparent"></div>
                   </h4>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-300">M*le:</span>
-                    <span className="font-mono text-lg">{cardData.mile}</span>
+                    <span className="text-gray-300">PentaWingo:</span>
+                    <span className="font-mono text-lg">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">5K:</span>
@@ -413,7 +428,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         '--'}
                     </div>
                   </div>
-                  <div className="grid grid-cols-[auto_1fr] gap-x-2 -mt-4">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-2 -mt-4">
                     <div className="text-gray-300 flex items-center">Repetition:</div>
                     <div className="font-mono text-lg">
                       {pacesTable[vdotInput]?.r_400m ? 
@@ -486,19 +501,17 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
                         VDOT
                       </th>
                       {distances.map(distance => (
-                        <th key={distance} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {distance === '1.5' ? '1.5 km' :
-                           distance === '1.6093' ? 'M*le' :
-                           distance === '3' ? '3 km' :
-                           distance === '3.2187' ? '2 M*les' :
+                        <th key={distance} scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                          {distance === '1.6' ? <span>PentaWingo<br />(1,600m)</span> :
+                           distance === '3.2' ? <span>DecaWingo<br />(3,200m)</span> :
                            distance === '5' ? '5 km' :
                            distance === '10' ? '10 km' :
                            distance === '15' ? '15 km' :
-                           distance === '21.0975' ? 'Half Mare-athon' :
+                           distance === '21.0975' ? <span>Half<br />Mare-athon</span> :
                            'Mare-athon'}
                         </th>
                       ))}
@@ -604,7 +617,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                           {pacesTable[vdot]?.['t_mile'] || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['i_400m'] ? 
+                          {pacesTable[vdot]?.['i_400m'] && parseInt(vdot) > 46 ? 
                             `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) <= 59 ? 
                               `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8)}s` :
                               `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 

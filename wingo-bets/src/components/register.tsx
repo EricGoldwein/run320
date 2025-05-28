@@ -87,7 +87,7 @@ export default function Register({ onRegister }: RegisterProps) {
       
       // Then navigate after a short delay
       setTimeout(() => {
-        navigate('/wallet');
+        navigate('/ledger');
       }, 2000);
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
@@ -138,8 +138,8 @@ export default function Register({ onRegister }: RegisterProps) {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Register for 320 Track Club
           </h2>
-          <p className="text-gray-600">
-            Requires 10{' '}
+          <p className="mt-2 text-center text-gray-600">
+            1{' '}
             <span className="inline-flex items-center">
               <span className="text-[#E6C200] font-bold">W</span>
               <span>INGO</span>
