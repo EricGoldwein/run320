@@ -45,8 +45,11 @@ export default function Wager({ user }: WagerProps) {
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-          <Link to={user.id === 'guest' ? '/login' : '/create-bet'} className="group bg-white rounded-xl shadow-md p-8 border-2 border-gray-200 hover:shadow-lg hover:border-wingo-500 transition-all duration-200 text-center cursor-pointer">
+          <Link to="/create-bet" className="group bg-white rounded-xl shadow-md p-8 border-2 border-gray-200 hover:shadow-lg hover:border-wingo-500 transition-all duration-200 text-center cursor-pointer">
             <h2 className="text-2xl font-bold text-gray-900 group-hover:text-wingo-600">Create Bet</h2>
+            {user.id === 'guest' && (
+              <p className="mt-2 text-sm text-gray-500">Log in to place bets</p>
+            )}
           </Link>
 
           <Link to={user.id === 'guest' ? '/login' : '/bet-board'} className="group bg-white rounded-xl shadow-md p-8 border-2 border-gray-200 hover:shadow-lg hover:border-wingo-500 transition-all duration-200 text-center cursor-pointer">
