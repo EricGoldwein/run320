@@ -24,10 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email: 'test@example.com',
         username: 'TestUser',
+        name: 'Test User',
         wingo_balance: 0,
         total_wingos: 0,
         created_at: new Date().toISOString(),
-        last_activity: new Date().toISOString()
+        last_activity: new Date().toISOString(),
+        balance: 0,
+        isActive: true,
+        createdAt: new Date()
       });
       setIsAuthenticated(true);
     }

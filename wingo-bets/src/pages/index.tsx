@@ -4,16 +4,21 @@ import MineWingo from './minewingo';
 // import Navigation from '../components/Navigation';
 import { useState } from 'react';
 import Image from 'next/image';
+import { User } from '../types';
 
 const Home: NextPage = () => {
-  const [user, setUser] = useState({
+  const [user, setUser] = useState<User>({
     id: '1',
     email: 'test@example.com',
     username: 'TestUser',
+    name: 'Test User',
     wingo_balance: 0,
     total_wingos: 0,
     created_at: new Date().toISOString(),
-    last_activity: new Date().toISOString()
+    last_activity: new Date().toISOString(),
+    balance: 0,
+    isActive: true,
+    createdAt: new Date()
   });
 
   const handleMineWingo = async (amount: number) => {
