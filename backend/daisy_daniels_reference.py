@@ -379,7 +379,7 @@ def get_paces(vdot):
         return VDOT_PACES[vdot_rounded]
     
     # Otherwise calculate using Daniels' formulas
-    return calculate_paces_from_vdot(vdot)
+    return calculate_paces_from_vdot(vdot) 
 
 # ---- Granular VDOT Race Time Variability (from CSV) ----
 GRANULAR_STDDEV = {}

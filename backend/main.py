@@ -222,7 +222,7 @@ Welcome to the WINGO World — where workout independence is always 320 meters a
 You've registered. That's step one.
 Now comes the fun part:
 🔁 Run laps at Wingate.
-🎯 Earn $WINGOs.
+🎯 Earn <span className="text-[#8B4513]">Ω</span>WINGOs.
 🎟 Unlock exclusive events, friendly wagers, and voting power.
 🌀 Embrace the chaos of a track club with no dues, no merch, and no sponsors.
 

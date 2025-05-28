@@ -1,6 +1,6 @@
 import requests
 
-ACCESS_TOKEN = "230c01223688789f411882406cb39ee4e8274a8e"
+ACCESS_TOKEN = "ac0c625feb30d23396e2ea998535157ec07395e0"
 SEGMENT_ID = 7831001
 
 response = requests.get(
@@ -8,8 +8,8 @@ response = requests.get(
     headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
     params={
         "segment_id": SEGMENT_ID,
-        "start_date_local": "2025-03-15T00:00:00",
-        "end_date_local": "2025-03-25T23:59:59",
+        "start_date_local": "2025-05-28T00:00:00",
+        "end_date_local": "2025-05-28T23:59:59",
         "per_page": 100
     }
 )

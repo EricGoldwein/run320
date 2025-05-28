@@ -32,10 +32,12 @@ $pythonPath = Join-Path $venvPath "Scripts\python.exe"
 $requirementsPath = Join-Path $PSScriptRoot "requirements.txt"
 
 if (-not (Test-Path $pythonPath)) {
-    Write-Host "Virtual environment not found. Creating one..."
-    python -m venv .venv
+    Write-Host "Virtual environment not found. Creating one with Python 3.12..."
+    py -3.12 -m venv .venv
     & $pythonPath -m pip install -r $requirementsPath
 }
+
+. $venvPath\Scripts\Activate
 
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$backendPath'; & '$pythonPath' -m uvicorn main:app --host 0.0.0.0 --port 3001 --reload"
 
@@ -57,4 +59,7 @@ Write-Host "Frontend is available at: http://localhost:$frontendPort"
 
 # Open both URLs in default browser
 Start-Process "http://localhost:3001/api"
-Start-Process "http://localhost:$frontendPort" 
+Start-Process "http://localhost:$frontendPort"
+
+# Install uvicorn and fastapi
+pip install uvicorn fastapi 

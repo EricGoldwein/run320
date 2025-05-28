@@ -309,6 +309,55 @@ class StravaAPI:
             logger.error(f"Error counting WINGO attempts: {str(e)}")
             raise
 
+    def get_segment_efforts(self, segment_id: int = WINGATE_SEGMENT_ID, 
+                           start_date: Optional[datetime] = None,
+                           end_date: Optional[datetime] = None,
+                           per_page: int = 100) -> List[Dict]:
+        """
+        Get segment efforts for a specific date range.
+        
+        Args:
+            segment_id: Strava segment ID (defaults to Wingate track)
+            start_date: Start date for the search
+            end_date: End date for the search
+            per_page: Number of efforts per page (max 100)
+            
+        Returns:
+            List of segment effort dictionaries
+        """
+        try:
+            params = {
+                "segment_id": segment_id,
+                "per_page": per_page
+            }
+            
+            if start_date:
+                params["start_date_local"] = start_date.strftime("%Y-%m-%dT%H:%M:%S")
+            if end_date:
+                params["end_date_local"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
+                
+            response = requests.get(
+                f"{self.base_url}/segment_efforts",
+                headers=self.headers,
+                params=params
+            )
+            
+            # Check for rate limiting
+            if response.status_code == 429:
+                logger.warning("Rate limit reached. Waiting 15 minutes...")
+                time.sleep(900)  # Wait 15 minutes
+                response = requests.get(
+                    f"{self.base_url}/segment_efforts",
+                    headers=self.headers,
+                    params=params
+                )
+                
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            logger.error(f"Error fetching segment efforts: {str(e)}")
+            raise
+
 # Example usage
 if __name__ == "__main__":
     # Initialize the API client
@@ -326,77 +375,74 @@ if __name__ == "__main__":
         print("WINGO TRACK VERIFICATION")
         print("="*50)
         
-        # Get your profile
-        print("\nFetching your profile...")
-        athlete = strava.get_athlete_profile()
-        print(f"\nHello {athlete.get('firstname', '')} {athlete.get('lastname', '')}!")
+        # Set date range for May 10-20, 2025
+        start_date = datetime(2025, 5, 10)
+        end_date = datetime(2025, 5, 20, 23, 59, 59)
         
-        # Get your recent activities (last 30 days)
-        print("\nChecking your recent activities...")
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=30)
-        activities = strava.get_my_activities(after=start_date)
+        # Get segment efforts directly
+        efforts = strava.get_segment_efforts(
+            segment_id=WINGATE_SEGMENT_ID,
+            start_date=start_date,
+            end_date=end_date,
+            per_page=100
+        )
         
-        print(f"\nFound {len(activities)} activities in the last 30 days")
-        
-        # Check each activity for the Wingate segment
-        wingo_attempts = []
-        for activity in activities:
-            if activity.get('type') != 'Run':
-                continue
-                
-            print(f"\nChecking activity: {activity.get('name', 'Unnamed')}")
-            print(f"Date: {activity.get('start_date', 'Unknown')}")
-            
-            try:
-                # Get detailed activity data
-                response = requests.get(
-                    f"{strava.base_url}/activities/{activity['id']}",
-                    headers=strava.headers
-                )
-                
-                # Check for rate limiting
-                if response.status_code == 429:
-                    print("\nRate limit reached. Waiting 15 minutes...")
-                    time.sleep(900)  # Wait 15 minutes
+        # If no efforts found, check activities
+        if not efforts:
+            activities = strava.get_my_activities(after=start_date, before=end_date)
+            all_efforts = []
+            for activity in activities:
+                if activity.get('type') != 'Run':
+                    continue
+                    
+                try:
                     response = requests.get(
                         f"{strava.base_url}/activities/{activity['id']}",
                         headers=strava.headers
                     )
-                
-                response.raise_for_status()
-                activity_details = response.json()
-                
-                # Check segment efforts
-                for effort in activity_details.get('segment_efforts', []):
-                    if effort.get('segment', {}).get('id') == WINGATE_SEGMENT_ID:
-                        print("✓ Found a WINGO attempt!")
-                        wingo_attempts.append({
-                            'date': activity['start_date'],
-                            'activity_name': activity['name'],
-                            'elapsed_time': effort['elapsed_time'],
-                            'activity_id': activity['id']
-                        })
-                        break
+                    
+                    if response.status_code == 429:
+                        time.sleep(900)
+                        response = requests.get(
+                            f"{strava.base_url}/activities/{activity['id']}",
+                            headers=strava.headers
+                        )
+                    
+                    response.raise_for_status()
+                    activity_details = response.json()
+                    
+                    segment_efforts = activity_details.get('segment_efforts', [])
+                    wingo_efforts = [effort for effort in segment_efforts if effort.get('segment', {}).get('id') == WINGATE_SEGMENT_ID]
+                    all_efforts.extend(wingo_efforts)
                         
-            except Exception as e:
-                print(f"Error checking activity: {str(e)}")
-                continue
+                except Exception as e:
+                    continue
+            
+            efforts = all_efforts
+        
+        # Group efforts by date
+        efforts_by_date = {}
+        for effort in efforts:
+            date = datetime.fromisoformat(effort.get('start_date_local', '')).strftime('%Y-%m-%d')
+            if date not in efforts_by_date:
+                efforts_by_date[date] = []
+            efforts_by_date[date].append(effort)
         
         # Print results
-        print("\n" + "="*50)
         print(f"\nWINGO Attempts Summary:")
-        print(f"Total attempts found: {len(wingo_attempts)}")
+        print(f"Total attempts found: {len(efforts)}")
         
-        if wingo_attempts:
-            print("\nRecent attempts:")
-            for attempt in sorted(wingo_attempts, key=lambda x: x['date'], reverse=True):
-                date = datetime.fromisoformat(attempt['date'].replace('Z', '+00:00'))
-                print(f"- {date.strftime('%Y-%m-%d %H:%M')}: {attempt['activity_name']}")
-                print(f"  Time: {timedelta(seconds=attempt['elapsed_time'])}")
-                print(f"  Activity: https://www.strava.com/activities/{attempt['activity_id']}")
+        if efforts:
+            print("\nAttempts by date:")
+            for date, date_efforts in sorted(efforts_by_date.items()):
+                print(f"\n{date}:")
+                for effort in date_efforts:
+                    athlete = effort.get('athlete', {})
+                    print(f"- Athlete: {athlete.get('firstname', '')} {athlete.get('lastname', '')}")
+                    print(f"  Time: {timedelta(seconds=effort.get('elapsed_time', 0))}")
+                    print(f"  Activity: https://www.strava.com/activities/{effort.get('activity_id')}")
         else:
-            print("\nNo WINGO attempts found in your recent activities.")
+            print("\nNo WINGO attempts found in this period.")
             
         print("\n" + "="*50)
             
@@ -405,4 +451,4 @@ if __name__ == "__main__":
         if "429" in str(e):
             print("\nYou've hit Strava's rate limit. Please wait 15 minutes and try again.")
         elif "401" in str(e):
-            print("\nYour access token might be expired. Try running the script again to get a new token.") 
+            print("\nYour access token might be expired. Try running the script again to get a new token.")
