@@ -17,7 +17,7 @@ const Experiences: React.FC = () => {
           </span>. Free
         </>
       ),
-      image: 'http://localhost:5173/wingate1.jpg',
+      image: '/wingate1.jpg',
       link: '/wingo-wednesday'
     },
     {
@@ -32,7 +32,7 @@ const Experiences: React.FC = () => {
           </span>
         </>
       ),
-      image: 'http://localhost:5173/wingatebw1.jpg',
+      image: '/wingatebw1.jpg',
       link: '/wingate-invitational'
     },
     {
@@ -41,7 +41,7 @@ const Experiences: React.FC = () => {
       date: 'Friday, March 20, 2026',
       location: 'Wingate Track, Brooklyn',
       description: 'The most important day of the year.',
-      image: 'http://localhost:5173/320day.jpeg',
+      image: '/320day.jpeg',
       link: '/320-day'
     }
   ];

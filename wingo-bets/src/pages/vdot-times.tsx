@@ -562,9 +562,9 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               placeholder="Search VDOT"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-36 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
+              className="w-24 sm:w-36 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
             />
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center px-4">
               <div className="inline-flex rounded-md shadow-sm">
                 <button
                   onClick={() => setViewMode('race')}
@@ -588,11 +588,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                 </button>
               </div>
             </div>
-            <span className="px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
+            <span className="hidden sm:inline-block px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
               D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
             </span>
           </div>
-          <div className="overflow-x-auto [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full" style={{ transform: 'rotateX(180deg)' }}>
+          <div className="overflow-x-auto [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full relative" style={{ transform: 'rotateX(180deg)' }}>
+            <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 bg-gray-900/80 text-white px-2 py-1 rounded-l-md text-xs font-medium animate-pulse">
+              ← Scroll →
+            </div>
             <div style={{ transform: 'rotateX(180deg)' }}>
               {viewMode === 'race' ? (
                 <table className="min-w-full divide-y divide-gray-200">
