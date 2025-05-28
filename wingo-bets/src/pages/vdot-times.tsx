@@ -125,15 +125,15 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     }
 
     // Get times from the race times table using the correct keys
-    const mileTime = raceTimesTable[vdot]?.['1.6093'];  // Changed from '1609.34'
-    const fiveKTime = raceTimesTable[vdot]?.['5'];      // Changed from '5000'
-    const halfMaraTime = raceTimesTable[vdot]?.['21.0975']; // Changed from '21097.5'
-    const maraTime = raceTimesTable[vdot]?.['42.195'];  // Changed from '42195'
+    const mileTime = raceTimesTable[vdotInput]?.['1.6093'];  // Changed from '1609.34'
+    const fiveKTime = raceTimesTable[vdotInput]?.['5'];      // Changed from '5000'
+    const halfMaraTime = raceTimesTable[vdotInput]?.['21.0975']; // Changed from '21097.5'
+    const maraTime = raceTimesTable[vdotInput]?.['42.195'];  // Changed from '42195'
 
     // Get paces from the training paces table
-    const easyPace = pacesTable[vdot]?.['e_mile'];
-    const thresholdPace = pacesTable[vdot]?.['t_mile'];
-    const intervalPace = pacesTable[vdot]?.['i_mile'];
+    const easyPace = pacesTable[vdotInput]?.['e_mile'];
+    const thresholdPace = pacesTable[vdotInput]?.['t_mile'];
+    const intervalPace = pacesTable[vdotInput]?.['i_mile'];
 
     const formatRaceTime = (value: number | undefined) => {
       if (value === undefined) return '--';
@@ -431,11 +431,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-2 -mt-4">
                     <div className="text-gray-300 flex items-center">Repetition:</div>
                     <div className="font-mono text-lg">
-                      {pacesTable[vdotInput]?.r_400m ? 
-                        `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8) <= 59 ? 
-                          `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8)}s` :
-                          `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO (320m)` : 
-                        '--'}
+                      {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
+                        ? (() => {
+                            const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
+                            return val <= 59
+                              ? `${val}s`
+                              : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                          })()
+                        : '-'}
                     </div>
                     <div></div>
                     <div className="font-mono text-xs italic text-gray-400 -mt-1 ml-[calc(28%-3.5rem)]">
@@ -525,11 +528,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300">Repetition:</span>
                         <span className="font-mono text-lg">
-                          {pacesTable[vdotInput]?.r_400m ? 
-                            `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8) <= 59 ? 
-                              `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].r_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 
-                            '--'}
+                          {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
+                            ? (() => {
+                                const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
+                                return val <= 59
+                                  ? `${val}s`
+                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                              })()
+                            : '-'}
                         </span>
                       </div>
                       <div className="text-right">
@@ -559,7 +565,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200">
             <input
               type="text"
-              placeholder="Search VDOT"
+              placeholder="VDOT"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-24 sm:w-36 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
@@ -593,57 +599,28 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
             </span>
           </div>
           <div className="relative">
-            <div className="sm:hidden absolute top-0 left-0 right-0 text-center text-sm text-gray-500 py-2 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50">
-              ← Scroll →
-            </div>
             <div className="overflow-x-auto mt-12 sm:mt-0">
               {viewMode === 'race' ? (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">
-                        VDOT
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <span className="inline-flex items-center">
-                          <span className="font-bold">D</span><span className="text-[#00CED1]">AI</span><span className="font-bold">SY</span><span className="text-xl align-top ml-1">™</span>
-                        </span>
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        5k
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        10k
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Half Mare-athon
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Mare-athon
-                      </th>
+                      <th className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10 w-1/6">VDOT</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">PentaWingo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">5k</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">10k</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">HM</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Mare-athon</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredVdots.map(vdot => (
                       <tr key={vdot} className="hover:bg-gray-50">
-                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10">
-                          {vdot}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {raceTimesTable[vdot]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdot]['1.6']) : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {raceTimesTable[vdot]?.['5'] ? formatMinutesToTime(raceTimesTable[vdot]['5']) : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {raceTimesTable[vdot]?.['10'] ? formatMinutesToTime(raceTimesTable[vdot]['10']) : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {raceTimesTable[vdot]?.['21.0975'] ? formatMinutesToTime(raceTimesTable[vdot]['21.0975']) : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {raceTimesTable[vdot]?.['42.195'] ? formatMinutesToTime(raceTimesTable[vdot]['42.195']) : '-'}
-                        </td>
+                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10 w-1/6">{vdot}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdot]['1.6']) : '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['5'] ? formatMinutesToTime(raceTimesTable[vdot]['5']) : '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['10'] ? formatMinutesToTime(raceTimesTable[vdot]['10']) : '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['21.0975'] ? formatMinutesToTime(raceTimesTable[vdot]['21.0975']) : '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['42.195'] ? formatMinutesToTime(raceTimesTable[vdot]['42.195']) : '-'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -755,11 +732,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                           {pacesTable[vdot]?.['r_300m'] || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_400m'] ? 
-                            `${Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8) <= 59 ? 
-                              `${Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 
-                            '-'}
+                          {pacesTable[vdot]?.['r_400m'] && parseInt(vdot) > 42
+                            ? (() => {
+                                const val = Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8);
+                                return val <= 59
+                                  ? `${val}s`
+                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                              })()
+                            : '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {pacesTable[vdot]?.['r_600m'] || '-'}
