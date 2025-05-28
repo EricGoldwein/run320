@@ -148,7 +148,7 @@ const WingoConverter: React.FC = () => {
       <div className={styles['converter-container']}>
         <div className="text-center mb-4">
           <h1 className={styles['brand-heading']}>Wingo Pace Converter</h1>
-          <p className={styles['subheading']}>From Wingos to Mare-atohns, DAISY™ does the math</p>
+          <p className={styles['subheading']}>From Wingos to Mare-athons, DAISY™ does the math</p>
         </div>
 
         <div className={styles['input-section']}>
