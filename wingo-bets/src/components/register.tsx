@@ -316,6 +316,38 @@ export default function Register({ onRegister }: RegisterProps) {
             </p>
           </div>
         </form>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button
+              onClick={() => onRegister({
+                id: 'guest',
+                email: '',
+                username: 'Guest',
+                name: 'Guest User',
+                wingo_balance: 0,
+                total_wingos: 0,
+                created_at: new Date().toISOString(),
+                last_activity: new Date().toISOString(),
+                balance: 0,
+                isActive: true,
+                createdAt: new Date()
+              })}
+              className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E6C200]"
+            >
+              Continue as Guest
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

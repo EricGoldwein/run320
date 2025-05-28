@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import { User } from '../types';
 import html2canvas from 'html2canvas';
+import { Share2, Download } from 'lucide-react';
 
 interface VDOTTimesProps {
   initialView?: 'race' | 'pace';
@@ -283,201 +284,130 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
   const filteredVdots = vdots.filter(vdot => vdot.includes(searchTerm));
 
   return (
-    <div className="min-h-screen bg-gray-100 py-4 sm:py-8">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Race & Pace Guide</h1>
-          <p className="text-sm text-gray-600 mb-4 sm:mb-6">Based on J. Daniels' VDOT Projections</p>
-          
-          {/* View Mode Toggle */}
-          <div className="flex space-x-2 sm:space-x-4 mb-4 sm:mb-6">
+    <div className="min-h-screen bg-white sm:bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
+            <span className="inline-flex items-baseline">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> VDOT Guide
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">Based on J. Daniels' VDOT Projections</p>
+        </div>
+
+        <div className="flex justify-center mb-6 sm:mb-8">
+          <div className="inline-flex rounded-lg border border-gray-200 p-1 bg-gray-50">
             <button
               onClick={() => setViewMode('race')}
-              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base ${
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === 'race'
-                  ? 'bg-[#E6C200] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               Race Times
             </button>
             <button
               onClick={() => setViewMode('pace')}
-              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base ${
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === 'pace'
-                  ? 'bg-[#E6C200] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               Training Paces
             </button>
           </div>
+        </div>
 
-          {/* VDOT Input */}
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
-            <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-full sm:w-auto">
+              <label htmlFor="vdot" className="block text-sm font-medium text-gray-700 mb-1">
+                Enter VDOT
+              </label>
               <input
                 type="number"
+                id="vdot"
                 value={vdotInput}
                 onChange={(e) => setVdotInput(e.target.value)}
-                placeholder="Enter VDOT (30-85)"
-                className="w-full sm:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
+                className="w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
+                placeholder="e.g., 50"
+                min="30"
+                max="85"
               />
-              <button
-                onClick={generateVDOTCard}
-                className="w-full sm:w-auto px-6 py-2 bg-[#E6C200] text-white rounded-lg hover:bg-[#D4B200] transition-colors"
-              >
-                Generate Card
-              </button>
             </div>
+            <button
+              onClick={generateVDOTCard}
+              className="w-full sm:w-auto px-4 py-2 bg-[#E6C200] text-white rounded-md font-medium hover:bg-[#D4B200] transition-colors"
+            >
+              Generate Card
+            </button>
           </div>
+        </div>
 
-          {/* Tables */}
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-              <div className="inline-block min-w-full align-middle">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        VDOT
-                      </th>
-                      {viewMode === 'race' ? (
-                        <>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Mile
-                          </th>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            5K
-                          </th>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Half
-                          </th>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Full
-                          </th>
-                        </>
-                      ) : (
-                        <>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Easy
-                          </th>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Threshold
-                          </th>
-                          <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Interval
-                          </th>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {Object.entries(viewMode === 'race' ? raceTimesTable : pacesTable)
-                      .filter(([vdot]) => {
-                        if (!searchTerm) return true;
-                        return vdot.includes(searchTerm);
-                      })
-                      .map(([vdot, times]) => (
-                        <tr key={vdot} className="hover:bg-gray-50">
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {vdot}
-                          </td>
-                          {viewMode === 'race' ? (
-                            <>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatMinutesToTime(times['1.6093'])}
-                              </td>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatMinutesToTime(times['5'])}
-                              </td>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatMinutesToTime(times['21.0975'])}
-                              </td>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatMinutesToTime(times['42.195'])}
-                              </td>
-                            </>
-                          ) : (
-                            <>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {times['e_mile']}
-                              </td>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {times['t_mile']}
-                              </td>
-                              <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {times['i_mile']}
-                              </td>
-                            </>
-                          )}
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* VDOT Card */}
-          {showCard && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-lg p-6 max-w-md w-full relative" ref={cardRef}>
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-[#E6C200] rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">★</span>
-                </div>
-                <h2 className="text-xl font-bold mb-4">VDOT {vdotInput} Card</h2>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">Race Times</h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="text-sm">
-                        <span className="text-gray-600">Mile:</span> {cardData.mile}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-600">5K:</span> {cardData['5k']}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-600">Half:</span> {cardData.hm}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-600">Full:</span> {cardData.marathon}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">Training Paces</h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="text-sm">
-                        <span className="text-gray-600">Easy:</span> {cardData.easy}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-600">Threshold:</span> {cardData.threshold}
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-600">Interval:</span> {cardData.interval}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end space-x-2">
-                  <button
-                    onClick={() => setShowCard(false)}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                  >
-                    Close
-                  </button>
+        {showCard && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-4 sm:p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">VDOT {vdotInput}</h2>
+                <div className="flex gap-2">
                   <button
                     onClick={handleShare}
-                    className="px-4 py-2 bg-[#E6C200] text-white rounded hover:bg-[#D4B200]"
+                    className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
                   >
-                    Share
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <Download className="w-5 h-5" />
                   </button>
                 </div>
               </div>
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <div className="inline-block min-w-full align-middle">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        {viewMode === 'race' ? (
+                          <>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distance</th>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                          </>
+                        ) : (
+                          <>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pace Type</th>
+                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pace</th>
+                          </>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {viewMode === 'race' ? (
+                        Object.entries(raceTimesTable[vdotInput] || {}).map(([distance, time]) => (
+                          <tr key={distance} className="hover:bg-gray-50">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{distance}</td>
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatMinutesToTime(time)}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        Object.entries(pacesTable[vdotInput] || {}).map(([paceType, pace]) => (
+                          <tr key={paceType} className="hover:bg-gray-50">
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{paceType}</td>
+                            <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{pace}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
