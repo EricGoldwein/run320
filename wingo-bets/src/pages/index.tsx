@@ -42,17 +42,19 @@ const Home: NextPage = () => {
 
       {/* <Navigation /> */}
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-4"><span className="inline-flex items-baseline">
-            <span className="text-[#E6C200] font-bold">W</span>
-            <span>INGO</span>
-          </span> World</h1>
-          <p className="text-xl text-center mb-8 text-gray-600">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 sm:mb-4">
+            <span className="inline-flex items-baseline">
+              <span className="text-[#E6C200] font-bold">W</span>
+              <span>INGO</span>
+            </span> World
+          </h1>
+          <p className="text-lg sm:text-xl text-center mb-6 sm:mb-8 text-gray-600 px-4">
             Where workout independence network gains and optimization is always 320 meters away
           </p>
 
-          <div className="relative w-full h-64 mb-8">
+          <div className="relative w-full h-48 sm:h-64 mb-6 sm:mb-8">
             <Image
               src="/wingate1.jpg"
               alt="320 Track"
@@ -62,7 +64,9 @@ const Home: NextPage = () => {
             />
           </div>
 
-          <MineWingo user={user} onMineWingo={handleMineWingo} />
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <MineWingo user={user} onMineWingo={handleMineWingo} />
+          </div>
         </div>
       </main>
     </div>

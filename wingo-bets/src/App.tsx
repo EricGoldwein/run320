@@ -70,11 +70,49 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/wallet" element={user ? <Wallet user={user} /> : <Navigate to="/login" />} />
-                <Route path="/mine" element={user ? <MineWingo user={user} onMineWingo={(amount) => {
-                  setUser(prev => prev ? { ...prev, wingo_balance: prev.wingo_balance + amount } : null);
-                }} /> : <Navigate to="/login" />} />
-                <Route path="/ledger" element={user ? <Ledger user={user} /> : <Navigate to="/login" />} />
-                <Route path="/wager" element={user ? <Wager user={user} /> : <Navigate to="/login" />} />
+                <Route path="/mine" element={<MineWingo user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} onMineWingo={(amount) => {
+                  if (user) {
+                    setUser(prev => prev ? { ...prev, wingo_balance: prev.wingo_balance + amount } : null);
+                  }
+                }} />} />
+                <Route path="/ledger" element={<Ledger user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
+                <Route path="/wager" element={<Wager user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
                 <Route path="/vote" element={user ? <Vote /> : <Navigate to="/login" />} />
                 <Route path="/create-bet" element={user ? <CreateBet user={user} onCreateBet={() => {}} /> : <Navigate to="/login" />} />
                 <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
