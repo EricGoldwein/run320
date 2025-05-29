@@ -6,7 +6,7 @@ const Experiences: React.FC = () => {
     {
       id: 'wingo-wednesday',
       title: 'WINGO Wednesdays',
-      date: 'Wednesday, May 28, 2025',
+      date: 'Some Wednesdays, 2025',
       location: 'Wingate Track, Brooklyn',
       description: (
         <>
@@ -14,7 +14,7 @@ const Experiences: React.FC = () => {
           <span className="inline-flex items-center">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
-          </span>. Free
+          </span>.
         </>
       ),
       image: '/wingate1.jpg',
