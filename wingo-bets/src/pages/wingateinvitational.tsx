@@ -88,19 +88,10 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  The Old Balance Wingate Invitational is the premier race of the 320 Track Club. Complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10{' '}
-                  <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
-                    <span>INGO</span>
-                  </span>.
+                  The Old Balance Wingate Invitational is the premier race of the 320 Track Club.
                 </p>
                 <div className="bg-wingo-50 p-4 rounded-lg">
-                  <p className="font-medium text-wingo-700">Gate Unlock: 10{' '}
-                    <span className="inline-flex items-center">
-                      <span className="text-[#E6C200] font-bold">W</span>
-                      <span>INGO</span>
-                    </span>
-                  </p>
+                  <p className="font-medium text-wingo-700">Gate Unlock: <span className="text-[#E6C200] font-bold">W</span> 10</p>
                 </div>
                 <p className="text-lg">
                   All <span className="inline-flex items-center">
@@ -109,10 +100,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   </span> collected from gate unlocks will be redistributed to top finishers. Additional <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline"><span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
-                    <span>INGO</span>
-                  </span> Wager Market</a>.
+                  </span> can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
                 </p>
                 <p className="text-lg">
                   Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those <span className="inline-flex items-center">
