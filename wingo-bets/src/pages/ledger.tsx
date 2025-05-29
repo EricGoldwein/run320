@@ -14,6 +14,7 @@ interface LeaderboardEntry {
   totalMined: number;
   distance: number;
   lastMined: string;
+  votingShare: number;
 }
 
 const Ledger: React.FC<LedgerProps> = ({ user }) => {
@@ -27,51 +28,60 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       user: 'ERock', 
       totalMined: 15, 
       balance: 15,
-      distance: Number((15 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     },
     { 
       user: 'Willy Wingo', 
       totalMined: 24, 
       balance: 24,
-      distance: Number((18 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     },
     { 
       user: 'KAT', 
       totalMined: 15, 
       balance: 15,
-      distance: Number((15 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     },
     { 
       user: 'MadMiner', 
       totalMined: 15, 
       balance: 15,
-      distance: Number((15 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     },
     { 
       user: 'Melathon', 
       totalMined: 15, 
       balance: 15,
-      distance: Number((15 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     },
     { 
       user: 'Job', 
       totalMined: 15, 
       balance: 15,
-      distance: Number((15 * 0.32).toFixed(1)), 
+      distance: 0, // Will be calculated in sorting
       lastMined: '05-28-2024',
-      rank: 0 // Will be set by sorting
+      rank: 0, // Will be set by sorting
+      votingShare: 0 // Will be calculated in sorting
     }
   ];
+
+  // Calculate total WINGO first
+  const totalWingo = leaderboardData.reduce((sum, entry) => sum + entry.balance, 0);
 
   // Sort by balance and update ranks
   const sortedLeaderboard = [...leaderboardData]
@@ -79,11 +89,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     .map((entry, index) => ({
       ...entry,
       rank: index + 1,
-      distance: Number((entry.totalMined * 0.32).toFixed(1)) // Automatically calculate distance
+      distance: Number((entry.totalMined * 0.32).toFixed(1)), // Calculate distance based on totalMined
+      votingShare: Number(((entry.balance / totalWingo) * 100).toFixed(2)) // Calculate voting share as percentage
     }));
 
-  // Calculate totals from leaderboard data
-  const totalWingo = sortedLeaderboard.reduce((sum, entry) => sum + entry.balance, 0);
+  // Calculate total kilometers after distances are calculated
   const totalKilometers = sortedLeaderboard.reduce((sum, entry) => sum + entry.distance, 0);
 
   const handleSort = (field: keyof LeaderboardEntry) => {
@@ -104,6 +114,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       if (sortField === 'balance') return b.balance - a.balance;
       if (sortField === 'totalMined') return b.totalMined - a.totalMined;
       if (sortField === 'distance') return b.distance - a.distance;
+      if (sortField === 'votingShare') return b.votingShare - a.votingShare;
       if (sortField === 'lastMined') return new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
       return 0;
     });
@@ -230,6 +241,16 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     <th 
                       scope="col" 
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort('votingShare')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Voting Share
+                        <ArrowUpDown className="w-4 h-4" />
+                      </div>
+                    </th>
+                    <th 
+                      scope="col" 
+                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('lastMined')}
                     >
                       <div className="flex items-center gap-1">
@@ -248,6 +269,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.balance}</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.totalMined}</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.distance} km</td>
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.votingShare}%</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.lastMined}</td>
                       </tr>
                     ))
