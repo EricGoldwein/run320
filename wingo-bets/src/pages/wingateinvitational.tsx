@@ -82,13 +82,13 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Left Column - Event Details */}
           <div className="lg:col-span-2 space-y-8">
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Wingate Invitational Details</h2>
+              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Old Balance Wingate Invitational Details</h2>
               <div className="space-y-4 text-gray-700">
                 <div className="bg-green-50 p-4 rounded-lg border border-green-100">
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  The Wingate Invitational is the premier race of the 320 Track Club. Complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10{' '}
+                  The Old Balance Wingate Invitational is the premier race of the 320 Track Club. Complete 10 laps (WINGOs) at the iconic 320-meter Wingate Track and submit your run to Coach DAISY™ to earn 10{' '}
                   <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
