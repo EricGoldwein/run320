@@ -24,35 +24,67 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   // Mock data - replace with real data later
   const leaderboardData: LeaderboardEntry[] = [
     { 
-      rank: 1, 
       user: 'ERock', 
-      balance: 15, 
       totalMined: 15, 
-      distance: 4.8, 
-      lastMined: '05-28-2024' 
+      balance: 15,
+      distance: Number((15 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
     },
     { 
-      rank: 2, 
-      user: 'Will Mike Lowry', 
-      balance: 15, 
-      totalMined: 15, 
-      distance: 4.8, 
-      lastMined: '05-28-2024' 
+      user: 'Willy Wingo', 
+      totalMined: 24, 
+      balance: 24,
+      distance: Number((18 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
     },
     { 
-      rank: 3, 
-      user: 'K-Money', 
-      balance: 15, 
+      user: 'KAT', 
       totalMined: 15, 
-      distance: 4.8, 
-      lastMined: '05-28-2024' 
+      balance: 15,
+      distance: Number((15 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
+    },
+    { 
+      user: 'MadMiner', 
+      totalMined: 15, 
+      balance: 15,
+      distance: Number((15 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
+    },
+    { 
+      user: 'Melathon', 
+      totalMined: 15, 
+      balance: 15,
+      distance: Number((15 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
+    },
+    { 
+      user: 'Job', 
+      totalMined: 15, 
+      balance: 15,
+      distance: Number((15 * 0.32).toFixed(1)), 
+      lastMined: '05-28-2024',
+      rank: 0 // Will be set by sorting
     }
   ];
 
+  // Sort by balance and update ranks
+  const sortedLeaderboard = [...leaderboardData]
+    .sort((a, b) => b.balance - a.balance)
+    .map((entry, index) => ({
+      ...entry,
+      rank: index + 1,
+      distance: Number((entry.totalMined * 0.32).toFixed(1)) // Automatically calculate distance
+    }));
+
   // Calculate totals from leaderboard data
-  const totalWingo = leaderboardData.reduce((sum, entry) => sum + entry.balance, 0);
-  const totalMined = leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0);
-  const totalKilometers = leaderboardData.reduce((sum, entry) => sum + entry.distance, 0); // Will be 14.4 km (4.8 × 3)
+  const totalWingo = sortedLeaderboard.reduce((sum, entry) => sum + entry.balance, 0);
+  const totalKilometers = sortedLeaderboard.reduce((sum, entry) => sum + entry.distance, 0);
 
   const handleSort = (field: keyof LeaderboardEntry) => {
     if (field === sortField) {
@@ -63,19 +95,17 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     }
   };
 
-  const filteredAndSortedData = leaderboardData
-    .filter(entry => 
-      entry.user.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+  // Filter and sort leaderboard data
+  const filteredLeaderboard = sortedLeaderboard
+    .filter(entry => entry.user.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
-      const aValue = a[sortField];
-      const bValue = b[sortField];
-      const modifier = sortDirection === 'asc' ? 1 : -1;
-      
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return aValue.localeCompare(bValue) * modifier;
-      }
-      return ((aValue as number) - (bValue as number)) * modifier;
+      if (sortField === 'rank') return a.rank - b.rank;
+      if (sortField === 'user') return a.user.localeCompare(b.user);
+      if (sortField === 'balance') return b.balance - a.balance;
+      if (sortField === 'totalMined') return b.totalMined - a.totalMined;
+      if (sortField === 'distance') return b.distance - a.distance;
+      if (sortField === 'lastMined') return new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
+      return 0;
     });
 
   return (
@@ -133,7 +163,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <div className="relative w-full sm:w-auto">
                 <input
                   type="text"
-                  placeholder="Search Wingatians..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
@@ -210,8 +240,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredAndSortedData.length > 0 ? (
-                    filteredAndSortedData.map((entry) => (
+                  {filteredLeaderboard.length > 0 ? (
+                    filteredLeaderboard.map((entry) => (
                       <tr key={entry.rank} className="hover:bg-gray-50 transition-colors">
                         <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.rank}</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.user}</td>
