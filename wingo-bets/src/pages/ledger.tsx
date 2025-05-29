@@ -29,7 +29,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -38,7 +38,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 24, 
       balance: 24,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -47,7 +47,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -56,7 +56,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -65,7 +65,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -74,7 +74,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 16, 
       balance: 16,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2024',
+      lastMined: '05-28-2025',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     }

@@ -564,7 +564,7 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
                       <span className="ml-1 text-blue-400 cursor-help hidden sm:inline-block"><FaInfoCircle /></span>
                       <span className="ml-1 text-blue-400 cursor-help sm:hidden" style={{ padding: '8px' }}><FaInfoCircle /></span>
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                        DAISY™ Odds show probability of running under WINGO Wager Line (WWLL).
+                        DAISY™ Odds show probability of running under WINGO Wager Line (WWL).
                       </div>
                     </div>
                   </div>
