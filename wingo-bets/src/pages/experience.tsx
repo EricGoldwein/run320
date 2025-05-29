@@ -22,7 +22,7 @@ const Experiences: React.FC = () => {
     },
     {
       id: 'wingate-invitational',
-      title: 'Wingate Invitational',
+      title: 'Old Balance Wingate Invitational',
       date: 'Sunday, September 7, 2025 at 7:20 AM',
       location: 'Wingate Track, Brooklyn',
       description: (
