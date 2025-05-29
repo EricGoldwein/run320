@@ -10,14 +10,14 @@ const WingoWednesday: React.FC = () => {
           <h1 className="text-5xl font-bold mb-4 text-center text-wingo-600">WINGO Wednesdays</h1>
           <p className="text-xl text-center text-gray-700 mb-2">Biweekly at Wingate Track, Brooklyn</p>
           <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded mb-6 text-center">
-            <span className="font-semibold text-green-700">Next Session:</span> <span className="text-green-800">Wednesday, May 28</span>
+            <span className="font-semibold text-green-700">Next Session:</span> <span className="text-green-800">TBD Summer Wednesdays</span>
           </div>
         </div>
         <div className="space-y-8">
           <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
             <h2 className="text-2xl font-bold mb-4 text-wingo-600">What is WINGO Wednesday?</h2>
             <p className="text-lg text-gray-700 mb-2">
-              Every other Wednesday, the 320 Track Club hosts a free, open session at the historic Wingate Track. Walk, run, sprint, limp, plank, or just hang out—everyone is welcome!
+              Some Wednesdays, the DAISY™ and the 320 Track Club lead a free, open WINGO workout at the historic Wingate Track. Walk, run, sprint, limp, plank, or just hang out—everyone is welcome!
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
               <li>Get a custom workout from <span className="font-semibold">Coach DAISY™</span></li>
@@ -26,6 +26,7 @@ const WingoWednesday: React.FC = () => {
                 <span>INGO</span>
               </span> for every 320m lap you complete</li>
               <li>All paces, all abilities, all vibes</li>
+              <li>Wager?</li>
               <li>No registration, no fees, no pressure</li>
             </ul>
           </section>
