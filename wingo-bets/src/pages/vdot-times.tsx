@@ -122,22 +122,22 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
   }
 
   const generateVDOTCard = () => {
-    const vdot = parseInt(vdotInput);
+    const vdot = foundVdot ? parseInt(foundVdot) : parseInt(vdotInput);
     if (isNaN(vdot) || vdot < 30 || vdot > 85) {
       alert('Please enter a valid VDOT between 30 and 85');
       return;
     }
 
     // Get times from the race times table using the correct keys
-    const mileTime = raceTimesTable[vdotInput]?.['1.6093'];  // Changed from '1609.34'
-    const fiveKTime = raceTimesTable[vdotInput]?.['5'];      // Changed from '5000'
-    const halfMaraTime = raceTimesTable[vdotInput]?.['21.0975']; // Changed from '21097.5'
-    const maraTime = raceTimesTable[vdotInput]?.['42.195'];  // Changed from '42195'
+    const mileTime = raceTimesTable[vdot.toString()]?.['1.6093'];  // Changed from '1609.34'
+    const fiveKTime = raceTimesTable[vdot.toString()]?.['5'];      // Changed from '5000'
+    const halfMaraTime = raceTimesTable[vdot.toString()]?.['21.0975']; // Changed from '21097.5'
+    const maraTime = raceTimesTable[vdot.toString()]?.['42.195'];  // Changed from '42195'
 
     // Get paces from the training paces table
-    const easyPace = pacesTable[vdotInput]?.['e_mile'];
-    const thresholdPace = pacesTable[vdotInput]?.['t_mile'];
-    const intervalPace = pacesTable[vdotInput]?.['i_mile'];
+    const easyPace = pacesTable[vdot.toString()]?.['e_mile'];
+    const thresholdPace = pacesTable[vdot.toString()]?.['t_mile'];
+    const intervalPace = pacesTable[vdot.toString()]?.['i_mile'];
 
     const formatRaceTime = (value: number | undefined) => {
       if (value === undefined) return '--';
@@ -190,19 +190,24 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
         // Check if running on mobile device
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         
-        if (isMobile && navigator.share) {
-          console.log('Mobile device detected, using Web Share API...');
-          navigator.share({
-            title: `${user ? `${user.username}'s ` : ''}Race & Pace Guide`,
-            text: `Check out my ${vdotInput} VDOT Race & Pace Guide!`,
-            files: [file]
-          }).catch((error) => {
-            console.error('Share failed:', error);
-            // Fallback to download on mobile if share fails
-            handleDownload();
-          });
+        if (isMobile) {
+          if (navigator.share) {
+            console.log('Mobile device detected, using Web Share API...');
+            navigator.share({
+              title: `${user ? `${user.username}'s ` : ''}Race & Pace Guide`,
+              text: `Check out my ${vdotInput} VDOT Race & Pace Guide!`,
+              files: [file]
+            }).catch((error) => {
+              console.error('Share failed:', error);
+              // Fallback to copy image on mobile if share fails
+              handleCopyImage();
+            });
+          } else {
+            // If Web Share API is not available on mobile, use copy image
+            handleCopyImage();
+          }
         } else {
-          console.log('Desktop or share not supported, showing menu...');
+          console.log('Desktop detected, showing menu...');
           setShowShareMenu(true);
         }
       }, 'image/png', 1.0);
@@ -440,7 +445,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                       <select
                         value={findVdotDistance}
                         onChange={(e) => setFindVdotDistance(e.target.value)}
-                        className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
+                        className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
                       >
                         <option value="1.6">PentaWingo</option>
                         <option value="5">5K</option>
@@ -454,7 +459,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         type="text"
                         value={findVdotTime}
                         onChange={(e) => setFindVdotTime(e.target.value)}
-                        className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
+                        className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
                         placeholder="mm:ss or h:mm:ss"
                       />
                     </div>

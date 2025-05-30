@@ -77,7 +77,7 @@ export default function Register({ onRegister }: RegisterProps) {
         });
 
         if (!uploadResponse.ok) {
-          console.error('Failed to upload WINGO receipts');
+          console.error('Failed to upload Wingo receipt');
         }
       }
       
@@ -249,7 +249,7 @@ export default function Register({ onRegister }: RegisterProps) {
 
               <div>
                 <label htmlFor="wingo_receipts" className="block text-sm font-medium text-gray-700 mb-1">
-                  WINGO Receipts
+                  Wingo Receipt
                 </label>
                 <div className="relative">
                   <input
@@ -270,7 +270,7 @@ export default function Register({ onRegister }: RegisterProps) {
                   </button>
                 </div>
                 <p className="mt-1 text-sm text-gray-500">
-                  (GPX, Screenshot, etc.)
+                  (Screenshot, GPX, etc.)
                 </p>
                 {formData.wingo_receipts.length > 0 && (
                   <div className="mt-2 space-y-2">
@@ -328,7 +328,7 @@ export default function Register({ onRegister }: RegisterProps) {
               </span>?
             </a>
             <p className="mt-2 text-sm text-gray-500 text-center">
-              <span className="text-red-500">*</span> Must submit either activity URL or proof of WINGO
+              <span className="text-red-500">*</span> Must submit activity URL or Wingo receipt
             </p>
           </div>
         </form>

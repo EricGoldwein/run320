@@ -42,7 +42,7 @@ export default function Login({ onLogin }: LoginProps) {
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <a href="/register" className="font-medium text-wingo-600 hover:text-wingo-500">
-              create a new account
+              create account
             </a>
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function Login({ onLogin }: LoginProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder="Email"
               />
             </div>
             <div>
@@ -111,12 +111,12 @@ export default function Login({ onLogin }: LoginProps) {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <a href="/forgot-password" className="font-medium text-wingo-600 hover:text-wingo-500">
-                  Forgot your password?
+                  Forgot password?
                 </a>
               </div>
               <div className="text-sm">
                 <a href="/register" className="font-medium text-wingo-600 hover:text-wingo-500">
-                  Create an account
+                  Create account
                 </a>
               </div>
             </div>
