@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './WingoConverter.module.css';
+import { User } from '../types';
 
-const WingoConverter: React.FC = () => {
+interface WingoConverterProps {
+  user?: User | null;
+}
+
+const WingoConverter: React.FC<WingoConverterProps> = ({ user }) => {
   const [targetDistance, setTargetDistance] = useState<string>('');
   const [targetDays, setTargetDays] = useState<string>('');
   const [targetHours, setTargetHours] = useState<string>('');
@@ -259,7 +264,7 @@ const WingoConverter: React.FC = () => {
           <div className="text-center">
             <div className={styles['button-group']}>
               <button className={styles['btn-convert']} onClick={convertFromTarget}>
-                Calculate Pace
+                Calculate
               </button>
               <button className={styles['btn-reset']} onClick={resetConverter}>
                 Clear
@@ -276,7 +281,14 @@ const WingoConverter: React.FC = () => {
           <div className={`${styles['result-card']} ${styles['projections-card']}`}>
             <div className={styles['projections-content']}>
               <div className={styles['projections-header']}>
-                <p>Your pace at <span>{selectedDistance}</span></p>
+                <div className={styles['header-content']}>
+                  <div className={styles['header-line-1']}>
+                    {user ? `${user.username}'s Pace` : 'Your Pace'}
+                  </div>
+                  <div className={styles['header-line-2']}>
+                    at <span>{selectedDistance}</span>
+                  </div>
+                </div>
                 <span className={styles['daisy-badge']}>D<span className={styles['ai']}>AI</span>SY™</span>
               </div>
               <ul className={styles['projections-list']}>

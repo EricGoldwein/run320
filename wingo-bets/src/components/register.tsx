@@ -139,7 +139,7 @@ export default function Register({ onRegister }: RegisterProps) {
             Register for 320 Track Club
           </h2>
           <p className="mt-2 text-center text-gray-600">
-            Complete 1 Wingo to join
+            Must complete 1 Wingo to join
           </p>
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 
