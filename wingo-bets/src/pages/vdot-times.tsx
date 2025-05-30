@@ -394,7 +394,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     setFindVdotDistance(distance);
     setFindVdotTime('');
     // Set time format based on distance
-    if (distance === '21097.5' || distance === '42195') {
+    if (distance === '21.0975' || distance === '42.195') {
       setTimeFormat('h:mm:ss');
     } else {
       setTimeFormat('mm:ss');
@@ -424,37 +424,37 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
         {/* VDOT Card Generator */}
         <div className="max-w-2xl mx-auto mb-8">
           <div className="bg-white rounded-xl shadow-sm p-4 pb-2 max-w-sm mx-auto">
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <div className="w-24">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="flex items-center space-x-2">
                 <input
                   type="number"
                   value={vdotInput}
                   onChange={(e) => setVdotInput(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
                   placeholder="VDOT"
+                  className="w-24 px-3 py-2 border rounded-md"
                   min="30"
                   max="85"
                 />
+                <button
+                  onClick={generateVDOTCard}
+                  className="px-4 py-2 bg-wingo-600 text-white rounded-md hover:bg-wingo-700"
+                >
+                  Generate Card
+                </button>
               </div>
               <button
-                onClick={generateVDOTCard}
-                className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${styles['generate-card-btn']}`}
+                onClick={() => setShowVdotFinder(true)}
+                className="text-xs text-gray-600 hover:text-gray-800 italic"
               >
-                Generate Card
+                What's my VDOT?
               </button>
             </div>
-            <button
-              onClick={() => setShowVdotFinder(true)}
-              className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${styles['find-vdot-btn']}`}
-            >
-              Find VDOT
-            </button>
           </div>
 
           {/* VDOT Finder Modal */}
           {showVdotFinder && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 vdot-finder-modal">
+              <div className="bg-gray-50 rounded-xl p-6 max-w-md w-full mx-4 vdot-finder-modal">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold">Find Your VDOT</h3>
                   <button
@@ -768,13 +768,13 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200">
             <input
               type="text"
-              placeholder="VDOT"
+              placeholder=""
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-24 sm:w-36 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
+              className="w-24 sm:w-16 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
             />
-            <div className="flex-1 flex justify-center px-4">
-              <div className="inline-flex rounded-md shadow-sm">
+            <div className="flex-1 flex justify-center">
+              <div className="inline-flex rounded-md shadow-sm ml-13">
                 <button
                   onClick={() => setViewMode('race')}
                   className={`px-4 py-2 text-sm font-medium rounded-l-md ${
@@ -787,7 +787,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                 </button>
                 <button
                   onClick={() => setViewMode('pace')}
-                  className={`px-4 py-2 text-sm font-medium rounded-r-md ${
+                  className={`px-3 py-2 text-sm font-medium rounded-r-md ${
                     viewMode === 'pace'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
