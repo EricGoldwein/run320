@@ -552,16 +552,10 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 leading-tight py-1">
-            <span className="text-gray-900">D</span>
-            <span className="text-[#00bcd4] font-extrabold">AI</span>
-            <span className="text-gray-900">SY™</span> Race & Pace Guide
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Based on J. Daniels VDOT Projections
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Race & Pace Guide</h1>
+          <p className="text-xl text-gray-600">Based on J. Daniels VDOT and <a href="/daisy_math" className="text-blue-600 hover:text-blue-800">DAISY™ Maths</a></p>
         </div>
 
         {/* VDOT Card Generator */}
@@ -1074,30 +1068,35 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                   </tbody>
                 </table>
               ) : (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10 w-1/6">VDOT</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">PentaWingo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">5k</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">10k</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">HM</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Mare-athon</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredVdots.map(vdot => (
-                      <tr key={vdot} className="hover:bg-gray-50">
-                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10 w-1/6">{vdot}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdot]['1.6']) : '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['5'] ? formatMinutesToTime(raceTimesTable[vdot]['5']) : '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['10'] ? formatMinutesToTime(raceTimesTable[vdot]['10']) : '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['21.0975'] ? formatMinutesToTime(raceTimesTable[vdot]['21.0975']) : '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['42.195'] ? formatMinutesToTime(raceTimesTable[vdot]['42.195']) : '-'}</td>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">VDOT</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PentaWingo</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">5k</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">10k</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HM</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mare-athon</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {Object.keys(raceTimesTable)
+                        .filter(vdot => !isNaN(Number(vdot)))
+                        .sort((a, b) => Number(a) - Number(b))
+                        .map(vdot => (
+                          <tr key={vdot} className="hover:bg-gray-50">
+                            <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{vdot}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['1.6'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['5'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['10'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['21.1'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['42.2'])}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>
