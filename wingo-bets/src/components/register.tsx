@@ -139,11 +139,7 @@ export default function Register({ onRegister }: RegisterProps) {
             Register for 320 Track Club
           </h2>
           <p className="mt-2 text-center text-gray-600">
-            1{' '}
-            <span className="inline-flex items-center">
-              <span className="text-[#E6C200] font-bold">W</span>
-              <span>INGO</span>
-            </span> to join
+            Complete 1 Wingo to join
           </p>
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 

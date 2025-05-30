@@ -31,7 +31,7 @@ export default function Wallet({ user }: WalletProps) {
           </span></p>
           <p className="mt-2 text-sm text-gray-500">Total <span className="inline-flex items-center">
             <span>WINGO</span>
-          </span> including wagers (<Link to="/ledger" className="text-xs text-blue-600 hover:text-blue-800 transition-colors italic">See leaderboard</Link>)</p></div>
+          </span> including wagers (<Link to="/ledger" className="text-xs text-blue-600 hover:text-blue-800 transition-colors italic">Leaderboard</Link>)</p></div>
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <h3 className="text-lg font-medium text-gray-900">Total Mined</h3>
           <p className="mt-2 text-3xl font-bold text-gray-900">  <span className="text-[#E6C200] font-bold">W</span> {totalMined.toLocaleString()} <span className="inline-flex items-center">

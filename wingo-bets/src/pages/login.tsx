@@ -107,17 +107,41 @@ export default function Login({ onLogin }: LoginProps) {
             </button>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <a href="/forgot-password" className="font-medium text-wingo-600 hover:text-wingo-500">
-                Forgot your password?
-              </a>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm">
+                <a href="/forgot-password" className="font-medium text-wingo-600 hover:text-wingo-500">
+                  Forgot your password?
+                </a>
+              </div>
+              <div className="text-sm">
+                <a href="/register" className="font-medium text-wingo-600 hover:text-wingo-500">
+                  Create an account
+                </a>
+              </div>
             </div>
-            <div className="text-sm">
-              <a href="/register" className="font-medium text-wingo-600 hover:text-wingo-500">
-                Create an account
-              </a>
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                onLogin({
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                });
+                navigate('/ledger');
+              }}
+              className="w-full py-2 px-4 border-2 border-wingo-600 text-wingo-600 rounded-md text-sm font-medium hover:bg-wingo-50 transition-colors"
+            >
+              Continue as Guest
+            </button>
           </div>
         </form>
       </div>

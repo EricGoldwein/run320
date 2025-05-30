@@ -79,7 +79,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                {activeDropdown === 'wingo' && (
+                {activeDropdown === 'wingo' &&
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                     <button
                       onClick={() => handleNavigation('/mine')}
@@ -106,7 +106,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                       Vote
                     </button>
                   </div>
-                )}
+                }
               </div>
             ) : null}
             <Link 
@@ -187,7 +187,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                   </div>
                 )}
               </div>
-            ) : (
+            ) :
               <>
                 <Link to="/login" className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium">
                   Login
@@ -196,7 +196,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                   Register
                 </Link>
               </>
-            )}
+            }
           </div>
 
           {/* Hamburger for mobile */}

@@ -17,6 +17,11 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
   const [vdotInput, setVdotInput] = useState('');
   const [showCard, setShowCard] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showVdotFinder, setShowVdotFinder] = useState(false);
+  const [findVdotTime, setFindVdotTime] = useState('');
+  const [findVdotDistance, setFindVdotDistance] = useState('5');
+  const [foundVdot, setFoundVdot] = useState<string | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [cardData, setCardData] = useState({
     mile: '--',
     '5k': '--',
@@ -26,7 +31,6 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     threshold: '--',
     interval: '--'
   });
-  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load race times CSV
@@ -183,23 +187,28 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
         console.log('Blob created, creating file...');
         const file = new File([blob], 'vdot-card.png', { type: 'image/png' });
         
-        if (navigator.share) {
-          console.log('Web Share API available, opening share dialog...');
+        // Check if running on mobile device
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        if (isMobile && navigator.share) {
+          console.log('Mobile device detected, using Web Share API...');
           navigator.share({
             title: `${user ? `${user.username}'s ` : ''}Race & Pace Guide`,
             text: `Check out my ${vdotInput} VDOT Race & Pace Guide!`,
             files: [file]
           }).catch((error) => {
             console.error('Share failed:', error);
-            setShowShareMenu(true);
+            // Fallback to download on mobile if share fails
+            handleDownload();
           });
         } else {
-          console.log('Web Share API not available, showing menu...');
+          console.log('Desktop or share not supported, showing menu...');
           setShowShareMenu(true);
         }
       }, 'image/png', 1.0);
     } catch (error) {
       console.error('Error in handleShare:', error);
+      setShowShareMenu(true);
     }
   };
 
@@ -214,12 +223,17 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
         useCORS: true,
         allowTaint: true
       });
+      
+      // Create a temporary link element
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/png', 1.0);
-      link.download = 'vdot-card.png';
+      link.download = `${user ? `${user.username}-` : ''}vdot-${vdotInput}-card.png`;
+      
+      // Trigger the download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
       setShowShareMenu(false);
     } catch (error) {
       console.error('Error in handleDownload:', error);
@@ -253,8 +267,25 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           ]);
           console.log('Successfully copied to clipboard');
           setShowShareMenu(false);
+          
+          // Show a temporary success message
+          const successMsg = document.createElement('div');
+          successMsg.textContent = 'Image copied to clipboard!';
+          successMsg.style.position = 'fixed';
+          successMsg.style.bottom = '20px';
+          successMsg.style.left = '50%';
+          successMsg.style.transform = 'translateX(-50%)';
+          successMsg.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+          successMsg.style.color = 'white';
+          successMsg.style.padding = '8px 16px';
+          successMsg.style.borderRadius = '4px';
+          successMsg.style.zIndex = '1000';
+          document.body.appendChild(successMsg);
+          setTimeout(() => successMsg.remove(), 2000);
         } catch (error) {
           console.error('Error copying to clipboard:', error);
+          // Fallback to download if copy fails
+          handleDownload();
         }
       }, 'image/png', 1.0);
     } catch (error) {
@@ -273,6 +304,70 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showShareMenu]);
+
+  const findVDOTFromTime = () => {
+    if (!findVdotTime || !findVdotDistance) return;
+
+    // Convert time to minutes
+    const timeParts = findVdotTime.split(':');
+    let timeInMinutes: number;
+    
+    try {
+      if (timeParts.length === 2) {
+        // MM:SS format
+        timeInMinutes = parseInt(timeParts[0]) + parseInt(timeParts[1]) / 60;
+      } else if (timeParts.length === 3) {
+        // HH:MM:SS format
+        timeInMinutes = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]) + parseInt(timeParts[2]) / 60;
+      } else {
+        return;
+      }
+
+      if (isNaN(timeInMinutes)) {
+        return;
+      }
+
+      // Find closest VDOT
+      let closestVdot = null;
+      let minDiff = Infinity;
+
+      Object.entries(raceTimesTable).forEach(([vdot, times]) => {
+        const raceTime = times[findVdotDistance];
+        if (raceTime) {
+          const diff = Math.abs(raceTime - timeInMinutes);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestVdot = vdot;
+          }
+        }
+      });
+
+      if (closestVdot) {
+        setFoundVdot(closestVdot);
+      }
+    } catch (error) {
+      // Silently handle error
+    }
+  };
+
+  // Update VDOT when time or distance changes
+  useEffect(() => {
+    if (findVdotTime && findVdotDistance) {
+      findVDOTFromTime();
+    }
+  }, [findVdotTime, findVdotDistance]);
+
+  // Close VDOT finder when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showVdotFinder && !(event.target as Element).closest('.vdot-finder-modal')) {
+        setShowVdotFinder(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showVdotFinder]);
 
   if (loading) {
     return <div className="max-w-7xl mx-auto text-center text-lg py-12">Loading VDOT tables...</div>;
@@ -296,8 +391,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
 
         {/* VDOT Card Generator */}
         <div className="max-w-2xl mx-auto mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-4 max-w-sm mx-auto">
-            <div className="flex gap-4 items-center justify-center">
+          <div className="bg-white rounded-xl shadow-sm p-4 pb-2 max-w-sm mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <div className="w-24">
                 <input
                   type="number"
@@ -311,19 +406,93 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               </div>
               <button
                 onClick={generateVDOTCard}
-                className="px-4 py-2 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800 shadow"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800 shadow"
               >
                 Generate Card
               </button>
             </div>
+            <button
+              onClick={() => setShowVdotFinder(true)}
+              className="text-center text-xs text-gray-500 mt-2 hover:text-gray-700 w-full italic"
+            >
+              What's my VDOT?
+            </button>
           </div>
 
+          {/* VDOT Finder Modal */}
+          {showVdotFinder && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 vdot-finder-modal">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-semibold">Find Your VDOT</h3>
+                  <button
+                    onClick={() => setShowVdotFinder(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="space-y-6">
+                  <div className="flex gap-4 items-end justify-center">
+                    <div className="w-30">
+                      <select
+                        value={findVdotDistance}
+                        onChange={(e) => setFindVdotDistance(e.target.value)}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
+                      >
+                        <option value="1.6">PentaWingo</option>
+                        <option value="5">5K</option>
+                        <option value="10">10K</option>
+                        <option value="21.0975">HM</option>
+                        <option value="42.195">Mare-athon</option>
+                      </select>
+                    </div>
+                    <div className="w-28">
+                      <input
+                        type="text"
+                        value={findVdotTime}
+                        onChange={(e) => setFindVdotTime(e.target.value)}
+                        className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
+                        placeholder="mm:ss or h:mm:ss"
+                      />
+                    </div>
+                  </div>
+                  {foundVdot && (
+                    <div className="text-center text-2xl font-bold text-gray-900">
+                      Estimated VDOT: {foundVdot}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      if (foundVdot) {
+                        setVdotInput(foundVdot);
+                        generateVDOTCard();
+                        setShowVdotFinder(false);
+                      }
+                    }}
+                    className="w-full px-4 py-2 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800 shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!foundVdot}
+                  >
+                    Generate Card
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {showCard && (
-            <div ref={cardRef} className="mt-4 bg-[rgba(30,30,30,0.92)] rounded-xl p-6 text-white shadow-lg relative">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-xl font-bold">
-                  {user ? `${user.username}'s ` : ''}Race & Pace Guide ({vdotInput} VDOT)
-                </h3>
+            <div ref={cardRef} className="mt-4 bg-[rgba(30,30,30,0.92)] rounded-xl p-6 text-white shadow-lg relative max-w-lg mx-auto">
+              <div className="flex justify-between items-start mb-6 px-2">
+                <div>
+                  <h3 className="text-xl font-bold">
+                    {user ? `${user.username}'s Wingo Guide` : 'Wingo Guide'}
+                  </h3>
+                  <div className="text-sm text-gray-400 mt-1">
+                    {vdotInput} VDOT
+                  </div>
+                </div>
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <button
@@ -363,64 +532,64 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   </span>
                 </div>
               </div>
-              <div className="hidden sm:grid sm:grid-cols-2 gap-x-6 gap-y-2 max-w-2xl mx-auto">
+              <div className="hidden sm:grid sm:grid-cols-2 gap-x-0 gap-y-2 max-w-lg mx-auto">
                 {/* Race Projections - Left Side (Desktop) */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <h4 className="text-lg font-semibold text-[#00ffeb] mb-2 relative">
                     Race Projections
                     <div className="absolute bottom-0 left-0 w-3/4 h-[1px] bg-gradient-to-r from-[#00ffeb] to-transparent"></div>
                   </h4>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">PentaWingo:</span>
-                    <span className="font-mono text-lg">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
+                    <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">5K:</span>
-                    <span className="font-mono text-lg">{cardData['5k']}</span>
+                    <span className="font-mono text-base">{cardData['5k']}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">10K:</span>
-                    <span className="font-mono text-lg">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
+                    <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">HM:</span>
-                    <span className="font-mono text-lg">{cardData.hm}</span>
+                    <span className="font-mono text-base">{cardData.hm}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">Mare-athon:</span>
-                    <span className="font-mono text-lg">{cardData.marathon}</span>
+                    <span className="font-mono text-base">{cardData.marathon}</span>
                   </div>
                 </div>
 
                 {/* Training Paces - Right Side (Desktop) */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <h4 className="text-lg font-semibold text-[#00ffeb] mb-2 relative">
                     Training
                     <div className="absolute bottom-0 left-0 w-3/4 h-[1px] bg-gradient-to-r from-[#00ffeb] to-transparent"></div>
                   </h4>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">Easy:</span>
-                    <span className="font-mono text-lg">{pacesTable[vdotInput]?.e_mile || '--'}/m*le</span>
+                    <span className="font-mono text-base">{pacesTable[vdotInput]?.e_mile || '--'}/m*le</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">Mare-athon:</span>
-                    <span className="font-mono text-lg">{pacesTable[vdotInput]?.m_mile || '--'}/m*le</span>
+                    <span className="font-mono text-base">{pacesTable[vdotInput]?.m_mile || '--'}/m*le</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">Threshold:</span>
-                    <span className="font-mono text-lg">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
+                    <span className="font-mono text-base">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
                   </div>
                   <div className="grid grid-cols-[auto_1fr] gap-x-2">
                     <div className="text-gray-300 flex items-center">Interval:</div>
-                    <div className="font-mono text-lg">
+                    <div className="font-mono text-base">
                       {pacesTable[vdotInput]?.i_400m ? 
                         `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) <= 59 ? 
                           `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8)}s` :
-                          `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO (320m)` : 
+                          `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
                         '--'}
                     </div>
                     <div></div>
-                    <div className="font-mono text-xs italic text-gray-400 -mt-1 -mb-4 ml-[calc(28%-3.5rem)]">
+                    <div className="font-mono text-xs italic text-gray-400 -mt-1 -mb-4 ml-[calc(28%-1rem)]">
                       {pacesTable[vdotInput]?.i_400m ? 
                         `${parseInt(pacesTable[vdotInput].i_400m) <= 59 ? 
                           `${pacesTable[vdotInput].i_400m}s` :
@@ -428,20 +597,20 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         '--'}
                     </div>
                   </div>
-                  <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-2 -mt-4">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-2">
                     <div className="text-gray-300 flex items-center">Repetition:</div>
-                    <div className="font-mono text-lg">
+                    <div className="font-mono text-base">
                       {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
                         ? (() => {
                             const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
                             return val <= 59
-                              ? `${val}s`
-                              : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                              ? `${val}s/Wingo`
+                              : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
                           })()
                         : '-'}
                     </div>
                     <div></div>
-                    <div className="font-mono text-xs italic text-gray-400 -mt-1 ml-[calc(28%-3.5rem)]">
+                    <div className="font-mono text-xs italic text-gray-400 -mt-1 ml-[calc(28%-1rem)]">
                       {pacesTable[vdotInput]?.r_400m ? 
                         `${parseInt(pacesTable[vdotInput].r_400m) <= 59 ? 
                           `${pacesTable[vdotInput].r_400m}s` :
@@ -463,23 +632,23 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">PentaWingo:</span>
-                      <span className="font-mono text-lg">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
+                      <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">5K:</span>
-                      <span className="font-mono text-lg">{cardData['5k']}</span>
+                      <span className="font-mono text-base">{cardData['5k']}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">10K:</span>
-                      <span className="font-mono text-lg">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
+                      <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">HM:</span>
-                      <span className="font-mono text-lg">{cardData.hm}</span>
+                      <span className="font-mono text-base">{cardData.hm}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">Mare-athon:</span>
-                      <span className="font-mono text-lg">{cardData.marathon}</span>
+                      <span className="font-mono text-base">{cardData.marathon}</span>
                     </div>
                   </div>
                 </div>
@@ -493,28 +662,28 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">Easy:</span>
-                      <span className="font-mono text-lg">{pacesTable[vdotInput]?.e_mile || '--'}/m*le</span>
+                      <span className="font-mono text-base">{pacesTable[vdotInput]?.e_mile || '--'}/m*le</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">Mare-athon:</span>
-                      <span className="font-mono text-lg">{pacesTable[vdotInput]?.m_mile || '--'}/m*le</span>
+                      <span className="font-mono text-base">{pacesTable[vdotInput]?.m_mile || '--'}/m*le</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">Threshold:</span>
-                      <span className="font-mono text-lg">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
+                      <span className="font-mono text-base">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
                     </div>
-                    <div className="space-y-1">
+                    <div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300">Interval:</span>
-                        <span className="font-mono text-lg">
+                        <span className="font-mono text-base">
                           {pacesTable[vdotInput]?.i_400m ? 
                             `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) <= 59 ? 
                               `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 
+                              `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
                             '--'}
                         </span>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right -mt-2.5">
                         <span className="font-mono text-xs italic text-gray-400">
                           {pacesTable[vdotInput]?.i_400m ? 
                             `${parseInt(pacesTable[vdotInput].i_400m) <= 59 ? 
@@ -524,21 +693,21 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         </span>
                       </div>
                     </div>
-                    <div className="space-y-1">
+                    <div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300">Repetition:</span>
-                        <span className="font-mono text-lg">
+                        <span className="font-mono text-base">
                           {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
                             ? (() => {
                                 const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
                                 return val <= 59
-                                  ? `${val}s`
-                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                                  ? `${val}s/Wingo`
+                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
                               })()
                             : '-'}
                         </span>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right -mt-2.5">
                         <span className="font-mono text-xs italic text-gray-400">
                           {pacesTable[vdotInput]?.r_400m ? 
                             `${parseInt(pacesTable[vdotInput].r_400m) <= 59 ? 
@@ -553,9 +722,11 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               </div>
               <button 
                 onClick={() => setShowCard(false)}
-                className="absolute bottom-4 right-4 text-gray-400 hover:text-white text-sm"
+                className="absolute top-1 right-2 text-gray-400 hover:text-white transition-colors"
               >
-                Close
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
           )}
@@ -713,7 +884,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                           {pacesTable[vdot]?.['i_400m'] && parseInt(vdot) > 46 ? 
                             `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) <= 59 ? 
                               `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/WINGO` : 
+                              `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
                               '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -736,8 +907,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                             ? (() => {
                                 const val = Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8);
                                 return val <= 59
-                                  ? `${val}s`
-                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/WINGO`;
+                                  ? `${val}s/Wingo`
+                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
                               })()
                             : '-'}
                         </td>

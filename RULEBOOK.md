@@ -4,6 +4,41 @@
 
 The WINGO project is the digital backbone of the 320 Track Club, a unique running community based in Brooklyn, New York. The club is centered around the iconic Wingate Track, a 320-meter track that serves as the heart of the community. The project is managed by DAISY™ (Digital Athletic Intelligence System), an AI coach that oversees the WINGO ecosystem.
 
+## Style Guide
+
+### Wingo vs WINGO Styling
+1. Wingo (Track Segment):
+   - Always capitalize the W
+   - No special formatting (no bold or color)
+   - Example: "I ran the Wingo segment today"
+
+2. WINGO (Currency):
+   - In titles and as singular W:
+   ```html
+   <span className="text-[#E6C200] font-bold">W</span>INGO
+   ```
+   - In body paragraphs:
+   ```html
+   <span className="font-bold">W</span>INGO
+   ```
+   - As single W (e.g., "1 W"):
+   ```html
+   <span className="text-[#E6C200] font-bold">W</span>
+   ```
+   - Examples:
+     - Title: "Welcome to <span className="text-[#E6C200] font-bold">W</span>INGO World"
+     - Body: "The <span className="font-bold">W</span>INGO economy is growing"
+     - Balance: "Balance <span className="text-[#E6C200] font-bold">W</span> 25"
+
+### DAISY™ Styling
+The DAISY™ name should be styled with cyan "AI" in the middle:
+
+```html
+Coach D<span className="text-cyan-600">AI</span>SY™
+```
+
+Note: Always include the ™ symbol when writing DAISY™.
+
 ## Core Concepts
 
 ### The 320 Track Club
@@ -286,5 +321,120 @@ CREATE TABLE balances (
 - Enhanced security
 - Better performance
 - More user features
+
+## FAQ
+
+### What is Wingo?
+Wingo is the iconic 320-meter track segment at Wingate Track in Brooklyn, New York. It's the heart of the 320 Track Club and serves as the primary location for mining <span className="text-[#E6C200] font-bold">W</span>INGO tokens.
+
+### What is <span className="text-[#E6C200] font-bold">W</span>INGO?
+<span className="text-[#E6C200] font-bold">W</span>INGO is the native token of the 320 Track Club ecosystem. You can earn <span className="text-[#E6C200] font-bold">W</span> by:
+- Mining (completing Wingo segments)
+- Winning bets
+- Participating in community events
+- Earning prizes
+
+### How do I mine <span className="text-[#E6C200] font-bold">W</span>INGO?
+To mine <span className="text-[#E6C200] font-bold">W</span>INGO:
+1. Run the Wingo segment at Wingate Track
+2. Record your activity on Strava
+3. Submit your activity through the mining form
+4. Include:
+   - Strava activity link
+   - Context/description
+   - <span className="text-[#E6C200] font-bold">W</span>INGO amount
+   - Optional GPX files
+
+### How are <span className="text-[#E6C200] font-bold">W</span>INGO amounts determined?
+<span className="text-[#E6C200] font-bold">W</span>INGO amounts are based on:
+- Number of Wingo segments completed
+- Quality of submission
+- Community guidelines
+- DAISY™'s validation
+
+### What can I do with my <span className="text-[#E6C200] font-bold">W</span>INGO?
+You can use your <span className="text-[#E6C200] font-bold">W</span>INGO to:
+- Place bets on community events
+- Participate in challenges
+- Win prizes
+- Track your progress
+- Compete on the leaderboard
+
+### How do I check my <span className="text-[#E6C200] font-bold">W</span>INGO balance?
+You can view your <span className="text-[#E6C200] font-bold">W</span>INGO balance:
+- On your profile page
+- In the ledger
+- Through the mining interface
+- Via the global statistics
+
+### What is the ledger?
+The ledger is a public record showing:
+- All <span className="text-[#E6C200] font-bold">W</span>INGO transactions
+- User balances
+- Mining history
+- Global statistics
+- Community activity
+
+### How do I place a bet?
+To place a bet:
+1. Navigate to the betting interface
+2. Select an event
+3. Choose your prediction
+4. Enter your <span className="text-[#E6C200] font-bold">W</span>INGO amount
+5. Confirm your bet
+
+### What happens if I win a bet?
+If you win a bet:
+- Your <span className="text-[#E6C200] font-bold">W</span>INGO balance increases
+- The winnings are automatically added to your account
+- Your transaction history is updated
+- The ledger reflects the changes
+
+### How do I track my progress?
+You can track your progress through:
+- Your profile page
+- The mining history
+- The ledger
+- Global statistics
+- Community rankings
+
+### What is DAISY™?
+DAISY™ (Digital Athletic Intelligence System) is the AI coach that:
+- Validates mining submissions
+- Manages the <span className="text-[#E6C200] font-bold">W</span>INGO economy
+- Tracks user progress
+- Oversees the community
+
+### How do I get help?
+For help:
+- Check the rulebook
+- Contact DAISY™
+- Ask the community
+- Submit an issue
+- Check the FAQ
+
+### What are the community guidelines?
+The community guidelines include:
+- Respect other runners
+- Follow track etiquette
+- Submit accurate data
+- Participate fairly
+- Support the community
+
+### How do I report an issue?
+To report an issue:
+- Use the contact form
+- Submit a bug report
+- Contact DAISY™
+- Reach out to the community
+- Check the FAQ first
+
+### What is the future of <span className="text-[#E6C200] font-bold">W</span>INGO?
+The future of <span className="text-[#E6C200] font-bold">W</span>INGO includes:
+- Enhanced mining rewards
+- More community events
+- Improved betting system
+- Better prize distribution
+- New features and updates
 
 This rulebook serves as a living document and will be updated as the 320 Track Club and WINGO ecosystem evolve. For questions or clarifications, please contact DAISY™ or the development team. 

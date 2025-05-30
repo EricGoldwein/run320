@@ -19,17 +19,20 @@
     padding: 2rem;
     background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
 }
 
 .input-section {
-    background: #f5faff;
+    background: #f8fafc;
     padding: 2rem;
     border-radius: 16px;
     margin-bottom: 1rem;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .input-row {
@@ -150,89 +153,121 @@ select.form-control option[value=""] {
     align-items: center;
 }
 
-.projections-card {
-    grid-column: 1 / -1;
-    background: #f5faff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    -webkit-user-select: all;
-    user-select: all;
-    -webkit-touch-callout: default;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-    -webkit-user-drag: element;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-    position: relative;
-    cursor: default;
+.converter-container .projections-card {
+    background-color: #f8fbff !important;
+    border: 1px solid #e5e7eb;
     border-radius: 16px;
     padding: 1.5rem;
+    margin-top: 1rem;
 }
 
-.projections-content {
+.converter-container .projections-content {
     position: relative;
     z-index: 1;
     font-size: 1.1rem;
-    color: #666;
+    color: #2c3e50;
 }
 
-.projections-header {
+.converter-container .projections-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.projections-content p {
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.header-line-1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.header-line-2 {
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.header-line-2 span {
+    font-weight: 500;
+    color: #666;
+    font-style: italic;
+}
+
+.converter-container .projections-content p {
     margin: 0;
     padding: 0;
-    color: #666;
-    font-weight: 400;
+    color: #2c3e50;
+    font-weight: 500;
     font-size: 1.1rem;
     line-height: 1.5;
-    letter-spacing: 0.3px;
 }
 
-.projections-content p span {
-    font-weight: 500;
-    color: #444;
-    letter-spacing: 0;
+.converter-container .projections-content p span {
+    font-weight: 600;
+    color: #1a202c;
 }
 
-.projections-list {
+.converter-container .projections-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    position: relative;
+}
+
+.converter-container .projections-list::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #e5e7eb;
+    transform: translateX(-50%);
+}
+
+.converter-container .projections-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
     gap: 0.5rem;
 }
 
-.projections-list li {
-    padding: 0.75rem 1rem;
-    background: #ffffff;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+.converter-container .projections-list li:nth-child(odd) {
+    padding-right: 1rem;
 }
 
-.projections-list .distance {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    color: #555;
-    text-align: left;
+.converter-container .projections-list li:nth-child(even) {
+    padding-left: 1rem;
 }
 
-.projections-list .time {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+.converter-container .distance {
     font-weight: 500;
-    color: #333;
-    text-align: right;
-    font-size: 1.05rem;
+    color: #2c3e50;
+    min-width: 80px;
 }
 
-.daisy-badge {
+.converter-container .time {
+    color: #1a202c;
+    font-family: 'Inter', monospace;
+    text-align: right;
+    min-width: 70px;
+    font-weight: 500;
+}
+
+.converter-container .daisy-badge {
     font-size: 0.95rem;
     padding: 0.35rem 0.7rem;
     background: #34495e;
@@ -249,7 +284,7 @@ select.form-control option[value=""] {
     margin-left: 1rem;
 }
 
-.daisy-badge .ai {
+.converter-container .daisy-badge .ai {
     color: #00ffeb;
     font-weight: 600;
     margin: 0;
@@ -269,25 +304,23 @@ select.form-control option[value=""] {
 }
 
 .pace-display {
+    background: #f8fafc;
+    padding: 1.25rem 2rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    font-weight: 500;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     text-align: center;
     font-size: 1.1rem;
-    color: #333;
-    margin: 1.5rem 0;
-    padding: 1.25rem 2rem;
-    background: #f5faff;
-    border-radius: 16px;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    position: relative;
-    overflow: hidden;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .pace-display::before {
@@ -314,10 +347,12 @@ select.form-control option[value=""] {
 }
 
 .result-card {
-    background: white;
+    background: #ffffff;
+    border-radius: 16px;
     padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: transform 0.3s ease;
 }
 
@@ -337,6 +372,91 @@ select.form-control option[value=""] {
     font-size: 0.9rem;
 }
 
+@media (max-width: 640px) {
+    .projections-list {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+        margin-top: 1rem;
+    }
+
+    .projections-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .projections-list li {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+        border-bottom: 1px solid #e5e7eb;
+        margin: 0;
+    }
+
+    .projections-list::before {
+        display: none !important;
+    }
+
+    .projections-list li .distance {
+        min-width: auto !important;
+        font-size: 0.9rem !important;
+        flex: 0 0 40% !important;
+        text-align: left !important;
+        padding-left: 0 !important;
+        margin-right: auto !important;
+        justify-content: flex-start !important;
+    }
+
+    .projections-list li .time {
+        font-size: 0.9rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        flex: 0 0 55% !important;
+        text-align: right !important;
+        padding-right: 0 !important;
+        font-family: 'Inter', monospace !important;
+        font-weight: 500 !important;
+        margin-left: auto !important;
+        justify-content: flex-end !important;
+    }
+
+    .time-input {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
+
+    .time-input-group {
+        flex: 0 0 auto;
+    }
+
+    .time-input input {
+        width: 50px;
+    }
+
+    .time-input span {
+        margin: 0 0.25rem;
+    }
+
+    .projections-card {
+        padding: 1rem;
+    }
+
+    .projections-content {
+        font-size: 0.9rem;
+    }
+
+    .header-line-1 {
+        font-size: 1.1rem;
+    }
+
+    .header-line-2 {
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 768px) {
     .converter-container {
         margin: 1rem;
@@ -348,14 +468,14 @@ select.form-control option[value=""] {
         padding: 1.5rem;
     }
     
-    .daisy-badge {
+    .converter-container .daisy-badge {
         font-size: 0.85rem;
         padding: 0.3rem 0.6rem;
         top: 0.15rem;
         right: 0.5rem;
     }
     
-    .projections-card {
+    .converter-container .projections-card {
         padding: 1.25rem;
     }
 } 
