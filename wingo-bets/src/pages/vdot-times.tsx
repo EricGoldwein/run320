@@ -4,13 +4,131 @@ import { User } from '../types';
 import html2canvas from 'html2canvas';
 import { useNavigate } from 'react-router-dom';
 import styles from './vdot-times.module.css';
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 interface VDOTTimesProps {
   initialView?: 'race' | 'pace';
   user?: User | null;
 }
 
-const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => {
+const customStyles = `
+  .custom-scrollbar {
+    position: relative;
+  }
+  .custom-scrollbar::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: #EDF2F7;
+    z-index: 50;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #EDF2F7;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #CBD5E0;
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #A0AEC0;
+  }
+  .simplebar-scrollbar::before {
+    background-color: #CBD5E0;
+    border-radius: 4px;
+  }
+  .simplebar-scrollbar.simplebar-visible::before {
+    opacity: 1;
+  }
+  .simplebar-track.simplebar-horizontal {
+    height: 8px;
+    background: #EDF2F7;
+  }
+  .simplebar-track.simplebar-vertical {
+    width: 8px;
+    background: #EDF2F7;
+  }
+  .table-container {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .table-container::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  .table-container::-webkit-scrollbar-track {
+    background: #EDF2F7;
+  }
+  .table-container::-webkit-scrollbar-thumb {
+    background: #CBD5E0;
+    border-radius: 4px;
+  }
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #A0AEC0;
+  }
+  /* Force scrollbar to top */
+  .table-container {
+    transform: rotateX(180deg);
+  }
+  .table-container > * {
+    transform: rotateX(180deg);
+  }
+  /* Fixed column widths */
+  .fixed-width-column {
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+  }
+  /* Force center alignment for specific headers */
+  .fixed-width-column[data-header="pentawingo"],
+  .fixed-width-column[data-header="mare-athon"] {
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.innerText = customStyles;
+document.head.appendChild(styleSheet);
+
+const useSyncScroll = () => {
+  const [topScroll, setTopScroll] = useState<HTMLDivElement | null>(null);
+  const [bottomScroll, setBottomScroll] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!topScroll || !bottomScroll) return;
+
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLDivElement;
+      if (target === topScroll) {
+        bottomScroll.scrollLeft = target.scrollLeft;
+      } else {
+        topScroll.scrollLeft = target.scrollLeft;
+      }
+    };
+
+    topScroll.addEventListener('scroll', handleScroll);
+    bottomScroll.addEventListener('scroll', handleScroll);
+
+    return () => {
+      topScroll.removeEventListener('scroll', handleScroll);
+      bottomScroll.removeEventListener('scroll', handleScroll);
+    };
+  }, [topScroll, bottomScroll]);
+
+  return { topScroll, setTopScroll, bottomScroll, setBottomScroll };
+};
+
+const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => {
   const [raceTimesTable, setRaceTimesTable] = useState<{ [vdot: string]: { [distance: string]: number } }>({});
   const [pacesTable, setPacesTable] = useState<{ [vdot: string]: { [pace: string]: string } }>({});
   const [loading, setLoading] = useState(true);
@@ -27,6 +145,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
   const [cardData, setCardData] = useState({
     mile: '--',
     '5k': '--',
+    '10k': '--',
     hm: '--',
     marathon: '--',
     easy: '--',
@@ -35,6 +154,9 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
   });
   const [timeInput, setTimeInput] = useState('');
   const [timeFormat, setTimeFormat] = useState<'mm:ss' | 'h:mm:ss'>('mm:ss');
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  const { topScroll, setTopScroll, bottomScroll, setBottomScroll } = useSyncScroll();
 
   useEffect(() => {
     // Load race times CSV
@@ -125,18 +247,27 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     return `${m}:${s.toString().padStart(2, '0')}`;
   }
 
-  const generateVDOTCard = () => {
-    const vdot = foundVdot ? parseInt(foundVdot) : parseInt(vdotInput);
-    if (isNaN(vdot) || vdot < 30 || vdot > 85) {
-      alert('Please enter a valid VDOT between 30 and 85');
-      return;
+  // Helper to format seconds to M:SS
+  function formatSecondsToTime(seconds: number): string {
+    if (seconds < 60) {
+      return `${seconds}s`;
     }
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+
+  // Add effect to update card data when VDOT changes
+  useEffect(() => {
+    const vdot = parseInt(vdotInput);
+    if (isNaN(vdot) || vdot < 30 || vdot > 85) return;
 
     // Get times from the race times table using the correct keys
-    const mileTime = raceTimesTable[vdot.toString()]?.['1.6093'];  // Changed from '1609.34'
-    const fiveKTime = raceTimesTable[vdot.toString()]?.['5'];      // Changed from '5000'
-    const halfMaraTime = raceTimesTable[vdot.toString()]?.['21.0975']; // Changed from '21097.5'
-    const maraTime = raceTimesTable[vdot.toString()]?.['42.195'];  // Changed from '42195'
+    const mileTime = raceTimesTable[vdot.toString()]?.['1.6093'];
+    const fiveKTime = raceTimesTable[vdot.toString()]?.['5'];
+    const tenKTime = raceTimesTable[vdot.toString()]?.['10'];
+    const halfMaraTime = raceTimesTable[vdot.toString()]?.['21.0975'];
+    const maraTime = raceTimesTable[vdot.toString()]?.['42.195'];
 
     // Get paces from the training paces table
     const easyPace = pacesTable[vdot.toString()]?.['e_mile'];
@@ -156,12 +287,22 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     setCardData({
       mile: formatRaceTime(mileTime),
       '5k': formatRaceTime(fiveKTime),
+      '10k': formatRaceTime(tenKTime),
       hm: formatRaceTime(halfMaraTime),
       marathon: formatRaceTime(maraTime),
       easy: formatPace(easyPace),
       threshold: formatPace(thresholdPace),
       interval: formatPace(intervalPace)
     });
+  }, [vdotInput, raceTimesTable, pacesTable]);
+
+  // Modify generateVDOTCard to only handle showing the card
+  const generateVDOTCard = () => {
+    const vdot = parseInt(vdotInput);
+    if (isNaN(vdot) || vdot < 30 || vdot > 85) {
+      alert('Please enter a valid VDOT between 30 and 85');
+      return;
+    }
     setShowCard(true);
   };
 
@@ -198,7 +339,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           if (navigator.share) {
             console.log('Mobile device detected, using Web Share API...');
             navigator.share({
-              title: `${user ? `${user.username}'s ` : ''}Race & Pace Guide`,
+              title: `${user && user.username !== 'Guest' ? `${user.username}'s ` : 'Your '}Race & Pace Guide`,
               text: `Check out my ${vdotInput} VDOT Race & Pace Guide!`,
               files: [file]
             }).catch((error) => {
@@ -414,7 +555,9 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 leading-tight py-1">
-            <span className="text-gray-900">D</span><span className="text-[#00bcd4] font-extrabold">AI</span><span className="text-gray-900">SY™</span> Race & Pace Guide
+            <span className="text-gray-900">D</span>
+            <span className="text-[#00bcd4] font-extrabold">AI</span>
+            <span className="text-gray-900">SY™</span> Race & Pace Guide
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             Based on J. Daniels VDOT Projections
@@ -442,12 +585,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   Generate Card
                 </button>
               </div>
-              <button
-                onClick={() => setShowVdotFinder(true)}
-                className="text-xs text-gray-600 hover:text-gray-800 italic"
-              >
-                What's my VDOT?
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setShowVdotFinder(true)}
+                  className="text-xs text-gray-600 hover:text-gray-800 italic"
+                >
+                  What's my VDOT?
+                </button>
+              </div>
             </div>
           </div>
 
@@ -520,7 +665,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               <div className="flex justify-between items-start mb-6 px-2">
                 <div>
                   <h3 className="text-xl font-bold">
-                    {user ? `${user.username}'s Wingo Guide` : 'Wingo Guide'}
+                    {user && user.username !== 'Guest' ? `${user.username}'s Wingo Guide` : 'Your Wingo Guide'}
                   </h3>
                   <div className="text-sm text-gray-400 mt-1">
                     {vdotInput} VDOT
@@ -574,7 +719,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   </h4>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">PentaWingo:</span>
-                    <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
+                    <span className="font-mono text-base">{cardData.mile}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">5K:</span>
@@ -582,7 +727,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">10K:</span>
-                    <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
+                    <span className="font-mono text-base">{cardData['10k']}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-300">HM:</span>
@@ -612,42 +757,37 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                     <span className="text-gray-300">Threshold:</span>
                     <span className="font-mono text-base">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
                   </div>
-                  <div className="grid grid-cols-[auto_1fr] gap-x-2">
-                    <div className="text-gray-300 flex items-center">Interval:</div>
-                    <div className="font-mono text-base">
-                      {pacesTable[vdotInput]?.i_400m ? 
-                        `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) <= 59 ? 
-                          `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8)}s` :
-                          `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
-                        '--'}
+                  {parseInt(vdotInput) > 46 && (
+                    <div className="grid grid-cols-[auto_1fr] gap-x-2">
+                      <div className="text-gray-300 flex items-center">Interval:</div>
+                      <div className="font-mono text-base">
+                        {pacesTable[vdotInput]?.i_320m ? (
+                          <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/Wingo</span>
+                        ) : (
+                          <span>No data</span>
+                        )}
+                      </div>
+                      <div></div>
+                      <div className="font-mono text-xs italic text-gray-400 -mt-1 -mb-4 ml-[calc(28%-1rem)]">
+                        {pacesTable[vdotInput]?.i_400m ? 
+                          `${pacesTable[vdotInput]['i_400m']}s/400` : 
+                          '--'}
+                      </div>
                     </div>
-                    <div></div>
-                    <div className="font-mono text-xs italic text-gray-400 -mt-1 -mb-4 ml-[calc(28%-1rem)]">
-                      {pacesTable[vdotInput]?.i_400m ? 
-                        `${parseInt(pacesTable[vdotInput].i_400m) <= 59 ? 
-                          `${pacesTable[vdotInput].i_400m}s` :
-                          `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) / 60)}:${(parseInt(pacesTable[vdotInput].i_400m) % 60).toString().padStart(2, '0')}`}/400m` : 
-                        '--'}
-                    </div>
-                  </div>
+                  )}
                   <div className="grid grid-cols-[auto_1fr] gap-x-2">
                     <div className="text-gray-300 flex items-center">Repetition:</div>
                     <div className="font-mono text-base">
-                      {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
-                        ? (() => {
-                            const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
-                            return val <= 59
-                              ? `${val}s/Wingo`
-                              : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
-                          })()
-                        : '-'}
+                      {pacesTable[vdotInput]?.r_320m ? (
+                        <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/Wingo</span>
+                      ) : (
+                        <span>No data</span>
+                      )}
                     </div>
                     <div></div>
                     <div className="font-mono text-xs italic text-gray-400 -mt-1 ml-[calc(28%-1rem)]">
-                      {pacesTable[vdotInput]?.r_400m ? 
-                        `${parseInt(pacesTable[vdotInput].r_400m) <= 59 ? 
-                          `${pacesTable[vdotInput].r_400m}s` :
-                          `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) / 60)}:${(parseInt(pacesTable[vdotInput].r_400m) % 60).toString().padStart(2, '0')}`}/400m` : 
+                      {pacesTable[vdotInput]?.['r_400m'] ? 
+                        `${pacesTable[vdotInput]['r_400m']}s/400` : 
                         '--'}
                     </div>
                   </div>
@@ -665,7 +805,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">PentaWingo:</span>
-                      <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['1.6'] ? formatMinutesToTime(raceTimesTable[vdotInput]['1.6']) : '--'}</span>
+                      <span className="font-mono text-base">{cardData.mile}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">5K:</span>
@@ -673,7 +813,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">10K:</span>
-                      <span className="font-mono text-base">{raceTimesTable[vdotInput]?.['10'] ? formatMinutesToTime(raceTimesTable[vdotInput]['10']) : '--'}</span>
+                      <span className="font-mono text-base">{cardData['10k']}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-300">HM:</span>
@@ -705,47 +845,42 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                       <span className="text-gray-300">Threshold:</span>
                       <span className="font-mono text-base">{pacesTable[vdotInput]?.t_mile || '--'}/m*le</span>
                     </div>
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Interval:</span>
-                        <span className="font-mono text-base">
-                          {pacesTable[vdotInput]?.i_400m ? 
-                            `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) <= 59 ? 
-                              `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdotInput].i_400m) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
-                            '--'}
-                        </span>
+                    {parseInt(vdotInput) > 46 && (
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-300">Interval:</span>
+                          <div className="font-mono text-base">
+                            {pacesTable[vdotInput]?.i_320m ? (
+                              <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}</span>
+                            ) : (
+                              <span>-</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right -mt-2.5">
+                          <span className="font-mono text-xs italic text-gray-400">
+                            {pacesTable[vdotInput]?.['i_400m'] ? 
+                              `${pacesTable[vdotInput]['i_400m']}s/400m` : 
+                              '--'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-right -mt-2.5">
-                        <span className="font-mono text-xs italic text-gray-400">
-                          {pacesTable[vdotInput]?.i_400m ? 
-                            `${parseInt(pacesTable[vdotInput].i_400m) <= 59 ? 
-                              `${pacesTable[vdotInput].i_400m}s` :
-                              `${Math.floor(parseInt(pacesTable[vdotInput].i_400m) / 60)}:${(parseInt(pacesTable[vdotInput].i_400m) % 60).toString().padStart(2, '0')}`}/400m` : 
-                            '--'}
-                        </span>
-                      </div>
-                    </div>
+                    )}
                     <div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-300">Repetition:</span>
-                        <span className="font-mono text-base">
-                          {pacesTable[vdotInput]?.['r_400m'] && parseInt(vdotInput) > 42
-                            ? (() => {
-                                const val = Math.floor(parseInt(pacesTable[vdotInput]['r_400m']) * 0.8);
-                                return val <= 59
-                                  ? `${val}s/Wingo`
-                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
-                              })()
-                            : '-'}
-                        </span>
+                        <div className="font-mono text-base">
+                          {pacesTable[vdotInput]?.r_320m ? (
+                            <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </div>
                       </div>
                       <div className="text-right -mt-2.5">
                         <span className="font-mono text-xs italic text-gray-400">
-                          {pacesTable[vdotInput]?.r_400m ? 
-                            `${parseInt(pacesTable[vdotInput].r_400m) <= 59 ? 
-                              `${pacesTable[vdotInput].r_400m}s` :
-                              `${Math.floor(parseInt(pacesTable[vdotInput].r_400m) / 60)}:${(parseInt(pacesTable[vdotInput].r_400m) % 60).toString().padStart(2, '0')}`}/400m` : 
+                          {pacesTable[vdotInput]?.['r_400m'] ? 
+                            `${pacesTable[vdotInput]['r_400m']}s/400m` : 
                             '--'}
                         </span>
                       </div>
@@ -769,32 +904,32 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200">
             <input
               type="text"
-              placeholder=""
+              placeholder="VDOT"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="hidden sm:block w-24 sm:w-16 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
+              className="hidden sm:block w-24 sm:w-16.5 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
             />
             <div className="flex-1 flex justify-center">
               <div className="inline-flex rounded-md shadow-sm ml-13">
                 <button
-                  onClick={() => setViewMode('race')}
-                  className={`px-4 py-2 text-sm font-medium rounded-l-md ${
-                    viewMode === 'race'
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                  }`}
-                >
-                  Race Times
-                </button>
-                <button
                   onClick={() => setViewMode('pace')}
-                  className={`px-3 py-2 text-sm font-medium rounded-r-md ${
+                  className={`px-4 py-2 text-sm font-medium rounded-l-md ${
                     viewMode === 'pace'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                   }`}
                 >
                   Training Paces
+                </button>
+                <button
+                  onClick={() => setViewMode('race')}
+                  className={`px-3 py-2 text-sm font-medium rounded-r-md ${
+                    viewMode === 'race'
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  Race Times
                 </button>
               </div>
             </div>
@@ -803,8 +938,142 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
             </span>
           </div>
           <div className="relative">
-            <div className="overflow-x-auto mt-12 sm:mt-0">
-              {viewMode === 'race' ? (
+            {/* Main table container with forced top scrollbar */}
+            <div className="table-container">
+              {viewMode === 'pace' ? (
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">
+                      </th>
+                      {/* Repetition Paces Section */}
+                      <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-red-50 border-l border-r border-red-100">
+                        Repetition
+                      </th>
+                      {/* Interval Paces Section */}
+                      <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-yellow-50 border-l border-r border-yellow-100">
+                        Interval
+                      </th>
+                      {/* Threshold Paces Section */}
+                      <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-green-50 border-l border-r border-green-100">
+                        Threshold
+                      </th>
+                      {/* Easy Paces Section */}
+                      <th colSpan={2} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-blue-50 border-l border-r border-blue-100">
+                        Chill
+                      </th>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-center text-[10px] font-medium text-gray-500 uppercase tracking-wider z-10">
+                        VDOT
+                      </th>
+                      {/* Repetition Paces Columns */}
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">
+                        Wingito
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                        Wingo
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                        Twingo
+                      </th>
+                      {/* Interval Paces Columns */}
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-l border-r border-yellow-100 fixed-width-column">
+                        Wingo
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
+                        KM
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
+                        PentaWingo
+                      </th>
+                      {/* Threshold Paces Columns */}
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-l border-r border-green-100 fixed-width-column whitespace-nowrap">
+                        Wingo
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
+                        KM
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
+                        PentaWingo
+                      </th>
+                      {/* Easy Paces Columns */}
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-l border-r border-blue-100 fixed-width-column whitespace-nowrap">
+                        M*LE
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-r border-blue-100 fixed-width-column whitespace-nowrap">
+                        Mare-athon
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredVdots.map(vdot => (
+                      <tr key={vdot} className="hover:bg-gray-50">
+                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10">
+                          {vdot}
+                        </td>
+                        {/* Repetition Paces Data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-l border-r border-red-100">
+                          {pacesTable[vdot]?.['r_160m'] ? (
+                            <span>{formatSecondsToTime(parseInt(pacesTable[vdot].r_160m))}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100">
+                          {pacesTable[vdot]?.r_320m ? (
+                            <span>{formatSecondsToTime(parseInt(pacesTable[vdot].r_320m))}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100">
+                          {pacesTable[vdot]?.['r_640m'] ? (
+                            <span>{formatMinutesToTime(parseInt(pacesTable[vdot].r_640m) / 60)}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        {/* Interval Paces Data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-l border-r border-yellow-100">
+                          {pacesTable[vdot]?.i_320m ? (
+                            <span>{formatSecondsToTime(parseInt(pacesTable[vdot].i_320m))}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100">
+                          {pacesTable[vdot]?.['i_mile'] || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100">
+                          {pacesTable[vdot]?.['i_penta'] || '-'}
+                        </td>
+                        {/* Threshold Paces Data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-l border-r border-green-100">
+                          {pacesTable[vdot]?.t_320m ? (
+                            <span>{formatSecondsToTime(parseInt(pacesTable[vdot].t_320m))}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100">
+                          {pacesTable[vdot]?.['t_mile'] || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100">
+                          {pacesTable[vdot]?.['t_penta'] || '-'}
+                        </td>
+                        {/* Easy Paces Data */}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-l border-r border-blue-100">
+                          {pacesTable[vdot]?.['e_mile'] || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-r border-blue-100">
+                          {pacesTable[vdot]?.['m_mile'] || '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -825,132 +1094,6 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['10'] ? formatMinutesToTime(raceTimesTable[vdot]['10']) : '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['21.0975'] ? formatMinutesToTime(raceTimesTable[vdot]['21.0975']) : '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">{raceTimesTable[vdot]?.['42.195'] ? formatMinutesToTime(raceTimesTable[vdot]['42.195']) : '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">
-                        VDOT
-                      </th>
-                      <th scope="col" className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Easy (km)
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Easy (M*LE)
-                      </th>
-                      <th scope="col" className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Marathon (km)
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Marathon (M*LE)
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Threshold 400m
-                      </th>
-                      <th scope="col" className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Threshold km
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Threshold M*LE
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Interval 320m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Interval km
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Interval 1200m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Interval M*LE
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 200m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 300m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 320m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 600m
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Rep 800m
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredVdots.map(vdot => (
-                      <tr key={vdot} className="hover:bg-gray-50">
-                        <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 z-10">
-                          {vdot}
-                        </td>
-                        <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['e_km'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['e_mile'] || '-'}
-                        </td>
-                        <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['m_km'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['m_mile'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['t_400m'] || '-'}
-                        </td>
-                        <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['t_km'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['t_mile'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['i_400m'] && parseInt(vdot) > 46 ? 
-                            `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) <= 59 ? 
-                              `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8)}s` :
-                              `${Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8 / 60)}:${(Math.floor(parseInt(pacesTable[vdot]['i_400m']) * 0.8) % 60).toString().padStart(2, '0')}`}/Wingo` : 
-                              '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['i_km'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['i_1200m'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['i_mile'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_200m'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_300m'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_400m'] && parseInt(vdot) > 42
-                            ? (() => {
-                                const val = Math.floor(parseInt(pacesTable[vdot]['r_400m']) * 0.8);
-                                return val <= 59
-                                  ? `${val}s/Wingo`
-                                  : `${Math.floor(val / 60)}:${(val % 60).toString().padStart(2, '0')}/Wingo`;
-                              })()
-                            : '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_600m'] || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {pacesTable[vdot]?.['r_800m'] || '-'}
-                        </td>
                       </tr>
                     ))}
                   </tbody>

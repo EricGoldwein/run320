@@ -24,6 +24,7 @@ import WingoConverter from './components/WingoConverter';
 import VDOTTimes from './pages/vdot-times';
 import WingoWednesday from './pages/wingo-wednesday';
 import Vote from './pages/vote';
+import DaisyMath from './pages/daisy_math';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -123,6 +124,7 @@ function App() {
                 <Route path="/converter" element={<WingoConverter />} />
                 <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/vdot-times" element={<VDOTTimes initialView="race" user={user} />} />
+                <Route path="/daisy_math" element={<DaisyMath />} />
               </Routes>
             </main>
             <Footer />
