@@ -180,7 +180,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     </button>
                     <button
                       onClick={onLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                     >
                       Logout
                     </button>
@@ -212,6 +212,36 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white border-t border-gray-200 shadow-md px-4 py-4 space-y-2">
+          <button
+            onClick={() => handleMobileNav('/faq')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            RAQ
+          </button>
+          <button
+            onClick={() => handleMobileNav('/ledger')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Leaderboard
+          </button>
+          <button
+            onClick={() => handleMobileNav(user ? '/experience' : '/login')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Experience
+          </button>
+          <button
+            onClick={() => handleMobileNav('/vdot-times')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Race & Pace Projector
+          </button>
+          <button
+            onClick={() => handleMobileNav('/converter')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Wingo Converter
+          </button>
           {user ? (
             <>
               <button
@@ -219,12 +249,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
               >
                 Mine
-              </button>
-              <button
-                onClick={() => handleMobileNav('/ledger')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Ledger
               </button>
               <button
                 onClick={() => handleMobileNav('/wager')}
@@ -238,37 +262,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               >
                 Vote
               </button>
-            </>
-          ) : null}
-          <button
-            onClick={() => handleMobileNav(user ? '/experience' : '/login')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Experience
-          </button>
-          <button
-            onClick={() => handleMobileNav('/converter')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            <span className="inline-flex items-center">
-              <span className="text-[#E6C200] font-bold">W</span>
-              <span>INGO</span>
-            </span> Converter
-          </button>
-          <button
-            onClick={() => handleMobileNav('/vdot-times')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Race & Pace Tables
-          </button>
-          <button
-            onClick={() => handleMobileNav('/faq')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            RAQ
-          </button>
-          {user ? (
-            <>
               <button
                 onClick={() => handleMobileNav('/wallet')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"

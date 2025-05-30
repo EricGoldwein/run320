@@ -117,7 +117,17 @@ const WingoConverter: React.FC<WingoConverterProps> = ({ user }) => {
 
     setProjections(newProjections);
     setWingoTime(`${(pacePerMeter * 320).toFixed(1)}s`);
-    setSelectedDistance(`${formatTime(totalSeconds)} per ${targetDistance === '21097.5' ? 'HM' : targetDistance === '42195' ? 'Marathon' : targetDistance}`);
+    setSelectedDistance(`${formatTime(totalSeconds)} per ${
+      targetDistance === '21097.5' ? 'HM' : 
+      targetDistance === '42195' ? 'Mare-athon' :
+      targetDistance === '5000' ? '5K' :
+      targetDistance === '10000' ? '10K' :
+      targetDistance === '1000' ? 'KM' :
+      targetDistance === '320' ? 'Wingo' :
+      targetDistance === '201.168' ? 'Furlong' :
+      targetDistance === '644000' ? 'Yellowstone' :
+      targetDistance
+    }`);
   };
 
   const resetConverter = () => {

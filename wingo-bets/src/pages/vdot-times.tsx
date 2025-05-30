@@ -486,8 +486,9 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         type="text"
                         value={findVdotTime}
                         onChange={(e) => setFindVdotTime(e.target.value)}
-                        className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
+                        className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-base"
                         placeholder={timeFormat === 'h:mm:ss' ? "h:mm:ss" : "mm:ss"}
+                        style={{ fontSize: '16px' }}
                       />
                     </div>
                   </div>
@@ -771,7 +772,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               placeholder=""
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-24 sm:w-16 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
+              className="hidden sm:block w-24 sm:w-16 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
             />
             <div className="flex-1 flex justify-center">
               <div className="inline-flex rounded-md shadow-sm ml-13">
