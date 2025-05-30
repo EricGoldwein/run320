@@ -170,14 +170,14 @@ const WingoConverter: React.FC<WingoConverterProps> = ({ user }) => {
                   <option value="320">Wingo (320m)</option>
                   <option value="400">400m</option>
                   <option value="800">800m</option>
-                  <option value="1000">Kilometer</option>
-                  <option value="1600">Fingo (1600m)</option>
+                  <option value="1000">KM</option>
+                  <option value="1600">PentaWingo</option>
                   <option value="1609.34">M*le</option>
                   <option value="5000">5K</option>
                   <option value="10000">10K</option>
-                  <option value="21097.5">Half Mare-athon</option>
+                  <option value="21097.5">HM</option>
                   <option value="42195">Mare-athon</option>
-                  <option value="644000">Yellowstone (3,200 Furlongs)</option>
+                  <option value="644000">Yellowstone (3,200f)</option>
                 </select>
               </div>
             <div className={styles['input-group']}>
@@ -295,13 +295,13 @@ const WingoConverter: React.FC<WingoConverterProps> = ({ user }) => {
                 <li><span className={styles['distance']}>Furlong</span><span className={styles['time']}>{projections.furlong}</span></li>
                 <li><span className={styles['distance']}>400m</span><span className={styles['time']}>{projections['400m']}</span></li>
                 <li><span className={styles['distance']}>800m</span><span className={styles['time']}>{projections['800m']}</span></li>
-                <li><span className={styles['distance']}>1000m</span><span className={styles['time']}>{projections.km}</span></li>
+                <li><span className={styles['distance']}>KM</span><span className={styles['time']}>{projections.km}</span></li>
                 <li><span className={styles['distance']}>M*le</span><span className={styles['time']}>{projections.mile}</span></li>
                 <li><span className={styles['distance']}>5K</span><span className={styles['time']}>{projections['5k']}</span></li>
                 <li><span className={styles['distance']}>The Loop</span><span className={styles['time']}>{projections.loop}</span></li>
                 <li><span className={styles['distance']}>10K</span><span className={styles['time']}>{projections['10k']}</span></li>
                 <li><span className={styles['distance']}>15K</span><span className={styles['time']}>{projections['15k']}</span></li>
-                <li><span className={styles['distance']}>Half Mare-athon</span><span className={styles['time']}>{projections.hm}</span></li>
+                <li><span className={styles['distance']}>HM</span><span className={styles['time']}>{projections.hm}</span></li>
                 <li><span className={styles['distance']}>Mare-athon</span><span className={styles['time']}>{projections.marathon}</span></li>
                 <li><span className={styles['distance']}>Yellowstone</span><span className={styles['time']}>{projections.yellowstone}</span></li>
               </ul>

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import { User } from '../types';
 import html2canvas from 'html2canvas';
+import { useNavigate } from 'react-router-dom';
+import styles from './vdot-times.module.css';
 
 interface VDOTTimesProps {
   initialView?: 'race' | 'pace';
@@ -31,6 +33,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     threshold: '--',
     interval: '--'
   });
+  const [timeInput, setTimeInput] = useState('');
+  const [timeFormat, setTimeFormat] = useState<'mm:ss' | 'h:mm:ss'>('mm:ss');
 
   useEffect(() => {
     // Load race times CSV
@@ -289,8 +293,19 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
           setTimeout(() => successMsg.remove(), 2000);
         } catch (error) {
           console.error('Error copying to clipboard:', error);
-          // Fallback to download if copy fails
-          handleDownload();
+          // On mobile, if copy fails, try to save the image
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (isMobile) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.download = `${user ? `${user.username}-` : ''}vdot-${vdotInput}-card.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } else {
+            // On desktop, show the share menu as fallback
+            setShowShareMenu(true);
+          }
         }
       }, 'image/png', 1.0);
     } catch (error) {
@@ -374,6 +389,18 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showVdotFinder]);
 
+  const handleDistanceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const distance = e.target.value;
+    setFindVdotDistance(distance);
+    setFindVdotTime('');
+    // Set time format based on distance
+    if (distance === '21097.5' || distance === '42195') {
+      setTimeFormat('h:mm:ss');
+    } else {
+      setTimeFormat('mm:ss');
+    }
+  };
+
   if (loading) {
     return <div className="max-w-7xl mx-auto text-center text-lg py-12">Loading VDOT tables...</div>;
   }
@@ -411,16 +438,16 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
               </div>
               <button
                 onClick={generateVDOTCard}
-                className="w-full sm:w-auto px-4 py-2 bg-gray-900 text-white rounded-md font-medium hover:bg-gray-800 shadow"
+                className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${styles['generate-card-btn']}`}
               >
                 Generate Card
               </button>
             </div>
             <button
               onClick={() => setShowVdotFinder(true)}
-              className="text-center text-xs text-gray-500 mt-2 hover:text-gray-700 w-full italic"
+              className={`w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${styles['find-vdot-btn']}`}
             >
-              What's my VDOT?
+              Find VDOT
             </button>
           </div>
 
@@ -444,7 +471,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                     <div className="w-30">
                       <select
                         value={findVdotDistance}
-                        onChange={(e) => setFindVdotDistance(e.target.value)}
+                        onChange={handleDistanceChange}
                         className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
                       >
                         <option value="1.6">PentaWingo</option>
@@ -460,7 +487,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                         value={findVdotTime}
                         onChange={(e) => setFindVdotTime(e.target.value)}
                         className="w-full h-[42px] px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500 text-sm"
-                        placeholder="mm:ss or h:mm:ss"
+                        placeholder={timeFormat === 'h:mm:ss' ? "h:mm:ss" : "mm:ss"}
                       />
                     </div>
                   </div>
@@ -499,15 +526,18 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
+                    D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+                  </span>
                   <div className="relative">
                     <button
                       onClick={handleShare}
-                      className="px-3 py-1 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors flex items-center gap-1"
+                      className="p-2 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+                      title="Share"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                       </svg>
-                      Share
                     </button>
                     {showShareMenu && (
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 share-menu">
@@ -532,9 +562,6 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'race', user }) => 
                       </div>
                     )}
                   </div>
-                  <span className="px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
-                    D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
-                  </span>
                 </div>
               </div>
               <div className="hidden sm:grid sm:grid-cols-2 gap-x-0 gap-y-2 max-w-lg mx-auto">

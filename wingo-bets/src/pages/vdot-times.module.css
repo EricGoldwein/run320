@@ -1,0 +1,14 @@
+/* Prevent zoom on mobile inputs */
+input[type="text"],
+input[type="number"] {
+  font-size: 16px !important; /* Prevents zoom on iOS */
+}
+
+/* Mobile button width adjustments */
+@media (max-width: 640px) {
+  .generate-card-btn,
+  .find-vdot-btn {
+    max-width: 200px !important;
+    margin: 0 auto;
+  }
+} 
