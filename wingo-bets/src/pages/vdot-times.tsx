@@ -895,7 +895,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-8">
-          <div className="flex justify-between items-center px-2 sm:px-4 py-2 sm:pt-0 sm:pb-4 border-b border-gray-200 -mt-2 sm:mt-0">
+          <div className="flex justify-between items-center px-2 sm:px-4 py-2 sm:pt-0 sm:pb-4 border-b border-gray-200 -mt-2 sm:mt-0 mb-4 sm:mb-0">
             <a href="/daisy_math" className="text-xs text-blue-600 hover:text-blue-800 italic -ml-1">
               DAISY™ Maths Explained
             </a>

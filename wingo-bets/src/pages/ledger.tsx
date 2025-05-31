@@ -173,7 +173,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           <div className="px-4 sm:px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center justify-between gap-4">
               {/* Search left */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 hidden sm:block">
                 <div className="relative w-full max-w-[120px]">
                   <input
                     type="text"
@@ -186,8 +186,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 </div>
               </div>
               {/* Title center */}
-              <div className="flex-1 flex justify-center">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center">WINGO Leaderboard</h2>
+              <div className="flex-1 flex justify-center items-center min-w-0">
+                <h2 className="text-base sm:text-2xl font-bold text-gray-900 text-center whitespace-nowrap">WINGO Leaderboard</h2>
               </div>
               {/* DAISY badge right */}
               <div className="flex-1 flex justify-end">
