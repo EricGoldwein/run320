@@ -42,12 +42,12 @@ const DaisyMath: React.FC = () => {
 
           {/* Workout Types Section */}
           <section className="mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Workout Types (Jack Daniels Terminology)</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Workout Types (J. Daniels Terminology)</h2>
             <div className="space-y-6 sm:space-y-8">
               <div>
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Repetition (R pace)</h3>
                 <p className="text-gray-600 mb-2">Fast, short reps to improve speed, mechanics & economy. Full recovery.</p>
-                <p className="text-gray-600">Usually PentaWingo pace or faster. (e.g. Wingo, TWINGO, 400m reps)</p>
+                <p className="text-gray-600">Usually PentaWingo pace or faster. (e.g. Wingo, Twingo, 400m reps)</p>
               </div>
               <div>
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Interval (I pace)</h3>
@@ -77,7 +77,7 @@ const DaisyMath: React.FC = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">400m → WINGO (320m)</td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">400m → Wingo (320m)</td>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">400 × 0.78</td>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">Use for both I and R paces</td>
                     </tr>
@@ -99,7 +99,7 @@ const DaisyMath: React.FC = () => {
                     <tr>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile → PentaWingo (1600m)</td>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile × 0.9935</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">1600m is ~9m short of full mile</td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">1600m is ~9m short of full mile (.9942)</td>
                     </tr>
                     <tr>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">T & I pace fudge factor</td>
