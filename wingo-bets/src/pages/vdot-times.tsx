@@ -554,19 +554,12 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Race & Pace Guide</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">D<span className="text-cyan-400">AI</span>SY's VDOT Dashboard</h1>
           <p className="text-xl text-gray-600">Based on J. Daniels & DAISY™ Maths</p>
         </div>
 
-        {/* DAISY™ Maths Explained Link */}
-        <div className="absolute top-4 left-4 sm:left-8">
-          <a href="/daisy_math" className="text-xs text-gray-500 hover:text-gray-700">
-            DAISY™ Maths Explained
-          </a>
-        </div>
-
         {/* VDOT Card Generator */}
-        <div className="max-w-2xl mx-auto mb-8">
+        <div className="max-w-2xl mx-auto mb-8 sm:mb-6">
           <div className="bg-white rounded-xl shadow-sm p-4 pb-2 max-w-sm mx-auto">
             <div className="flex flex-col items-center space-y-2">
               <div className="flex items-center space-x-2">
@@ -902,8 +895,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-8">
-          <div className="flex justify-between items-center px-2 sm:px-4 py-3 sm:py-2 border-b border-gray-200">
-            <a href="/daisy_math" className="text-xs text-blue-600 hover:text-blue-800 italic">
+          <div className="flex justify-between items-center px-2 sm:px-4 py-2 sm:pt-0 sm:pb-4 border-b border-gray-200 -mt-2 sm:mt-0">
+            <a href="/daisy_math" className="text-xs text-blue-600 hover:text-blue-800 italic -ml-1">
               DAISY™ Maths Explained
             </a>
             <div className="absolute left-[79.1%] sm:left-1/2 transform -translate-x-1/2">
@@ -953,7 +946,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         />
                       </th>
                       {/* Repetition Paces Section */}
-                      <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-red-50 border-l border-r border-red-100">
+                      <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-red-50 border-l border-r border-red-100 relative z-40">
                         Repetition
                       </th>
                       {/* Interval Paces Section */}
@@ -970,44 +963,44 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                       </th>
                     </tr>
                     <tr className="border-b border-gray-200">
-                      <th className="sticky left-0 bg-white z-50 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
+                      <th className="sticky left-0 bg-white z-50 px-4 py-2 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
                         VDOT
                       </th>
                       {/* Repetition Paces Columns */}
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">
                         Wingito
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
                         Wingo
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
                         Twingo
                       </th>
                       {/* Interval Paces Columns */}
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-l border-r border-yellow-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-l border-r border-yellow-100 fixed-width-column">
                         Wingo
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
                         KM
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
                         1600m
                       </th>
                       {/* Threshold Paces Columns */}
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-l border-r border-green-100 fixed-width-column whitespace-nowrap">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-l border-r border-green-100 fixed-width-column whitespace-nowrap">
                         Wingo
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
                         KM
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
+                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
                         1600m
                       </th>
                       {/* Easy Paces Columns */}
-                      <th scope="col" className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-l border-r border-blue-100 chill-column whitespace-nowrap">
+                      <th scope="col" className="px-1 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-l border-r border-blue-100 chill-column whitespace-nowrap">
                         M*LE
                       </th>
-                      <th scope="col" className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-r border-blue-100 chill-column whitespace-nowrap">
+                      <th scope="col" className="px-1 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-r border-blue-100 chill-column whitespace-nowrap">
                         Mare-athon
                       </th>
                     </tr>

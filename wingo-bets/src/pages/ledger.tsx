@@ -29,7 +29,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -38,7 +38,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 24, 
       balance: 24,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -47,7 +47,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -56,7 +56,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -65,7 +65,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 15, 
       balance: 15,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -74,7 +74,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       totalMined: 16, 
       balance: 16,
       distance: 0, // Will be calculated in sorting
-      lastMined: '05-28-2025',
+      lastMined: '5-28-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     }
@@ -109,14 +109,16 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const filteredLeaderboard = sortedLeaderboard
     .filter(entry => entry.user.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
-      if (sortField === 'rank') return a.rank - b.rank;
-      if (sortField === 'user') return a.user.localeCompare(b.user);
-      if (sortField === 'balance') return b.balance - a.balance;
-      if (sortField === 'totalMined') return b.totalMined - a.totalMined;
-      if (sortField === 'distance') return b.distance - a.distance;
-      if (sortField === 'votingShare') return b.votingShare - a.votingShare;
-      if (sortField === 'lastMined') return new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
-      return 0;
+      let result = 0;
+      if (sortField === 'rank') result = a.rank - b.rank;
+      else if (sortField === 'user') result = a.user.localeCompare(b.user);
+      else if (sortField === 'balance') result = b.balance - a.balance;
+      else if (sortField === 'totalMined') result = b.totalMined - a.totalMined;
+      else if (sortField === 'distance') result = b.distance - a.distance;
+      else if (sortField === 'votingShare') result = b.votingShare - a.votingShare;
+      else if (sortField === 'lastMined') result = new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
+      if (sortDirection === 'asc') result = -result;
+      return result;
     });
 
   return (
@@ -169,17 +171,29 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         {/* Leaderboard */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 sm:px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">WINGO Leaderboard</h2>
-              <div className="relative w-full sm:w-auto">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
-                />
-                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+            <div className="flex items-center justify-between gap-4">
+              {/* Search left */}
+              <div className="flex-1 min-w-0">
+                <div className="relative w-full max-w-[120px]">
+                  <input
+                    type="text"
+                    placeholder=""
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
+                  />
+                  <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                </div>
+              </div>
+              {/* Title center */}
+              <div className="flex-1 flex justify-center">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center">WINGO Leaderboard</h2>
+              </div>
+              {/* DAISY badge right */}
+              <div className="flex-1 flex justify-end">
+                <span className="inline-block px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
+                  D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+                </span>
               </div>
             </div>
           </div>
@@ -193,70 +207,42 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       className="pl-6 pr-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('rank')}
                     >
-                      <div className="flex items-center gap-1">
-                        Rank
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Rank
                     </th>
                     <th 
                       scope="col" 
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('user')}
                     >
-                      <div className="flex items-center gap-1">
-                        Runner
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Runner
                     </th>
                     <th 
                       scope="col" 
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('balance')}
                     >
-                      <div className="flex items-center gap-1">
-                        Balance
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Balance
                     </th>
                     <th 
                       scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      className="px-2 sm:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('totalMined')}
                     >
-                      <div className="flex items-center gap-1">
-                        Mined
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
-                    </th>
-                    <th 
-                      scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('distance')}
-                    >
-                      <div className="flex items-center gap-1">
-                        Distance
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Mined
                     </th>
                     <th 
                       scope="col" 
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('votingShare')}
                     >
-                      <div className="flex items-center gap-1">
-                        Voting Share
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Voting Share
                     </th>
                     <th 
                       scope="col" 
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('lastMined')}
                     >
-                      <div className="flex items-center gap-1">
-                        Last Mined
-                        <ArrowUpDown className="w-4 h-4" />
-                      </div>
+                      Last Mined
                     </th>
                   </tr>
                 </thead>
@@ -267,8 +253,9 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.rank}</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.user}</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.balance}</td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.totalMined}</td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.distance} km</td>
+                        <td className="px-2 sm:px-3 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {entry.totalMined} <span className="text-xs text-gray-500 align-middle">({entry.distance}km)</span>
+                        </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.votingShare}%</td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.lastMined}</td>
                       </tr>

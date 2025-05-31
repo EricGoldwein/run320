@@ -179,7 +179,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
         <p className="text-gray-600">Complete <a href="https://www.strava.com/segments/7831001" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 underline">Wingate Track segments</a> to mine <span className="inline-flex items-baseline">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
-          </span>. Each WINGO = 1 <span className="inline-flex items-baseline">
+          </span>. Each Wingo = 1 <span className="inline-flex items-baseline">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
           </span></p>
@@ -230,7 +230,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex items-center space-x-4">
                 <label htmlFor="wingos" className="block text-sm font-medium text-gray-700 whitespace-nowrap">
-                  <span className="text-gray-900">WINGO</span>s Completed
+                  <span className="text-gray-900">Wingo</span>s Completed
                 </label>
                 <input
                   type="number"
@@ -261,7 +261,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
 
               <div>
                 <label htmlFor="activityFiles" className="block text-sm font-medium text-gray-700 mb-1">
-                  Upload Files
+                  Receipt(s)
                 </label>
                 <input
                   type="file"
@@ -299,7 +299,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
 
               <div>
                 <label htmlFor="context" className="block text-sm font-medium text-gray-700 mb-1">
-                  Additional Context (optional)
+                  Say More (optional)
                 </label>
                 <textarea
                   id="context"
@@ -307,7 +307,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   onChange={(e) => setSubmissionData(prev => ({ ...prev, context: e.target.value }))}
                   rows={3}
                   className="block w-full rounded-md border-gray-300 shadow-sm focus:border-wingo-500 focus:ring-wingo-500 sm:text-sm pl-3 pr-2 py-2 border-2 transition-colors duration-200"
-                  placeholder="Tell DAISY™ about your WINGOs..."
+                  placeholder="Tell DAISY™ about your Wingos..."
                 />
               </div>
 

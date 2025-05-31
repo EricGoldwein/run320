@@ -98,13 +98,13 @@ const DaisyMath: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile → PentaWingo (1600m)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile × 0.9935</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">1600m is ~9m short of full mile (.9942)</td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile × 0.9942</td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">1600m is ~9m short of full mile</td>
                     </tr>
                     <tr>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">T & I pace fudge factor</td>
                       <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">× 0.9932</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">(distance = 0.99419637864); slight adjustment.</td>
+                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">(distance = 0.99429637864); slight adjustment.</td>
                     </tr>
                   </tbody>
                 </table>

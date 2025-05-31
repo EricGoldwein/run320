@@ -108,13 +108,13 @@ const FAQ: React.FC = () => {
               <ul className="list-none space-y-3">
                 {[
                   <span key="send">
-                    <Link to="/mine" className="text-wingo-600 hover:text-wingo-700">Send to Coach DAISY™</Link>: Submit an activity link, screenshot, or GPX file showing Wingo segments
+                    <Link to="/mine" className="text-wingo-600 hover:text-wingo-700">Send to Coach DAISY™</Link>: Submit activity link, screenshot, or GPX file showing Wingo segments
                   </span>,
                   <span key="text">
-                    <a href="tel:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a>: Send <span className="font-bold">W</span>INGO receipt to 929-WAK-GRIG
+                    <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a>: Send <span className="font-bold">W</span>INGO receipt to 929-WAK-GRIG (929-925-4744)
                   </span>,
                   <span key="daisy-game">
-                    <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium">Bonus: Play Daisy's Yellowstone Adventure</a>: Complete the game and send a screenshot of the dancing DAISY™ for <span className="font-bold">5{' '}
+                    <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium">Play Daisy's Yellowstone Adventure</a>: Complete the game and send screenshot of the dancing DAISY™ for <span className="font-bold">5{' '}
                     <span className="text-[#E6C200] font-bold">W</span></span> (one-time only)!<br/>
                   </span>
                 ].map((item, index) => (
@@ -129,7 +129,7 @@ const FAQ: React.FC = () => {
                 Persistent gaming may result in expulsion from the club and forfeiture of all <span className="font-bold">W</span>INGO.
               </p>
               <p className="text-lg mt-4 italic">
-                Coming soon: Auto-mining via Strava: Authorize the Coach DAISY™ WINGO surveillance program — Wingo segments will be counted automatically
+                Auto-mining via Strava (coming soon): Authorize the Coach DAISY™ WINGO surveillance program for automatic Wingo recording
               </p>
             </div>
           </section>
@@ -169,7 +169,7 @@ const FAQ: React.FC = () => {
                 Unless it's on video.
               </p>
               <p className="text-lg">
-                Exceptions may be granted at the sole discretion of Coach DAISY™.
+                Exceptions granted at the sole discretion of Coach DAISY™.
               </p>
             </div>
           </section>

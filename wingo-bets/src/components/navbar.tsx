@@ -128,6 +128,12 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               {activeDropdown === 'daisy' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <button
+                    onClick={() => handleNavigation('/vdot-times')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    VDOT Dashboard
+                  </button>
+                  <button
                     onClick={() => handleNavigation('/converter')}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
@@ -135,12 +141,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                       <span className="text-[#E6C200] font-bold">W</span>
                       <span>INGO</span>
                     </span> Converter
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/vdot-times')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Race & Pace Tables
                   </button>
                 </div>
               )}
@@ -234,7 +234,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             onClick={() => handleMobileNav('/vdot-times')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
-            Race & Pace Projector
+            D<span className="text-[#00bcd4]">AI</span>SY™ VDOT Dashboard
           </button>
           <button
             onClick={() => handleMobileNav('/converter')}
