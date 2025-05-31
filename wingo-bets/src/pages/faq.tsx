@@ -16,10 +16,10 @@ const FAQ: React.FC = () => {
             </h2>
             <div className="space-y-4">
               <p className="text-lg">
-                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing 320-meter Wingo segments at Wingate Track in Brooklyn.
+                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing 320-meter Wingo laps at Wingate Track in Brooklyn.
               </p>
               <p className="text-lg">
-                Each Wingo (320m loop) = 1{' '}
+                Each Wingo (320m) = 1{' '}
                 <span className="text-[#E6C200] font-bold">W</span>.
               </p>
               <p className="text-lg">

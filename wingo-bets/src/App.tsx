@@ -123,7 +123,7 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/converter" element={<WingoConverter />} />
                 <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
-                <Route path="/vdot-times" element={<VDOTTimes initialView="race" user={user} />} />
+                <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/daisy_math" element={<DaisyMath />} />
               </Routes>
             </main>
