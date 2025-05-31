@@ -48,7 +48,7 @@ const FAQ: React.FC = () => {
               </p>
               <ul className="list-none space-y-3">
                 {[
-                  <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the Old Balance Wingate Invitational and 320 Day' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the <a href="/wingate-invitational" class="text-wingo-600 hover:text-wingo-500">Old Balance Wingate Invitational</a> and 320 Day' }} />,
                   <span dangerouslySetInnerHTML={{ __html: 'DAISY™-Daniels-powered race projections, pace generator tools, and custom workouts' }} />,
                   <span dangerouslySetInnerHTML={{ __html: 'Democracy: voting rights on club decisions — 1 <span class="text-[#E6C200] font-bold">W</span> = 1 vote' }} />,
                   <span dangerouslySetInnerHTML={{ __html: '<span class="font-bold">W</span>INGO Wager World: bet on friends using the proprietary DAISY™-degenerate formula' }} />
@@ -187,6 +187,13 @@ const FAQ: React.FC = () => {
                   <li key={index}>{item}</li>
                 ))}
               </ol>
+            </div>
+          </section>
+
+          <section className="transform hover:scale-[1.02] transition-transform duration-200 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Is this a real thing?</h2>
+            <div className="space-y-4 text-gray-700">
+              <p className="text-lg">Yes.</p>
             </div>
           </section>
         </div>
