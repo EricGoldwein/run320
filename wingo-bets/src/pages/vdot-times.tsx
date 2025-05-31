@@ -8,7 +8,7 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 interface VDOTTimesProps {
-  initialView?: 'race' | 'pace';
+  initialView?: 'pace' | 'race';
   user?: User | null;
 }
 
@@ -73,18 +73,11 @@ const customStyles = `
   .table-container::-webkit-scrollbar-thumb:hover {
     background: #A0AEC0;
   }
-  /* Force scrollbar to top */
-  .table-container {
-    transform: rotateX(180deg);
-  }
-  .table-container > * {
-    transform: rotateX(180deg);
-  }
   /* Fixed column widths */
   .fixed-width-column {
-    width: 120px !important;
-    min-width: 120px !important;
-    max-width: 120px !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
   /* Force center alignment for specific headers */
   .fixed-width-column[data-header="pentawingo"],
@@ -93,6 +86,12 @@ const customStyles = `
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+  }
+  /* Chill section specific widths */
+  .chill-column {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
   }
 `;
 
@@ -555,7 +554,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Race & Pace Guide</h1>
-          <p className="text-xl text-gray-600">Based on J. Daniels VDOT and <a href="/daisy_math" className="text-blue-600 hover:text-blue-800">DAISY™ Maths</a></p>
+          <p className="text-xl text-gray-600">Based on J. Daniels VDOT and DAISY™ Maths</p>
+        </div>
+
+        {/* DAISY™ Maths Explained Link */}
+        <div className="absolute top-4 left-4 sm:left-8">
+          <a href="/daisy_math" className="text-xs text-gray-500 hover:text-gray-700">
+            DAISY™ Maths Explained
+          </a>
         </div>
 
         {/* VDOT Card Generator */}
@@ -895,35 +901,33 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center px-4 py-2 border-b border-gray-200">
-            <input
-              type="text"
-              placeholder="VDOT"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="hidden sm:block w-24 sm:w-16.5 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent"
-            />
-            <div className="flex-1 flex justify-center">
-              <div className="inline-flex rounded-md shadow-sm ml-13">
+          <div className="flex justify-between items-center px-2 sm:px-4 py-3 sm:py-2 border-b border-gray-200">
+            <a href="/daisy_math" className="text-xs text-blue-600 hover:text-blue-800 italic">
+              DAISY™ Maths Explained
+            </a>
+            <div className="absolute left-[79.3%] sm:left-1/2 transform -translate-x-1/2">
+              <div className="inline-flex rounded-md shadow-sm">
                 <button
                   onClick={() => setViewMode('pace')}
-                  className={`px-4 py-2 text-sm font-medium rounded-l-md ${
+                  className={`px-2 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-l-md ${
                     viewMode === 'pace'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                   }`}
                 >
-                  Training Paces
+                  <span className="hidden sm:inline">Training Paces</span>
+                  <span className="sm:hidden">Pace</span>
                 </button>
                 <button
                   onClick={() => setViewMode('race')}
-                  className={`px-3 py-2 text-sm font-medium rounded-r-md ${
+                  className={`px-2 sm:px-3 py-1.5 sm:py-2 text-sm font-medium rounded-r-md ${
                     viewMode === 'race'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                   }`}
                 >
-                  Race Times
+                  <span className="hidden sm:inline">Race Times</span>
+                  <span className="sm:hidden">Race</span>
                 </button>
               </div>
             </div>
@@ -938,7 +942,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10">
+                      <th scope="col" className="sticky left-0 bg-gray-50 pl-4 pr-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider z-10 w-10">
+                        <input
+                          type="text"
+                          placeholder=""
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="w-10 px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-wingo-500 focus:border-transparent text-sm"
+                        />
                       </th>
                       {/* Repetition Paces Section */}
                       <th colSpan={3} className="px-6 py-2 text-center text-sm font-semibold text-gray-500 italic bg-red-50 border-l border-r border-red-100">
@@ -958,7 +969,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                       </th>
                     </tr>
                     <tr className="border-b border-gray-200">
-                      <th scope="col" className="sticky left-0 bg-gray-50 px-6 py-3 text-center text-[10px] font-medium text-gray-500 uppercase tracking-wider z-10">
+                      <th className="sticky left-0 bg-white z-50 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
                         VDOT
                       </th>
                       {/* Repetition Paces Columns */}
@@ -979,7 +990,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         KM
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-yellow-50 border-r border-yellow-100 fixed-width-column">
-                        PentaWingo
+                        1600m
                       </th>
                       {/* Threshold Paces Columns */}
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-l border-r border-green-100 fixed-width-column whitespace-nowrap">
@@ -989,13 +1000,13 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         KM
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-green-50 border-r border-green-100 fixed-width-column whitespace-nowrap">
-                        PentaWingo
+                        1600m
                       </th>
                       {/* Easy Paces Columns */}
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-l border-r border-blue-100 fixed-width-column whitespace-nowrap">
+                      <th scope="col" className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-l border-r border-blue-100 chill-column whitespace-nowrap">
                         M*LE
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-r border-blue-100 fixed-width-column whitespace-nowrap">
+                      <th scope="col" className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-blue-50 border-r border-blue-100 chill-column whitespace-nowrap">
                         Mare-athon
                       </th>
                     </tr>
@@ -1007,21 +1018,21 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                           {vdot}
                         </td>
                         {/* Repetition Paces Data */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-l border-r border-red-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-l border-r border-red-100 text-center">
                           {pacesTable[vdot]?.['r_160m'] ? (
                             <span>{formatSecondsToTime(parseInt(pacesTable[vdot].r_160m))}</span>
                           ) : (
                             <span>-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100 text-center">
                           {pacesTable[vdot]?.r_320m ? (
                             <span>{formatSecondsToTime(parseInt(pacesTable[vdot].r_320m))}</span>
                           ) : (
                             <span>-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-red-50/30 border-r border-red-100 text-center">
                           {pacesTable[vdot]?.['r_640m'] ? (
                             <span>{formatMinutesToTime(parseInt(pacesTable[vdot].r_640m) / 60)}</span>
                           ) : (
@@ -1029,38 +1040,38 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                           )}
                         </td>
                         {/* Interval Paces Data */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-l border-r border-yellow-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-l border-r border-yellow-100 text-center">
                           {pacesTable[vdot]?.i_320m ? (
                             <span>{formatSecondsToTime(parseInt(pacesTable[vdot].i_320m))}</span>
                           ) : (
                             <span>-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100 text-center">
                           {pacesTable[vdot]?.['i_mile'] || '-'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-yellow-50/30 border-r border-yellow-100 text-center">
                           {pacesTable[vdot]?.['i_penta'] || '-'}
                         </td>
                         {/* Threshold Paces Data */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-l border-r border-green-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-l border-r border-green-100 text-center">
                           {pacesTable[vdot]?.t_320m ? (
                             <span>{formatSecondsToTime(parseInt(pacesTable[vdot].t_320m))}</span>
                           ) : (
                             <span>-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100 text-center">
                           {pacesTable[vdot]?.['t_mile'] || '-'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-green-50/30 border-r border-green-100 text-center">
                           {pacesTable[vdot]?.['t_penta'] || '-'}
                         </td>
                         {/* Easy Paces Data */}
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-l border-r border-blue-100">
+                        <td className="px-1 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-l border-r border-blue-100 text-center">
                           {pacesTable[vdot]?.['e_mile'] || '-'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-r border-blue-100">
+                        <td className="px-1 py-4 whitespace-nowrap text-sm text-gray-500 bg-blue-50/30 border-r border-blue-100 text-center">
                           {pacesTable[vdot]?.['m_mile'] || '-'}
                         </td>
                       </tr>
