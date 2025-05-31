@@ -198,6 +198,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                 }
               }
             });
+            console.log('Parsed VDOT table:', table); // Debug log
             setRaceTimesTable(table);
             setLoading(false);
           }
@@ -554,7 +555,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Race & Pace Guide</h1>
-          <p className="text-xl text-gray-600">Based on J. Daniels VDOT and DAISY™ Maths</p>
+          <p className="text-xl text-gray-600">Based on J. Daniels & DAISY™ Maths</p>
         </div>
 
         {/* DAISY™ Maths Explained Link */}
@@ -900,12 +901,12 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-8">
           <div className="flex justify-between items-center px-2 sm:px-4 py-3 sm:py-2 border-b border-gray-200">
             <a href="/daisy_math" className="text-xs text-blue-600 hover:text-blue-800 italic">
               DAISY™ Maths Explained
             </a>
-            <div className="absolute left-[79.3%] sm:left-1/2 transform -translate-x-1/2">
+            <div className="absolute left-[79.1%] sm:left-1/2 transform -translate-x-1/2">
               <div className="inline-flex rounded-md shadow-sm">
                 <button
                   onClick={() => setViewMode('pace')}
@@ -1101,8 +1102,8 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['1.6'])}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['5'])}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['10'])}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['21.1'])}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['42.2'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['21.0975'])}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['42.195'])}</td>
                           </tr>
                         ))}
                     </tbody>
