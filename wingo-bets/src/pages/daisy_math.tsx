@@ -19,7 +19,7 @@ const DaisyMath: React.FC = () => {
             <div className="space-y-3 sm:space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-baseline">
                 <span className="font-semibold text-gray-900 sm:w-32 mb-1 sm:mb-0">Wingo</span>
-                <span className="text-gray-600">320m (duh)</span>
+                <span className="text-gray-600">320m...</span>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-baseline">
                 <span className="font-semibold text-gray-900 sm:w-32 mb-1 sm:mb-0">Wingito</span>
@@ -35,14 +35,14 @@ const DaisyMath: React.FC = () => {
               </div>
               <div className="flex flex-col sm:flex-row sm:items-baseline">
                 <span className="font-semibold text-gray-900 sm:w-32 mb-1 sm:mb-0">DecaWingo</span>
-                <span className="text-gray-600">3200m (10×Wingo, not 2 m*les)</span>
+                <span className="text-gray-600">3200m (10 × Wingo, not 2 m*les)</span>
               </div>
             </div>
           </section>
 
           {/* Workout Types Section */}
           <section className="mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Workout Types (J. Daniels Terminology)</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Workout Types (Via J. Daniels)</h2>
             <div className="space-y-6 sm:space-y-8">
               <div>
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Repetition (R pace)</h3>
@@ -70,41 +70,42 @@ const DaisyMath: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Conversion</th>
-                      <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Formula</th>
-                      <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-5/12">Notes</th>
+                      <th className="px-3 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distance & Pace</th>
+                      <th className="px-3 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Distance Math</th>
+                      <th className="px-3 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DAISY Adjustment</th>
+                      <th className="px-3 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Formula</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">400m → Wingo (320m)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">400 × 0.78</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">Use for both I and R paces</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">PentaWingo (Race/T/I Adjustment)</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">From JD m*le → 1600 / 1609 = 0.9942</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">DAISY-adjusted → 0.9932</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">M*le × 0.9932</td>
                     </tr>
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">R 200m → Wingito (160m)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">200 × 0.78</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">Slightly faster than linear. DAISY don't mess around.</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">640m (Twingo, I)</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">From JD 600m → 640 / 600 = 1.0667</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">DAISY-adjusted → 1.0715</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">600 × 1.0715</td>
                     </tr>
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">300m → Wingo (320m)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">300 × 1.0667</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">Short rep scaling</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">320m (Wingo, R/I)</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">From JD 400m → 320 / 400 = 0.80</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">DAISY-adjusted → 0.78</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">400 × 0.78</td>
                     </tr>
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">600m → 640m (2×Wingo)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">600 × 1.0667</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">Extended rep scaling</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">320m (Wingo, R)</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">From JD 300m → 320 / 300 = 1.0667</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">N/A</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">300 × 1.0667</td>
                     </tr>
                     <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile → PentaWingo (1600m)</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">Mile × 0.9942</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">1600m is ~9m short of full mile</td>
-                    </tr>
-                    <tr>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">T & I pace fudge factor</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-900">× 0.9932</td>
-                      <td className="px-3 sm:px-6 py-4 text-sm text-gray-600">(distance = 0.99429637864); slight adjustment.</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">160m (Wingito, R)</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">From JD 200m → 160 / 200 = 0.80</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">DAISY-adjusted → 0.78</td>
+                      <td className="px-3 sm:px-4 py-2 text-sm text-gray-900">200 × 0.78</td>
                     </tr>
                   </tbody>
                 </table>
