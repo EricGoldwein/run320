@@ -186,7 +186,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 </div>
               </div>
               {/* Title center */}
-              <div className="flex-1 flex justify-center items-center min-w-0">
+              <div className="flex-1 flex justify-center items-center min-w-0 pl-6 sm:pl-0">
                 <h2 className="text-base sm:text-2xl font-bold text-gray-900 text-center whitespace-nowrap">WINGO Leaderboard</h2>
               </div>
               {/* DAISY badge right */}
@@ -221,7 +221,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('balance')}
                     >
-                      Balance
+                      WINGO
                     </th>
                     <th 
                       scope="col" 
