@@ -26,10 +26,10 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const leaderboardData: LeaderboardEntry[] = [
     { 
       user: 'ERock', 
-      totalMined: 15, 
-      balance: 15,
+      totalMined: 30, 
+      balance: 30,
       distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
+      lastMined: '6-1-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
@@ -90,7 +90,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       ...entry,
       rank: index + 1,
       distance: Number((entry.totalMined * 0.32).toFixed(1)), // Calculate distance based on totalMined
-      votingShare: Number(((entry.balance / totalWingo) * 100).toFixed(2)) // Calculate voting share as percentage
+      votingShare: Number(((entry.balance / totalWingo) * 100).toFixed(1)) // Calculate voting share as percentage
     }));
 
   // Calculate total kilometers after distances are calculated
