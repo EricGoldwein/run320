@@ -111,7 +111,7 @@ const FAQ: React.FC = () => {
                     <Link to="/mine" className="text-wingo-600 hover:text-wingo-700">Send to Coach DAISY™</Link>: Submit activity link, screenshot, or GPX file showing Wingo segments
                   </span>,
                   <span key="text">
-                    <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a>: Send <span className="font-bold">W</span>INGO receipt to 929-WAK-GRIG (929-925-4744)
+                    <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a>: Send <span className="font-bold">W</span>INGO receipt to 929-WAK-GRIG
                   </span>,
                   <span key="daisy-game">
                     <a href="https://www.daisy320.com/game" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 font-medium">Play Daisy's Yellowstone Adventure</a>: Complete the game and send screenshot of the dancing DAISY™ for <span className="font-bold">5{' '}
