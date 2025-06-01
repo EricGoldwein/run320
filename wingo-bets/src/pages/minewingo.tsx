@@ -176,7 +176,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
             <span>INGO</span>
           </span></span>
         </div>
-        <p className="text-gray-600">Complete <a href="https://www.strava.com/segments/7831001" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 underline">Wingate Track segments</a> to mine <span className="inline-flex items-baseline">
+        <p className="text-gray-600">Complete <a href="https://www.strava.com/segments/39307521" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700 underline">Wingate Track segments</a> to mine <span className="inline-flex items-baseline">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
           </span>. Each Wingo = 1 <span className="inline-flex items-baseline">
