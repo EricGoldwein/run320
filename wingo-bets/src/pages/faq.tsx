@@ -16,7 +16,7 @@ const FAQ: React.FC = () => {
             </h2>
             <div className="space-y-4">
               <p className="text-lg">
-                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing 320-meter Wingo laps at Wingate Track in Brooklyn.
+                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing the 320-meter Wingo laps at Wingate Track in Brooklyn.
               </p>
               <p className="text-lg">
                 Each Wingo (320m) = 1{' '}
@@ -101,7 +101,7 @@ const FAQ: React.FC = () => {
               <p className="text-lg">
                 <Link to="/mine" className="text-wingo-600 hover:text-wingo-700">
                   You mine <span className="font-bold">W</span>INGO
-                </Link> by completing the <a href="https://www.strava.com/segments/7831001" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700">official 320-meter Wingo segment</a> at Wingate Track. Each verified Wingo = 1{' '}
+                </Link> by completing the <a href="https://www.strava.com/segments/39307521" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-700">official 320-meter Wingo segment</a> at Wingate Track. Each verified Wingo = 1{' '}
                 <span className="text-[#E6C200] font-bold">W</span>.
               </p>
               <p className="text-lg font-medium">Verification methods:</p>
