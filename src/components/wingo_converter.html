@@ -1,0 +1,704 @@
+{% extends "base.html" %}
+
+{% block title %}WINGO Converter • DAISY™{% endblock %}
+
+{# Add meta tags for social sharing #}
+{% block extra_head %}
+<meta property="og:title" content="WINGO Pace Converter • DAISY™">
+<meta property="og:description" content="Convert your running times between Wingos, Mare-athons, and everything in between with DAISY™'s intelligent pace calculator.">
+<meta property="og:image" content="{{ url_for('static', filename='img/wingo-converter-card.png', _external=True) }}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="WINGO Pace Converter • DAISY™">
+<meta name="twitter:description" content="Convert your running times between Wingos, Mare-athons, and everything in between.">
+<meta name="twitter:image" content="{{ url_for('static', filename='img/wingo-converter-card.png', _external=True) }}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .brand-heading {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        padding-bottom: 0.2rem;
+    }
+
+    .converter-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .input-section {
+        background: #f5faff;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pace-display {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #333;
+        margin: 1.5rem 0;
+        padding: 1.25rem 2rem;
+        background: #f5faff;
+        border-radius: 16px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pace-display::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #2c3e50;
+    }
+
+    .pace-display span {
+        color: #1e1e1e;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .result-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .result-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .result-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .result-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+    }
+
+    .result-label {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .track-badge {
+        display: none;
+    }
+
+    .form-control {
+        border: 2px solid #e5e5e5;
+        border-radius: 12px;
+        padding: 0.75rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.2em;
+        padding-right: 2.5rem;
+    }
+
+    select.form-control option[value=""] {
+        color: #7f8c8d;
+    }
+
+    .form-control:focus {
+        border-color: #222;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-convert {
+        background: #2c3e50;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.15);
+    }
+
+    .btn-convert:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(44, 62, 80, 0.25);
+        background: #34495e;
+        color: white;
+    }
+
+    .btn-reset {
+        background: none;
+        color: #666;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        text-decoration: underline;
+    }
+
+    .btn-reset:hover {
+        color: #1e1e1e;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .time-input {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .time-input input {
+        width: 60px;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    .time-input input::-webkit-outer-spin-button,
+    .time-input input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .time-input span {
+        color: #7f8c8d;
+        font-size: 1.2rem;
+    }
+
+    .time-input-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-result {
+        grid-column: 1 / -1;
+        background: white;
+        border: 1px solid #e0e0e0;
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .main-result .result-value {
+        font-size: 3rem;
+        color: #2ecc71;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+
+    .main-result .result-label {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .main-result #targetTimeDisplay,
+    .main-result #wingoTimeDisplay {
+        color: #2ecc71;
+        font-weight: 600;
+    }
+
+    .projections-card {
+        grid-column: 1 / -1;
+        background: #f5faff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        -webkit-user-select: all;
+        user-select: all;
+        -webkit-touch-callout: default;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-user-drag: element;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        position: relative;
+        cursor: default;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .projections-content {
+        position: relative;
+        z-index: 1;
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .projections-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .projections-content p {
+        margin: 0;
+        padding: 0;
+        color: #666;
+        font-weight: 400;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        letter-spacing: 0.3px;
+    }
+
+    .projections-content p span {
+        font-weight: 500;
+        color: #444;
+        letter-spacing: 0;
+    }
+
+    .projections-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .projections-list li {
+        padding: 0.75rem 1rem;
+        background: #ffffff;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .projections-list .distance {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        color: #555;
+        text-align: left;
+    }
+
+    .projections-list .time {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-weight: 500;
+        color: #333;
+        text-align: right;
+        font-size: 1.05rem;
+    }
+
+    .daisy-badge {
+        font-size: 0.95rem;
+        padding: 0.35rem 0.7rem;
+        background: #34495e;
+        border: none;
+        border-radius: 6px;
+        color: #ffffff;
+        font-weight: 500;
+        letter-spacing: 0;
+        pointer-events: none;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        position: static;
+        margin-left: 1rem;
+    }
+
+    .daisy-badge .ai {
+        color: #00ffeb;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .projections-title {
+        color: #2c3e50;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        padding-right: 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    @media (max-width: 768px) {
+        .converter-container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+        
+        .main-result {
+            max-width: 100%;
+            padding: 1.5rem;
+        }
+        
+        .main-result .result-value {
+            font-size: 2.5rem;
+        }
+        .daisy-badge {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            top: 0.15rem;
+            right: 0.5rem;
+        }
+        .projections-card {
+            padding: 1.25rem;
+        }
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f5faff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="converter-container">
+        <div class="text-center mb-4">
+            <h1 class="brand-heading">Wingo Pace Converter</h1>
+            <p class="subheading">From Wingos to Mare-atohns, DAISY™ does the math</p>
+        </div>
+
+        <div class="input-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Distance</label>
+                        <select class="form-control" id="targetDistance">
+                            <option value="" disabled selected>---</option>
+                            <option value="201.168">Furlong</option>
+                            <option value="320">Wingo (320m)</option>
+                            <option value="400">400m</option>
+                            <option value="800">800m</option>
+                            <option value="1000">Kilometer</option>
+                            <option value="1600">Fingo (1600m)</option>
+                            <option value="1609.34">M*le</option>
+                            <option value="5000">5K</option>
+                            <option value="10000">10K</option>
+                            <option value="21097.5">Half Mare-athon</option>
+                            <option value="42195">Mare-athon</option>
+                            <option value="644000">Yellowstone (3,200 Furlongs)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Time</label>
+                        <div class="time-input">
+                            <div class="time-input-group">
+                                <input type="number" class="form-control" id="targetDays" placeholder="D" style="display: none;">
+                            </div>
+                            <div class="time-input-group">
+                                <input type="number" class="form-control" id="targetHours" placeholder="H" style="display: none;">
+                            </div>
+                            <div class="time-input-group">
+                                <input type="number" class="form-control" id="targetMinutes" placeholder="M">
+                            </div>
+                            <span>:</span>
+                            <div class="time-input-group">
+                                <input type="number" class="form-control" id="targetSeconds" placeholder="S">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="button-group">
+                    <button class="btn btn-convert" onclick="convertFromTarget()">Calculate Pace</button>
+                    <button class="btn btn-reset" onclick="resetConverter()">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pace-display">
+            Wingo (320m) Pace: <span id="wingoTimeDisplay">--</span>
+        </div>
+
+        <div class="result-section" id="results">
+            <div class="result-card projections-card" id="projections">
+                <div class="projections-content">
+                    <div class="projections-header">
+                        <p>Your pace at <span id="selectedDistance">--</span> (<span id="wingoTimeDisplay">--</span>)</p>
+                        <span class="daisy-badge">D<span class="ai">AI</span>SY™</span>
+                    </div>
+                    <ul class="projections-list">
+                        <li><span class="distance">Furlong</span><span class="time" id="projectedFurlong">--</span></li>
+                        <li><span class="distance">400m</span><span class="time" id="projected400">--</span></li>
+                        <li><span class="distance">800m</span><span class="time" id="projected800">--</span></li>
+                        <li><span class="distance">1000m</span><span class="time" id="projectedKM">--</span></li>
+                        <li><span class="distance">M*le</span><span class="time" id="projectedMile">--</span></li>
+                        <li><span class="distance">5K</span><span class="time" id="projected5k">--</span></li>
+                        <li><span class="distance">The Loop</span><span class="time" id="projectedLoop">--</span></li>
+                        <li><span class="distance">10K</span><span class="time" id="projected10k">--</span></li>
+                        <li><span class="distance">15K</span><span class="time" id="projected15k">--</span></li>
+                        <li><span class="distance">Half Mare-athon</span><span class="time" id="projectedHM">--</span></li>
+                        <li><span class="distance">Mare-athon</span><span class="time" id="projectedMarathon">--</span></li>
+                        <li><span class="distance">Yellowstone</span><span class="time" id="projectedYellowstone">--</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function validateTimeInput(input) {
+    const value = input.value.trim();
+    if (value !== '') {
+        // Allow only digits and decimal points
+        if (!/^[0-9.]+$/.test(value)) {
+            alert(`Time values can only contain numbers and decimal points`);
+            input.value = '';
+            return false;
+        }
+        // Check for multiple decimal points
+        if ((value.match(/\./g) || []).length > 1) {
+            alert(`Time values can only have one decimal point`);
+            input.value = '';
+            return false;
+        }
+    }
+    return true;
+}
+
+function updateTimeInputs() {
+    const distance = parseFloat(document.getElementById('targetDistance').value);
+    const daysInput = document.getElementById('targetDays');
+    const hoursInput = document.getElementById('targetHours');
+    const minutesInput = document.getElementById('targetMinutes');
+    const secondsInput = document.getElementById('targetSeconds');
+    
+    // Clear all time inputs when distance changes
+    daysInput.value = '';
+    hoursInput.value = '';
+    minutesInput.value = '';
+    secondsInput.value = '';
+    
+    // Show/hide days input for Yellowstone
+    if (distance === 644000) {
+        daysInput.style.display = 'block';
+        hoursInput.style.display = 'block';
+        minutesInput.style.display = 'block';
+        secondsInput.style.display = 'none';
+    } else {
+        daysInput.style.display = 'none';
+        hoursInput.style.display = distance > 10000 ? 'block' : 'none';
+        minutesInput.style.display = 'block';
+        secondsInput.style.display = 'block';
+    }
+}
+
+function convertFromTarget() {
+    const targetDistance = parseFloat(document.getElementById('targetDistance').value);
+    if (!targetDistance) {
+        alert('Please select a distance');
+        return;
+    }
+    
+    // Get all time inputs
+    const daysInput = document.getElementById('targetDays');
+    const hoursInput = document.getElementById('targetHours');
+    const minutesInput = document.getElementById('targetMinutes');
+    const secondsInput = document.getElementById('targetSeconds');
+    
+    // Validate all inputs
+    const inputs = [
+        { elem: daysInput, name: 'Days' },
+        { elem: hoursInput, name: 'Hours' },
+        { elem: minutesInput, name: 'Minutes' },
+        { elem: secondsInput, name: 'Seconds' }
+    ];
+
+    let hasValidInput = false;
+    for (const input of inputs) {
+        if (input.elem.style.display !== 'none' && input.elem.value.trim() !== '') {
+            hasValidInput = true;
+            if (!validateTimeInput(input.elem)) {
+                return;
+            }
+        }
+    }
+
+    if (!hasValidInput) {
+        alert('Please enter at least one time value');
+        return;
+    }
+
+    // Only parse values after validation
+    const days = daysInput.style.display !== 'none' ? (parseFloat(daysInput.value) || 0) : 0;
+    const hours = hoursInput.style.display !== 'none' ? (parseFloat(hoursInput.value) || 0) : 0;
+    const minutes = parseFloat(minutesInput.value) || 0;
+    const seconds = secondsInput.style.display !== 'none' ? (parseFloat(secondsInput.value) || 0) : 0;
+
+    // Calculate total time in seconds
+    const targetTime = (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
+    
+    // Get selected distance label
+    const distanceSelect = document.getElementById('targetDistance');
+    let selectedDistance = distanceSelect.options[distanceSelect.selectedIndex].text;
+    
+    // Special case for Half Mare-athon in the header
+    if (selectedDistance === 'Half Mare-athon') {
+        selectedDistance = 'HM';
+    }
+    
+    // Calculate pace per unit distance (seconds per meter)
+    const pacePerMeter = targetTime / targetDistance;
+    
+    // Calculate times for each distance using the pace
+    const pacePer320 = pacePerMeter * 320;
+    const pace400 = pacePerMeter * 400;
+    const paceFurlong = pacePerMeter * 201.168;
+    const pace800 = pacePerMeter * 800;
+    const paceKM = pacePerMeter * 1000;
+    const pacePerMile = pacePerMeter * 1609.34;
+    const pace5k = pacePerMeter * 5000;
+    const paceLoop = pacePerMeter * 5407;
+    const paceDerby = pacePerMeter * 2011.68;
+    const pace10k = pacePerMeter * 10000;
+    const pace15k = pacePerMeter * 15000;
+    const paceHM = pacePerMeter * 21097.5;
+    const paceMarathon = pacePerMeter * 42195;
+    const paceYellowstone = pacePerMeter * 644000;
+
+    // Update results with proper formatting
+    const wingoTime = `${pacePer320.toFixed(1)}s`;
+    document.querySelectorAll('#wingoTimeDisplay').forEach(el => {
+        if (el.closest('.pace-display')) {
+            el.textContent = wingoTime;
+        } else {
+            el.textContent = `${pacePer320.toFixed(1)}s/W`;
+        }
+    });
+    document.getElementById('selectedDistance').textContent = `${formatTime(targetTime)} per ${selectedDistance}`;
+    
+    // Update all projections with proper formatting
+    document.getElementById('projectedFurlong').textContent = formatTime(paceFurlong);
+    document.getElementById('projected400').textContent = formatTime(pace400);
+    document.getElementById('projected800').textContent = formatTime(pace800);
+    document.getElementById('projectedKM').textContent = formatTime(paceKM);
+    document.getElementById('projectedMile').textContent = formatTime(pacePerMile);
+    document.getElementById('projected5k').textContent = formatTime(pace5k);
+    document.getElementById('projectedLoop').textContent = formatTime(paceLoop);
+    document.getElementById('projected10k').textContent = formatTime(pace10k);
+    document.getElementById('projected15k').textContent = formatTime(pace15k);
+    document.getElementById('projectedHM').textContent = formatTime(paceHM);
+    document.getElementById('projectedMarathon').textContent = formatTime(paceMarathon);
+    document.getElementById('projectedYellowstone').textContent = formatTime(paceYellowstone);
+}
+
+function formatTime(seconds) {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((seconds % (60 * 60)) / 60);
+    const remainingSeconds = Math.round(seconds % 60);
+    
+    let timeString = '';
+    if (days > 0) {
+        timeString += `${days}d ${hours}h ${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    } else if (hours > 0) {
+        timeString += `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    } else {
+        timeString += `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+    
+    return timeString;
+}
+
+function resetConverter() {
+    // Reset all time inputs
+    document.getElementById('targetDays').value = '';
+    document.getElementById('targetHours').value = '';
+    document.getElementById('targetMinutes').value = '';
+    document.getElementById('targetSeconds').value = '';
+    
+    // Reset distance to default state
+    document.getElementById('targetDistance').value = '';
+    
+    // Reset results
+    document.querySelectorAll('#wingoTimeDisplay').forEach(el => el.textContent = '--');
+    document.getElementById('selectedDistance').textContent = '--';
+    document.getElementById('projectedFurlong').textContent = '--';
+    document.getElementById('projected400').textContent = '--';
+    document.getElementById('projected800').textContent = '--';
+    document.getElementById('projectedKM').textContent = '--';
+    document.getElementById('projectedMile').textContent = '--';
+    document.getElementById('projected5k').textContent = '--';
+    document.getElementById('projectedLoop').textContent = '--';
+    document.getElementById('projected10k').textContent = '--';
+    document.getElementById('projected15k').textContent = '--';
+    document.getElementById('projectedHM').textContent = '--';
+    document.getElementById('projectedMarathon').textContent = '--';
+    document.getElementById('projectedYellowstone').textContent = '--';
+    
+    // Update time input visibility
+    updateTimeInputs();
+}
+
+// Add event listener for distance change
+document.getElementById('targetDistance').addEventListener('change', updateTimeInputs);
+
+// Add input validation listeners to all time inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const timeInputs = [
+        document.getElementById('targetDays'),
+        document.getElementById('targetHours'),
+        document.getElementById('targetMinutes'),
+        document.getElementById('targetSeconds')
+    ];
+
+    timeInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            validateTimeInput(this);
+        });
+    });
+});
+</script>
+{% endblock %}
