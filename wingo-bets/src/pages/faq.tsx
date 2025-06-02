@@ -94,7 +94,7 @@ const FAQ: React.FC = () => {
           </section>
 
           <section className="transform hover:scale-[1.02] transition-transform duration-200 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-            <h2 className="text-3xl font-bold mb-6 text-gray-900">How do I acquire{' '}
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">How do I earn{' '}
               <span className="text-[#E6C200] font-bold">W</span>INGO?
             </h2>
             <div className="space-y-4 text-gray-700">
