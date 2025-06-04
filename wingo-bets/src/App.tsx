@@ -65,12 +65,36 @@ function App() {
             <Navbar user={user} onLogout={handleLogout} />
             <main className="container mx-auto px-4 py-8 flex-grow">
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/wallet" />} />
-                <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/wallet" />} />
+                <Route path="/" element={<Ledger user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
+                <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/" />} />
+                <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/" />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/wallet" element={user ? <Wallet user={user} /> : <Navigate to="/login" />} />
+                <Route path="/wallet" element={<Wallet user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
                 <Route path="/mine" element={<MineWingo user={user || {
                   id: 'guest',
                   email: '',
@@ -115,10 +139,34 @@ function App() {
                   createdAt: new Date()
                 }} />} />
                 <Route path="/vote" element={user ? <Vote /> : <Navigate to="/login" />} />
-                <Route path="/create-bet" element={user ? <CreateBet user={user} onCreateBet={() => {}} /> : <Navigate to="/login" />} />
+                <Route path="/create-bet" element={<CreateBet user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} onCreateBet={() => {}} />} />
                 <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
-                <Route path="/wingate-invitational" element={user ? <WingateInvitational user={user} /> : <Navigate to="/login" />} />
-                <Route path="/experience" element={user ? <Experience /> : <Navigate to="/login" />} />
+                <Route path="/wingate-invitational" element={<WingateInvitational user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
+                <Route path="/experience" element={<Experience />} />
                 <Route path="/wingo-wednesday" element={<WingoWednesday />} />
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/converter" element={<WingoConverter />} />
