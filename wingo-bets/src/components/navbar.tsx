@@ -65,52 +65,50 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
           
           {/* Desktop Menu */}
           <div className="hidden sm:flex items-center space-x-4">
-            {user ? (
-              <div className="relative" ref={wingoRef}>
-                <button
-                  onClick={() => handleDropdownClick('wingo')}
-                  className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                >
-                  <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
-                    <span>INGO</span>
-                  </span>
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {activeDropdown === 'wingo' &&
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <button
-                      onClick={() => handleNavigation('/mine')}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Mine
-                    </button>
-                    <button
-                      onClick={() => handleNavigation('/ledger')}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Ledger
-                    </button>
-                    <button
-                      onClick={() => handleNavigation('/wager')}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Wager
-                    </button>
-                    <button
-                      onClick={() => handleNavigation('/vote')}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Vote
-                    </button>
-                  </div>
-                }
-              </div>
-            ) : null}
+            <div className="relative" ref={wingoRef}>
+              <button
+                onClick={() => handleDropdownClick('wingo')}
+                className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+              >
+                <span className="inline-flex items-center">
+                  <span className="text-[#E6C200] font-bold">W</span>
+                  <span>INGO</span>
+                </span>
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeDropdown === 'wingo' &&
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  <button
+                    onClick={() => handleNavigation('/mine')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Mine
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/ledger')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Ledger
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/wager')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Wager
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/vote')}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Vote
+                  </button>
+                </div>
+              }
+            </div>
             <Link 
-              to={user ? "/experience" : "/login"} 
+              to="/experience" 
               className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium"
             >
               Experience
@@ -225,7 +223,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             Leaderboard
           </button>
           <button
-            onClick={() => handleMobileNav(user ? '/experience' : '/login')}
+            onClick={() => handleMobileNav('/experience')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             Experience
@@ -242,26 +240,26 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
           >
             Wingo Converter
           </button>
+          <button
+            onClick={() => handleMobileNav('/mine')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Mine
+          </button>
+          <button
+            onClick={() => handleMobileNav('/wager')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Wager
+          </button>
+          <button
+            onClick={() => handleMobileNav('/vote')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Vote
+          </button>
           {user ? (
             <>
-              <button
-                onClick={() => handleMobileNav('/mine')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Mine
-              </button>
-              <button
-                onClick={() => handleMobileNav('/wager')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Wager
-              </button>
-              <button
-                onClick={() => handleMobileNav('/vote')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Vote
-              </button>
               <button
                 onClick={() => handleMobileNav('/wallet')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"

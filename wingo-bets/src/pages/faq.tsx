@@ -16,7 +16,7 @@ const FAQ: React.FC = () => {
             </h2>
             <div className="space-y-4">
               <p className="text-lg">
-                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing the 320-meter Wingo laps at Wingate Track in Brooklyn.
+                <span className="font-bold">W</span>INGO (Workout Independence Network Gains and Optimization) is the official token of the 320 Track Club. It's earned by completing the <a href="https://www.strava.com/segments/39307521" target="_blank" rel="noopener noreferrer" className="text-wingo-600 hover:text-wingo-500">320-meter lap at Wingate Track</a> in Brooklyn.
               </p>
               <p className="text-lg">
                 Each Wingo (320m) = 1{' '}
@@ -49,9 +49,9 @@ const FAQ: React.FC = () => {
               <ul className="list-none space-y-3">
                 {[
                   <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the <a href="/wingate-invitational" class="text-wingo-600 hover:text-wingo-500">Old Balance Wingate Invitational</a> and 320 Day' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: 'DAISY™-Daniels-powered race projections, pace generator tools, and custom workouts' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: 'Democracy: voting rights on club decisions — 1 <span class="text-[#E6C200] font-bold">W</span> = 1 vote' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: '<span class="font-bold">W</span>INGO Wager World: bet on friends using the proprietary DAISY™-degenerate formula' }} />
+                  <span dangerouslySetInnerHTML={{ __html: '<a href="/vdot" class="text-wingo-600 hover:text-wingo-500">DAISY™-Daniels-powered</a> race projections, pace generator tools, and custom workouts' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: '<a href="/vote" class="text-wingo-600 hover:text-wingo-500">Democracy</a>: voting rights on club decisions — 1 <span class="text-[#E6C200] font-bold">W</span> = 1 vote' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: '<a href="/wager" class="text-wingo-600 hover:text-wingo-500"><span class="font-bold">W</span>INGO Wager World</a>: bet on friends using the proprietary DAISY™-degenerate formula' }} />
                 ].map((item, index) => (
                   <li key={index} className="grid grid-cols-[auto_1fr] gap-2">
                     <span className="text-black leading-[1.6rem]">•</span>
