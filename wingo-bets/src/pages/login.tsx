@@ -45,6 +45,26 @@ export default function Login({ onLogin }: LoginProps) {
               create account
             </a>
           </p>
+          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
+            <p className="text-sm text-yellow-700">
+              Account services not yet active. <a href="sms:9299254744" className="font-medium underline text-yellow-700 hover:text-yellow-600">Text DAISY</a> to join the 320 Track Club and <button onClick={() => {
+                onLogin({
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                });
+                navigate('/ledger');
+              }} className="font-medium underline text-yellow-700 hover:text-yellow-600">continue as guest</button> to explore Wingo World.
+            </p>
+          </div>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
