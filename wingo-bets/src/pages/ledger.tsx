@@ -289,11 +289,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         {/* Text Coach DAISY™ Link */}
         <div className="mt-8 text-center">
           <p className="text-[13px] sm:text-lg text-gray-600">
-            Text Coach DAISY™ at{' '}
+            Text Coach DAISY™ ({' '}
             <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-medium">
               929-WAK-GRIG
-            </a>{' '}
-            to begin mining
+            </a>{' '})
+            to start mining
           </p>
         </div>
       </div>

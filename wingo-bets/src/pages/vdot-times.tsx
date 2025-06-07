@@ -198,7 +198,6 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                 }
               }
             });
-            console.log('Parsed VDOT table:', table); // Debug log
             setRaceTimesTable(table);
             setLoading(false);
           }
@@ -296,8 +295,16 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     });
   }, [vdotInput, raceTimesTable, pacesTable]);
 
-  // Modify generateVDOTCard to only handle showing the card
+  // Modify generateVDOTCard to handle both direct VDOT input and time-based calculation
   const generateVDOTCard = () => {
+    // If we have a found VDOT from time calculation, use that
+    if (foundVdot) {
+      setVdotInput(foundVdot);
+      setShowCard(true);
+      return;
+    }
+
+    // Otherwise validate the direct VDOT input
     const vdot = parseInt(vdotInput);
     if (isNaN(vdot) || vdot < 30 || vdot > 85) {
       alert('Please enter a valid VDOT between 30 and 85');
@@ -631,7 +638,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                     onClick={() => {
                       if (foundVdot) {
                         setVdotInput(foundVdot);
-                        generateVDOTCard();
+                        setShowCard(true);
                         setShowVdotFinder(false);
                       }
                     }}
@@ -1081,7 +1088,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         .filter(vdot => !isNaN(Number(vdot)))
                         .sort((a, b) => Number(a) - Number(b))
                         .map(vdot => (
-                          <tr key={vdot} className="hover:bg-gray-50">
+                          <tr key={vdot}>
                             <td className="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{vdot}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['1.6'])}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatMinutesToTime(raceTimesTable[vdot]['5'])}</td>
