@@ -334,12 +334,12 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Record WINGOs automatically via Strava API</h3>
+                  <h3 className="text-sm font-medium text-blue-800">Automatic Wingo recording via Strava API</h3>
                   <div className="mt-2 text-sm text-blue-700">
-                    <p>Sync your Strava account with Coach DAISY™ and <span className="inline-flex items-baseline">
+                    <p>Sync Strava account with Coach DAISY™ and <span className="inline-flex items-baseline">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
-          </span>s will be automatically uploaded to your account.</p>
+          </span> will be automatically uploaded to your account.</p>
                     <ol className="list-decimal list-inside space-y-2 mt-2">
                       <li>Go to <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener noreferrer" className="underline">Strava API Settings</a></li>
                       <li>Create a new application or use an existing one</li>
