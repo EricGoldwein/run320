@@ -144,7 +144,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               )}
             </div>
             <Link 
-              to="/faq" 
+              to="/raq" 
               className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium"
             >
               RAQ
@@ -211,7 +211,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white border-t border-gray-200 shadow-md px-4 py-4 space-y-2">
           <button
-            onClick={() => handleMobileNav('/faq')}
+            onClick={() => handleMobileNav('/raq')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             RAQ

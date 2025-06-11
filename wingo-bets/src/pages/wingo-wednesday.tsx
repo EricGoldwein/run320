@@ -53,7 +53,7 @@ const WingoWednesday: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">What if I have questions?</h3>
-                <p className="text-gray-700"><a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a> or <Link to="/faq" className="text-wingo-600 hover:text-wingo-700 underline">read the RAQ</Link>.</p>
+                <p className="text-gray-700"><a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Text Coach DAISY™</a> or <Link to="/raq" className="text-wingo-600 hover:text-wingo-700 underline">read the RAQ</Link>.</p>
               </div>
             </div>
           </section>

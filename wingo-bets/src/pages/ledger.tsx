@@ -151,7 +151,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             </span> Ledger
           </h1>
           <a 
-            href="/faq" 
+            href="/raq" 
             className="text-xs text-wingo-600 hover:text-wingo-500 italic sm:hidden -mt-1 mb-2 block"
           >
             WTF is WINGO?
@@ -197,7 +197,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0">
                 <h2 className="text-base sm:text-2xl font-bold text-gray-900 text-center whitespace-nowrap">WINGO Leaderboard</h2>
                 <a 
-                  href="/faq" 
+                  href="/raq" 
                   className="text-xs text-wingo-600 hover:text-wingo-500 italic mt-1 hidden sm:block"
                 >
                   WTF is WINGO?

@@ -18,7 +18,7 @@ import Wager from './pages/wager';
 import CreateBet from './pages/createbet';
 import BetBoard from './pages/betboard';
 import WingateInvitational from './pages/wingateinvitational';
-import FAQ from './pages/faq';
+import FAQ from './pages/raq';
 import Experience from './pages/experience';
 import WingoConverter from './components/WingoConverter';
 import VDOTTimes from './pages/vdot-times';
@@ -168,7 +168,7 @@ function App() {
                 }} />} />
                 <Route path="/experience" element={<Experience />} />
                 <Route path="/wingo-wednesday" element={<WingoWednesday />} />
-                <Route path="/faq" element={<FAQ />} />
+                <Route path="/raq" element={<FAQ />} />
                 <Route path="/converter" element={<WingoConverter />} />
                 <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />

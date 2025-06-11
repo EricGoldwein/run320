@@ -335,7 +335,7 @@ export default function Register({ onRegister }: RegisterProps) {
               {isLoading ? 'Registering...' : 'Find Your Kick'}
             </button>
             <a 
-              href="/faq" 
+              href="/raq" 
               className="mt-4 text-sm text-wingo-600 hover:text-wingo-500 block text-center"
             >
               WTF is{' '}
