@@ -35,10 +35,10 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     },
     { 
       user: 'Willy Wingo', 
-      totalMined: 24, 
-      balance: 24,
+      totalMined: 48,
+      balance: 48,
       distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
+      lastMined: '6-11-25',
       rank: 0, // Will be set by sorting
       votingShare: 0 // Will be calculated in sorting
     },
