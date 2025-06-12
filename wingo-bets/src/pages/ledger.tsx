@@ -61,10 +61,16 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       
         setLeaderboardData(parsed);
         
-        // Get the last updated time from cell J3 (third row, 10th column)
-        const lastModifiedTime = rows[2]?.split(',')[9]?.trim() || '';
-        if (lastModifiedTime) {
-          setLastUpdated(lastModifiedTime);
+        // Get the date from J3 and time from J4
+        const dateStr = rows[2]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        const timeStr = rows[3]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        
+        console.log('Raw rows:', rows);
+        console.log('Date from J3:', dateStr);
+        console.log('Time from J4:', timeStr);
+        
+        if (dateStr && timeStr) {
+          setLastUpdated(`${dateStr} at ${timeStr} ET`);
         }
       } catch (error) {
         console.error('Failed to fetch or parse leaderboard:', error);
@@ -275,7 +281,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           </p>
           {lastUpdated && (
             <p className="text-[10px] sm:text-xs text-gray-500 mt-2 italic">
-              Last updated: {lastUpdated} ET 🤖 🐎
+              Last updated: {lastUpdated} 🤖🐎
             </p>
           )}
         </div>
