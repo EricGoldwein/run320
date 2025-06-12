@@ -61,16 +61,21 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       
         setLeaderboardData(parsed);
         
-        // Get the date from J3 and time from J4
-        const dateStr = rows[2]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
-        const timeStr = rows[3]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        // Get the date from J5 and time from J6
+        console.log('All rows:', rows);
+        console.log('Row 4 (J5):', rows[4]);
+        console.log('Row 5 (J6):', rows[5]);
         
-        console.log('Raw rows:', rows);
-        console.log('Date from J3:', dateStr);
-        console.log('Time from J4:', timeStr);
+        const dateStr = rows[4]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        const timeStr = rows[5]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        
+        console.log('Date from J5:', dateStr);
+        console.log('Time from J6:', timeStr);
         
         if (dateStr && timeStr) {
-          setLastUpdated(`${dateStr} at ${timeStr} ET`);
+          setLastUpdated(`${dateStr} at ${timeStr}`);
+        } else {
+          console.log('Missing date or time:', { dateStr, timeStr });
         }
       } catch (error) {
         console.error('Failed to fetch or parse leaderboard:', error);
