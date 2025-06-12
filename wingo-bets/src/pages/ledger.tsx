@@ -23,93 +23,63 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Mock data - replace with real data later
-  const leaderboardData: LeaderboardEntry[] = [
-    { 
-      user: 'ERock', 
-      totalMined: 30, 
-      balance: 30,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-1-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Willy Wingo', 
-      totalMined: 48,
-      balance: 48,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-11-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'TayTay', 
-      totalMined: 19, 
-      balance: 19,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-4-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'KAT', 
-      totalMined: 15, 
-      balance: 15,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'MadMiner', 
-      totalMined: 25, 
-      balance: 25,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-5-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Melathon', 
-      totalMined: 35, 
-      balance: 35,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-11-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Job', 
-      totalMined: 16, 
-      balance: 16,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Scar', 
-      totalMined: 3, 
-      balance: 3,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-5-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    }
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=0&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
+        const text = await res.text();
+        const rows = text.trim().split('\n');
+        const data = rows.slice(1); // skip header row
+        const parsed = data
+          .filter(row => row.trim() && row.split(',').length >= 5)
+          .map((row) => {
+            const columns = row.split(',');
+            // Parse the values correctly
+            const username = columns[0].trim();
+            const balance = parseFloat(columns[1]) || 0;
+            const mined = parseFloat(columns[2]) || 0;
+            const distance = parseFloat(columns[3]) || 0;
+            const lastMined = columns[4]?.trim() || '';
+            const votingShare = parseFloat(columns[5]) || 0;
+            const rank = parseInt(columns[6]) || 0;
+
+            return {
+              user: username,
+              balance: balance,
+              totalMined: mined,
+              distance: distance,
+              lastMined: lastMined,
+              votingShare: votingShare,
+              rank: rank
+            };
+          })
+          .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
+      
+        setLeaderboardData(parsed);
+      } catch (error) {
+        console.error('Failed to fetch or parse leaderboard:', error);
+      }
+    };
+  
+    // Initial fetch
+    fetchData();
+
+    // Set up auto-refresh every 30 seconds
+    const intervalId = setInterval(fetchData, 30000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+  
 
   // Calculate total WINGO first
   const totalWingo = leaderboardData.reduce((sum, entry) => sum + entry.balance, 0);
 
   // Sort by balance and update ranks
   const sortedLeaderboard = [...leaderboardData]
-    .sort((a, b) => b.balance - a.balance)
-    .map((entry, index) => ({
-      ...entry,
-      rank: index + 1,
-      distance: entry.totalMined * 0.32, // Calculate distance without rounding
-      votingShare: Number(((entry.balance / totalWingo) * 100).toFixed(1)) // Calculate voting share as percentage
-    }));
+    .sort((a, b) => b.balance - a.balance);
 
   // Calculate total kilometers after distances are calculated
   const totalKilometers = Number((sortedLeaderboard.reduce((sum, entry) => sum + entry.distance, 0)).toFixed(1));
