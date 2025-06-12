@@ -281,7 +281,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           </p>
           {lastUpdated && (
             <p className="text-[10px] sm:text-xs text-gray-500 mt-2 italic">
-              Last updated: {lastUpdated} 🤖🐎
+              Last updated: {lastUpdated} 🐎🤖
             </p>
           )}
         </div>
