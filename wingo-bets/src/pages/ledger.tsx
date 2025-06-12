@@ -21,6 +21,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<keyof LeaderboardEntry>('balance');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [lastUpdated, setLastUpdated] = useState<string>('');
 
   // Mock data - replace with real data later
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
@@ -32,6 +33,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         const text = await res.text();
         const rows = text.trim().split('\n');
         const data = rows.slice(1); // skip header row
+        
         const parsed = data
           .filter(row => row.trim() && row.split(',').length >= 5)
           .map((row) => {
@@ -58,6 +60,12 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
       
         setLeaderboardData(parsed);
+        
+        // Get the last updated time from cell J3 (third row, 10th column)
+        const lastModifiedTime = rows[2]?.split(',')[9]?.trim() || '';
+        if (lastModifiedTime) {
+          setLastUpdated(lastModifiedTime);
+        }
       } catch (error) {
         console.error('Failed to fetch or parse leaderboard:', error);
       }
@@ -265,6 +273,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             </a>{' '}
             to start mining
           </p>
+          {lastUpdated && (
+            <p className="text-[10px] sm:text-xs text-gray-500 mt-2 italic">
+              Last updated: {lastUpdated} ET 🤖 🐎
+            </p>
+          )}
         </div>
       </div>
     </div>
