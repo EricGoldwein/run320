@@ -965,13 +965,13 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         VDOT
                       </th>
                       {/* Repetition Paces Columns */}
-                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-4 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">
                         Wingito
                       </th>
-                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-5 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
                         Wingo
                       </th>
-                      <th scope="col" className="px-6 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
+                      <th scope="col" className="px-4 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-r border-red-100 fixed-width-column">
                         Twingo
                       </th>
                       {/* Interval Paces Columns */}
