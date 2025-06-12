@@ -754,16 +754,26 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                       <div className="text-gray-300 flex items-center">Interval:</div>
                       <div className="font-mono text-base">
                         {pacesTable[vdotInput]?.i_320m ? (
-                          <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/Wingo</span>
+                          <>
+                            <span className="sm:hidden mb-1 block">{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/wingo</span>
+                            <span className="hidden sm:inline">
+                              {formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/wingo
+                              {pacesTable[vdotInput]?.i_400m && 
+                                <span className="text-xs text-gray-400 ml-1">({formatSecondsToTime(parseInt(pacesTable[vdotInput].i_400m))}/400)</span>}
+                            </span>
+                          </>
                         ) : (
-                          <span>No data</span>
+                          <span>-</span>
                         )}
                       </div>
                       <div></div>
                       <div className="font-mono text-xs italic text-gray-400 -mt-1 -mb-4 ml-[calc(28%-1rem)]">
                         {pacesTable[vdotInput]?.i_400m ? 
-                          `${pacesTable[vdotInput]['i_400m']}s/400` : 
+                          <span className="hidden sm:inline"></span> : 
                           '--'}
+                          {pacesTable[vdotInput]?.i_400m ? 
+                            <span className="sm:hidden">{pacesTable[vdotInput]['i_400m']}s/w</span> : 
+                            '--'}
                       </div>
                     </div>
                   )}
@@ -771,16 +781,26 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                     <div className="text-gray-300 flex items-center">Repetition:</div>
                     <div className="font-mono text-base">
                       {pacesTable[vdotInput]?.r_320m ? (
-                        <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/Wingo</span>
+                        <>
+                          <span className="sm:hidden mb-1 block">{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/wingo</span>
+                          <span className="hidden sm:inline">
+                            {formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/wingo
+                            {pacesTable[vdotInput]?.r_400m && 
+                              <span className="text-xs text-gray-400 ml-1">({formatSecondsToTime(parseInt(pacesTable[vdotInput].r_400m))}/400)</span>}
+                          </span>
+                        </>
                       ) : (
-                        <span>No data</span>
+                        <span>-</span>
                       )}
                     </div>
                     <div></div>
                     <div className="font-mono text-xs italic text-gray-400 -mt-1 ml-[calc(28%-1rem)]">
                       {pacesTable[vdotInput]?.['r_400m'] ? 
-                        `${pacesTable[vdotInput]['r_400m']}s/400` : 
+                        <span className="hidden sm:inline"></span> : 
                         '--'}
+                          {pacesTable[vdotInput]?.['r_400m'] ? 
+                            <span className="sm:hidden">{pacesTable[vdotInput]['r_400m']}s/w</span> : 
+                            '--'}
                     </div>
                   </div>
                 </div>
@@ -843,7 +863,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                           <span className="text-gray-300">Interval:</span>
                           <div className="font-mono text-base">
                             {pacesTable[vdotInput]?.i_320m ? (
-                              <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}</span>
+                              <>
+                                <span className="sm:hidden mb-1 block">{formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/wingo</span>
+                                <span className="hidden sm:inline">
+                                  {formatSecondsToTime(parseInt(pacesTable[vdotInput].i_320m))}/wingo
+                                  {pacesTable[vdotInput]?.i_400m && 
+                                    <span className="text-xs text-gray-400 ml-1">({formatSecondsToTime(parseInt(pacesTable[vdotInput].i_400m))}/400)</span>}
+                                </span>
+                              </>
                             ) : (
                               <span>-</span>
                             )}
@@ -852,7 +879,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         <div className="text-right -mt-2.5">
                           <span className="font-mono text-xs italic text-gray-400">
                             {pacesTable[vdotInput]?.['i_400m'] ? 
-                              `${pacesTable[vdotInput]['i_400m']}s/400m` : 
+                              `${formatSecondsToTime(parseInt(pacesTable[vdotInput].i_400m))}/400` : 
                               '--'}
                           </span>
                         </div>
@@ -863,7 +890,14 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                         <span className="text-gray-300">Repetition:</span>
                         <div className="font-mono text-base">
                           {pacesTable[vdotInput]?.r_320m ? (
-                            <span>{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}</span>
+                            <>
+                              <span className="sm:hidden mb-1 block">{formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/wingo</span>
+                              <span className="hidden sm:inline">
+                                {formatSecondsToTime(parseInt(pacesTable[vdotInput].r_320m))}/wingo
+                                {pacesTable[vdotInput]?.r_400m && 
+                                  <span className="text-xs text-gray-400 ml-1">({formatSecondsToTime(parseInt(pacesTable[vdotInput].r_400m))}/400)</span>}
+                              </span>
+                            </>
                           ) : (
                             <span>-</span>
                           )}
@@ -872,7 +906,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                       <div className="text-right -mt-2.5">
                         <span className="font-mono text-xs italic text-gray-400">
                           {pacesTable[vdotInput]?.['r_400m'] ? 
-                            `${pacesTable[vdotInput]['r_400m']}s/400m` : 
+                            `${formatSecondsToTime(parseInt(pacesTable[vdotInput].r_400m))}/400` : 
                             '--'}
                         </span>
                       </div>
