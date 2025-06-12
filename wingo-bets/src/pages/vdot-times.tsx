@@ -553,7 +553,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">D<span className="text-cyan-400">AI</span>SY's VDOT Dashboard</h1>
-          <p className="text-xl text-gray-600">Based on J. Daniels & DAISY™ Maths</p>
+          <p className="text-xl text-gray-600">Based on J. Daniels-DAISY™ Maths</p>
         </div>
 
         {/* VDOT Card Generator */}
