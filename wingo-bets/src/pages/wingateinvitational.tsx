@@ -55,14 +55,19 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
             <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
               <div className="sm:text-center lg:text-left">
                 <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block">Wingate</span>
-                  <span className="block text-wingo-600">Invitational</span>
+                  <span className="block">Old Balance</span>
+                  <span className="block text-wingo-600">Wingate Invitational</span>
                 </h1>
+                <div className="mt-4 mb-6">
+                </div>
                 <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                   Sunday, September 7, 2025 at 07:20 AM
                 </p>
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                   Definitely not a mile and definitely not sold out.
+                </p>
+                <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0 italic">
+                  Presented by Old Balance.
                 </p>
               </div>
             </main>
@@ -88,25 +93,19 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  The Old Balance Wingate Invitational is the premier race of the 320 Track Club.
+                  The Old Balance Wingate Invitational is the flagship experience of the 320 Track Club.
                 </p>
-                <div className="bg-wingo-50 p-4 rounded-lg">
-                  <p className="font-medium text-wingo-700">Gate Unlock: <span className="text-[#E6C200] font-bold">W</span> 10</p>
-                </div>
                 <p className="text-lg">
                   All <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> collected from gate unlocks will be redistributed to top finishers. Additional <span className="inline-flex items-center">
+                  </span> unlocked at the gate will be reallocated to top finishers. Additional <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> can be earned (or lost) at the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
+                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
                 </p>
                 <p className="text-lg">
-                  Follow and use <span className="font-medium">#wingo320</span> in your social posts to share your excitement leading up to race day and celebrate all those <span className="inline-flex items-center">
-                    <span className="text-[#E6C200] font-bold">W</span>
-                    <span>INGO</span>
-                  </span>.
+                  This experience is made possible by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700">Old Balance</a>: Lace yourself. Before you face yourself.
                 </p>
               </div>
             </section>
@@ -154,6 +153,17 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
               </div>
+            </div>
+            <div className="mt-8">
+              <a href="/old-balance" className="block">
+                <div className="overflow-hidden">
+                  <img 
+                    src="/uploads/old_balance.png" 
+                    alt="Old Balance" 
+                    className="w-full h-auto -mb-[12.5%]"
+                  />
+                </div>
+              </a>
             </div>
           </div>
 
