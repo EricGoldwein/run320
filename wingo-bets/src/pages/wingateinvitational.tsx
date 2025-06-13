@@ -64,11 +64,11 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   Sunday, September 7, 2025 at 07:20 AM
                 </p>
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  <span className="italic">Definitely not a mile and definitely not sold out.</span>
+                  Definitely not a mile. Definitely not sold out.
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
-                  Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold">Old Balance</a>. "Lace yourself. Before you face yourself."
-                </p>
+                  Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold">Old Balance</a>.</p>
+               <p className="text-sm text-gray-600 mt-2 italic">"Lace yourself. Before you face yourself."</p>
               </div>
             </main>
           </div>
@@ -99,6 +99,14 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                 </p>
               </div>
             </section>
+
+            {/* Registration Section - Moved above Old Balance photo */}
+            <div className="mt-8 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
+              <p className="text-gray-600">
+                Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational
+              </p>
+            </div>
 
             <div className="mt-8">
               <a href="/old-balance" className="block">
@@ -133,11 +141,8 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Right Column - Registration Form */}
           <div className="lg:sticky lg:top-8 lg:self-start">
             <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
               {!isRegistering ? (
                 <div className="space-y-4">
-                  <p className="text-gray-600">
-                  </p>
                   <button
                     onClick={() => setIsRegistering(true)}
                     className="w-full bg-wingo-600 text-white px-4 py-2 rounded-md hover:bg-wingo-700 transition-colors"
@@ -277,9 +282,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                         </label>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to register
-                    </p>
+
                   </div>
 
                   {formData.activityType === 'upload' && (
