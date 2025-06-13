@@ -64,22 +64,14 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   Sunday, September 7, 2025 at 07:20 AM
                 </p>
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Definitely not a mile and definitely not sold out.
+                  <span className="italic">Definitely not a mile and definitely not sold out.</span>
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
-                  <span className="italic">This experience is made possible by </span>
-                  <span className="font-bold">Old Balance: Lace yourself. Before you face yourself.</span>
+                  Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold">Old Balance</a>. "Lace yourself. Before you face yourself."
                 </p>
               </div>
             </main>
           </div>
-        </div>
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-          <img
-            className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-            src="/wingate1.jpg"
-            alt="Wingate Track"
-          />
         </div>
       </div>
 
@@ -108,7 +100,19 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               </div>
             </section>
 
-            {/* Location Section */}
+            <div className="mt-8">
+              <a href="/old-balance" className="block">
+                <div className="overflow-hidden">
+                  <img 
+                    src="/old_balance.png" 
+                    alt="Old Balance" 
+                    className="w-full h-auto -mb-[12.5%]"
+                  />
+                </div>
+              </a>
+            </div>
+
+            {/* Location Section - Moved to bottom */}
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
               <h2 className="text-3xl font-bold mb-6 text-wingo-600">Location</h2>
               <div className="aspect-w-16 aspect-h-9">
@@ -124,51 +128,6 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                 />
               </div>
             </section>
-
-            {/* Prize Pool Section */}
-            <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Prize Pool</h2>
-              <div className="grid grid-cols-3 gap-4 md:gap-8">
-                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
-                  <div className="flex flex-col items-center">
-                    <div className="mb-4">
-                      <span className="text-4xl">🥇</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">1st</h3>
-                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
-                  <div className="flex flex-col items-center">
-                    <div className="mb-4">
-                      <span className="text-4xl">🥈</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">2nd</h3>
-                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
-                  <div className="flex flex-col items-center">
-                    <div className="mb-4">
-                      <span className="text-4xl">🥉</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">3rd</h3>
-                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-8">
-              <a href="/old-balance" className="block">
-                <div className="overflow-hidden">
-                  <img 
-                    src="/old_balance.png" 
-                    alt="Old Balance" 
-                    className="w-full h-auto -mb-[12.5%]"
-                  />
-                </div>
-              </a>
-            </div>
           </div>
 
           {/* Right Column - Registration Form */}
@@ -318,6 +277,9 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                         </label>
                       </div>
                     </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to register
+                    </p>
                   </div>
 
                   {formData.activityType === 'upload' && (
