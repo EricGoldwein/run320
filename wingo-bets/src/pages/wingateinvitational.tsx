@@ -103,7 +103,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
             <div className="mt-8 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
               <p className="text-gray-600 mb-4">
-                Online registration coming soon. Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
+                Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
               </p>
             </div>
 
@@ -146,11 +146,14 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                     onClick={() => setIsRegistering(true)}
                     className="w-full bg-wingo-600 text-white px-4 py-2 rounded-md hover:bg-wingo-700 transition-colors"
                   >
-                    Unlock the Gate
+                    Unlock the Gate (W 10)
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Online registration coming soon. Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
+                  </p>
                   <div>
                     <label htmlFor="name" className="block text-xs font-medium text-gray-700 mb-0.5">
                       Full Name
