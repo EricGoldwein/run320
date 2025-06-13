@@ -71,6 +71,14 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               </div>
             </main>
           </div>
+          {/* Old Balance Logo - Moved to right side */}
+          <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+            <img
+              className="h-full w-full object-cover"
+              src="/old_balance.png"
+              alt="Old Balance"
+            />
+          </div>
         </div>
       </div>
 
@@ -107,19 +115,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               </p>
             </div>
 
-            <div className="mt-8">
-              <a href="/old-balance" className="block">
-                <div className="overflow-hidden">
-                  <img 
-                    src="/old_balance.png" 
-                    alt="Old Balance" 
-                    className="w-full h-auto -mb-[12.5%]"
-                  />
-                </div>
-              </a>
-            </div>
-
-            {/* Location Section - Moved to bottom */}
+            {/* Location Section */}
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
               <h2 className="text-3xl font-bold mb-6 text-wingo-600">Location</h2>
               <div className="aspect-w-16 aspect-h-9">
