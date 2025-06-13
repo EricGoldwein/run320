@@ -72,17 +72,17 @@ const OldBalance: React.FC = () => {
                 <div className="mt-8">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">⚙️ Key Features</h3>
                   <ul className="space-y-4">
-                    <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 mr-2">DipNet Engine:</span>
-                      <span className="text-gray-700">Pattern-recognition trained on 400+ verified Wingo workouts.</span>
+                    <li className="block">
+                      <span className="font-semibold text-gray-900 block mb-1">DipNet Engine:</span>
+                      <span className="text-gray-700">Pattern-recognition trained on 4,000+ verified Wingo workouts.</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 mr-2">Divot Intercept Timestamp:</span>
+                    <li className="block">
+                      <span className="font-semibold text-gray-900 block mb-1">Divot Intercept Timestamp:</span>
                       <span className="text-gray-700">Knot your lace, not your pace.</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="font-semibold text-gray-900 mr-2">Zero Interface:</span>
-                      <span className="text-gray-700">No screen. No app. Nothing to untie. There is only precision.</span>
+                    <li className="block">
+                      <span className="font-semibold text-gray-900 block mb-1">Zero Interface:</span>
+                      <span className="text-gray-700">No screen. No app. Nothing to untie.</span>
                     </li>
                   </ul>
                 </div>
@@ -92,7 +92,7 @@ const OldBalance: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-900 mb-4">🛍️ Availability</h3>
                   <p className="text-2xl font-bold text-gray-900 mb-2">Price: <span className="text-[#E6C200]">W</span> 320</p>
                   <p className="text-gray-700 mb-4">
-                    🔓 Use code: <span className="font-mono font-bold">DAISY320</span> for 32% off<br />
+                    🔓 <span className="font-mono font-bold">DAISY320</span> for 32 <span className="text-[#E6C200]">W</span> off<br />
                   </p>
 
                   {!showWaitlist ? (
@@ -100,7 +100,7 @@ const OldBalance: React.FC = () => {
                       onClick={handlePurchase}
                       className="w-full bg-wingo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-wingo-700 transition-colors"
                     >
-                      Purchase Now
+                      Get Laced
                     </button>
                   ) : !isSubmitted ? (
                     <div className="mt-4">
