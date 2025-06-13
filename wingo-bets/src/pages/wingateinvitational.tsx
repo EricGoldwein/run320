@@ -66,8 +66,9 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                 <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                   Definitely not a mile and definitely not sold out.
                 </p>
-                <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0 italic">
-                  Presented by Old Balance.
+                <p className="text-sm text-gray-600 mt-2">
+                  <span className="italic">This experience is made possible by </span>
+                  <span className="font-bold">Old Balance: Lace yourself. Before you face yourself.</span>
                 </p>
               </div>
             </main>
@@ -87,7 +88,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Left Column - Event Details */}
           <div className="lg:col-span-2 space-y-8">
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Old Balance Wingate Invitational Details</h2>
+              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Old Balance Wingate Invitational</h2>
               <div className="space-y-4 text-gray-700">
                 <div className="bg-green-50 p-4 rounded-lg border border-green-100">
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
@@ -103,9 +104,6 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
                   </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
-                </p>
-                <p className="text-lg">
-                  This experience is made possible by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700">Old Balance</a>: Lace yourself. Before you face yourself.
                 </p>
               </div>
             </section>
@@ -130,27 +128,33 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
             {/* Prize Pool Section */}
             <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Prize Pool</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <span className="text-4xl">🥇</span>
+              <div className="grid grid-cols-3 gap-4 md:gap-8">
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
+                  <div className="flex flex-col items-center">
+                    <div className="mb-4">
+                      <span className="text-4xl">🥇</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">1st</h3>
+                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">1st Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
-                <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                    <span className="text-4xl">🥈</span>
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
+                  <div className="flex flex-col items-center">
+                    <div className="mb-4">
+                      <span className="text-4xl">🥈</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">2nd</h3>
+                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">2nd Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
-                <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center">
-                    <span className="text-4xl">🥉</span>
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 text-center">
+                  <div className="flex flex-col items-center">
+                    <div className="mb-4">
+                      <span className="text-4xl">🥉</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">3rd</h3>
+                    <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">3rd Place</h3>
-                  <p className="text-2xl font-bold text-wingo-600"># <span className="text-[#E6C200] font-bold">W</span>INGO</p>
                 </div>
               </div>
             </div>
@@ -170,7 +174,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Right Column - Registration Form */}
           <div className="lg:sticky lg:top-8 lg:self-start">
             <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span>10)</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
               {!isRegistering ? (
                 <div className="space-y-4">
                   <p className="text-gray-600">

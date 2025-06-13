@@ -58,7 +58,7 @@ const WingoWednesday: React.FC = () => {
             </div>
           </section>
           <div className="text-center mt-8">
-            <Link to="/events" className="inline-block px-6 py-3 bg-wingo-600 text-white font-bold rounded-lg shadow hover:bg-wingo-700 transition">Back to Experiences</Link>
+            <Link to="/experience" className="inline-block px-6 py-3 bg-wingo-600 text-white font-bold rounded-lg shadow hover:bg-wingo-700 transition">Back to Experiences</Link>
           </div>
         </div>
       </div>
