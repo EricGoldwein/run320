@@ -26,7 +26,7 @@ const OldBalance: React.FC = () => {
           <div className="bg-white overflow-hidden">
             <div className="relative">
               <img 
-                src="/uploads/old_balance.png" 
+                src="/old_balance.png" 
                 alt="Old Balance DivotAware Pro" 
                 className="w-full -mt-[10%] -mb-[10%]"
               />
