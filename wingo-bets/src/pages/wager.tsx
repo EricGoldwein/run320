@@ -78,7 +78,7 @@ export default function Wager({ user }: WagerProps) {
                 className="h-4 w-4 text-wingo-600 focus:ring-wingo-500"
               />
               <div className="flex-1">
-                <label className="text-base sm:text-lg font-medium text-gray-900">British Columbia</label>
+                <label className="text-base sm:text-lg font-medium text-gray-900">British Colombia</label>
                 <span className="ml-2 text-red-600 font-medium">-110</span>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function Wager({ user }: WagerProps) {
                 </div>
               </div>
               <hr style={{borderColor: 'rgba(255,255,255,0.13)', margin: '1.5rem 0'}} />
-              <div style={{fontSize: '0.95rem', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+              <div style={{fontSize: '0.95rem', marginBottom: '0.5rem'}}>
                 {username || 'Guest'} collects <b>
                   <span className="text-[#E6C200] font-bold">W</span>{' '}
                   {selectedOption === 'willy' 
@@ -196,7 +196,7 @@ export default function Wager({ user }: WagerProps) {
         {betSlip && (
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
-              Send screenshot to Coach D<span className="text-cyan-400">AI</span>SY™ at <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-medium">929-WAK-GRIG</a>
+              Send screenshot to D<span className="text-cyan-400">AI</span>SY™: <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-medium">929-WAK-GRIG</a>
             </p>
           </div>
         )}
