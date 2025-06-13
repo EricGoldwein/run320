@@ -68,7 +68,6 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
                   Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold">Old Balance</a>.</p>
-               <p className="text-sm text-gray-600 mt-2 italic">"Lace yourself. Before you face yourself."</p>
               </div>
             </main>
           </div>
@@ -80,13 +79,13 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
           {/* Left Column - Event Details */}
           <div className="lg:col-span-2 space-y-8">
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
-              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Old Balance Wingate Invitational</h2>
+              <h2 className="text-3xl font-bold mb-6 text-wingo-600">Wingate Invitational</h2>
               <div className="space-y-4 text-gray-700">
                 <div className="bg-green-50 p-4 rounded-lg border border-green-100">
                   <p className="font-medium text-green-700">This race is NOT SOLD OUT.</p>
                 </div>
                 <p className="text-lg">
-                  The Old Balance Wingate Invitational is the flagship experience of the 320 Track Club.
+                  The <span className="font-bold">Old Balance Wingate Invitational</span> is the flagship experience of the 320 Track Club.
                 </p>
                 <p className="text-lg">
                   All <span className="inline-flex items-center">
@@ -103,8 +102,8 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
             {/* Registration Section - Moved above Old Balance photo */}
             <div className="mt-8 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
-              <p className="text-gray-600">
-                Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational
+              <p className="text-gray-600 mb-4">
+                Online registration coming soon. Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
               </p>
             </div>
 
