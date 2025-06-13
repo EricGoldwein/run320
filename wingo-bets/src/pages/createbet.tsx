@@ -500,13 +500,17 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
                         }
                       }
                     }}
-                    className="w-24 h-[42px] px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                    className="h-[42px] px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                    required
                   >
                     {DISTANCES.map(d => (
-                      <option key={d.label} value={d.value}>{d.label.replace('k', 'K')}</option>
+                      <option key={d.value} value={d.value}>{d.label}</option>
                     ))}
                   </select>
-                  {distance === 'custom' && (
+                </div>
+                {distance === 'custom' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Custom Distance (km)</label>
                     <input
                       type="number"
                       value={customDistance}
@@ -525,17 +529,19 @@ export default function CreateBet({ user, onCreateBet }: CreateBetProps) {
                           }
                         }
                       }}
-                      className="mt-2 w-24 h-[42px] px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-                      placeholder="Enter distance in km"
+                      className="w-24 h-[42px] px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
+                      required
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-              <div className="hidden sm:flex items-end">
-                <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 text-center font-mono text-lg text-gray-800 h-[42px] flex items-center">
-                  Projection: {projectedTime ? <span className="font-bold">{projectedTime}</span> : <span className="text-gray-400">—</span>}
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={handleProject}
+                className="h-[42px] px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wingo-600 hover:bg-wingo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wingo-500"
+              >
+                Project
+              </button>
             </div>
 
             {projectedTime && (

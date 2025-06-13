@@ -6,7 +6,7 @@ const WingoWednesday: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <img src="http://localhost:5173/wingate1.jpg" alt="WINGO Wednesday" className="w-full rounded-xl shadow-lg object-cover h-64 mb-6" />
+          <img src="/wingate1.jpg" alt="WINGO Wednesday" className="w-full rounded-xl shadow-lg object-cover h-64 mb-6" />
           <h1 className="text-5xl font-bold mb-4 text-center text-wingo-600">WINGO Wednesdays</h1>
           <p className="text-xl text-center text-gray-700 mb-2">Biweekly at Wingate Track, Brooklyn</p>
           <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded mb-6 text-center">

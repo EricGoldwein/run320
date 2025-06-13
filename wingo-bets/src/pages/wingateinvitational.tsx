@@ -158,7 +158,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               <a href="/old-balance" className="block">
                 <div className="overflow-hidden">
                   <img 
-                    src="/uploads/old_balance.png" 
+                    src="/old_balance.png" 
                     alt="Old Balance" 
                     className="w-full h-auto -mb-[12.5%]"
                   />
