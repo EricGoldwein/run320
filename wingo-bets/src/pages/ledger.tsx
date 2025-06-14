@@ -166,11 +166,16 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         </div>
 
         {/* Wingate Invitational Alert */}
-        <div className="bg-wingo-50 border-l-4 border-wingo-600 p-4 mb-6 sm:max-w-[700px] max-w-[280px] mx-auto">
-          <p className="text-sm text-wingo-700">
-            Register for the <a href="/wingate-invitational" className="font-bold text-wingo-600 hover:text-wingo-700">Old Balance Wingate Invitational</a> - Sept 7, 2025
-          </p>
-        </div>
+        <a 
+          href="/wingate-invitational" 
+          className="block mb-6 sm:max-w-[700px] max-w-[280px] mx-auto transform hover:scale-[1.02] transition-all duration-200"
+        >
+          <div className="bg-gradient-to-br from-[#E6C200] via-[#FFD700] to-[#FFC107] px-5 sm:px-2 py-3 rounded-lg shadow-lg">
+            <p className="text-xs sm:text-sm text-gray-900 text-center font-medium">
+              Register for Old Balance Wingate Invitational on Sunday, Sept. 7<span className="hidden sm:inline">, 2025</span> (W 10)
+            </p>
+          </div>
+        </a>
 
         {/* Leaderboard */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
