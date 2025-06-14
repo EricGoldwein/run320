@@ -109,7 +109,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   The <span className="font-bold">Old Balance Wingate Invitational</span> is the flagship experience of the 320 Track Club.
                 </p>
                 <p className="text-lg">
-                  <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-bold">Message Coach DAISY™</a> (929-WAK-GRIG) to experience the Wingate Invitational.
+                  <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-bold">Message Coach DAISY™</a> (929-WAK-GRIG) to experience the OBWI.
                 </p>
                 <p className="text-lg">
                   All <span className="inline-flex items-center">
@@ -118,7 +118,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   </span> unlocked at the gate will be reallocated to top finishers. Additional <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
+                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700">WINGO Wager Market</a>.
                 </p>
               </div>
             </section>
@@ -128,7 +128,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               <h2 className="text-3xl font-bold mb-6 text-wingo-600">Location</h2>
               <div className="aspect-w-16 aspect-h-9">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.681823832913!2d-73.94705262370852!3d40.658941671401536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b64fb0f1bf1%3A0xec3b714e74e97824!2sWingate%20Park!5e0!3m2!1sen!2sus!4v1746618184061!5m2!1sen!2sus&zoom=17&maptype=satellite"
+                  src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=40.658941671401536,-73.94705262370852&zoom=18&maptype=satellite"
                   width="100%"
                   height="450"
                   style={{ border: 0 }}
