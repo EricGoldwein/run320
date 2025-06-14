@@ -102,18 +102,13 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   </span> unlocked at the gate will be reallocated to top finishers. Additional <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>.
+                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700 underline">WINGO Wager Market</a>. Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to register (W 10) for the Wingate Invitational.
+                </p>
+                <p className="text-gray-600 mb-4">
+                  Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
                 </p>
               </div>
             </section>
-
-            {/* Registration Section - Moved above Old Balance photo */}
-            <div className="mt-8 bg-white rounded-xl shadow-sm p-8 border border-gray-100">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Register (<span className="text-[#E6C200] font-bold">W</span> 10)</h2>
-              <p className="text-gray-600 mb-4">
-                Message <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700">Coach DAISY™</a> to experience the Wingate Invitational.
-              </p>
-            </div>
 
             {/* Location Section */}
             <section className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 transform hover:scale-[1.02] transition-transform duration-200">
