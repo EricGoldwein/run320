@@ -38,12 +38,12 @@ const OldBalance: React.FC = () => {
             <div className="prose prose-lg max-w-none">
 
               <p className="text-xl font-medium text-gray-900 mb-6">
-                You trained. You tapered. But did you anticipate the dip? The <span className="font-bold">Old Balance DivotAware 1081 Pro</span> is a predictive AI-powered awareness system calibrated for the 170-meter anomaly.
+                You trained. You tapered. But did you anticipate the dip? The <span className="font-bold">Old Balance DivotAware 1081 Pro</span> is a predictive AI-powered awareness system calibrated for the 140-meter anomaly.
               </p>
 
               <div className="space-y-6">
                 <p className="text-gray-700">
-                  At 53% of the Wingo — the moment when momentum wobbles and surface trust dissolves — most athletes rely on instinct. At <span className="font-bold">Old Balance</span>, we offer something smarter: adaptive effort anticipation.
+                  At 44% of the Wingo — the moment when momentum wobbles and surface trust dissolves — most athletes rely on instinct. At <span className="font-bold">Old Balance</span>, we offer something smarter: adaptive effort anticipation.
                 </p>
 
                 <p className="text-gray-700">
