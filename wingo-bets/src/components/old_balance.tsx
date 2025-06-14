@@ -38,12 +38,12 @@ const OldBalance: React.FC = () => {
             <div className="prose prose-lg max-w-none">
 
               <p className="text-xl font-medium text-gray-900 mb-6">
-                You trained. You tapered. But did you anticipate the dip? The <span className="font-bold">Old Balance DivotAware 1081 Pro</span> is a predictive AI-powered awareness system calibrated for the 140-meter anomaly.
+                You trained. You tapered. But did you anticipate the dip? The <span className="font-bold">Old Balance DivotAware 1081 Pro</span> is a predictive AI-powered lacing system calibrated for the notorious mid-Wingo anomaly.
               </p>
 
               <div className="space-y-6">
                 <p className="text-gray-700">
-                  At 44% of the Wingo — the moment when momentum wobbles and surface trust dissolves — most athletes rely on instinct. At <span className="font-bold">Old Balance</span>, we offer something smarter: adaptive effort anticipation.
+                  At the 140-meter mark of the Wingo — the moment when momentum wobbles and surface trust dissolves — most athletes rely on instinct. At <span className="font-bold">Old Balance</span>, we offer something smarter: adaptive effort anticipation.
                 </p>
 
                 <p className="text-gray-700">
@@ -92,7 +92,7 @@ const OldBalance: React.FC = () => {
                   <h3 className="text-xl font-bold text-gray-900 mb-4">🛍️ Availability</h3>
                   <p className="text-2xl font-bold text-gray-900 mb-2">Price: <span className="text-[#E6C200]">W</span> 320</p>
                   <p className="text-gray-700 mb-4">
-                    🔓 <span className="font-mono font-bold">DAISY320</span> for 32 <span className="text-[#E6C200]">W</span> off<br />
+                    🔓 <span className="font-mono font-bold">DAISY320</span> for <span className="text-[#E6C200]">W</span> 32 off<br />
                   </p>
 
                   {!showWaitlist ? (
