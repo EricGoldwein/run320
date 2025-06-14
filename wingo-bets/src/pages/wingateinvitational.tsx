@@ -128,7 +128,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
               <h2 className="text-3xl font-bold mb-6 text-wingo-600">Location</h2>
               <div className="aspect-w-16 aspect-h-9">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.681823832913!2d-73.94705262370852!3d40.658941671401536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b64fb0f1bf1%3A0xec3b714e74e97824!2sWingate%20Park!5e0!3m2!1sen!2sus!4v1746618184061!5m2!1sen!2sus&zoom=18&maptype=satellite"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.681823832913!2d-73.94705262370852!3d40.658941671401536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b64fb0f1bf1%3A0xec3b714e74e97824!2sWingate%20Park!5e0!3m2!1sen!2sus!4v1746618184061!5m2!1sen!2sus&zoom=19&maptype=satellite&center=40.658941671401536,-73.94705262370852"
                   width="100%"
                   height="450"
                   style={{ border: 0 }}
