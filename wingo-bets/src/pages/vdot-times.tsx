@@ -995,7 +995,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                       </th>
                     </tr>
                     <tr className="border-b border-gray-200">
-                      <th className="sticky left-0 bg-white z-50 px-4 py-2 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
+                      <th className="sticky left-0 bg-white/30 z-10 px-4 py-2 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
                         VDOT
                       </th>
                       {/* Repetition Paces Columns */}

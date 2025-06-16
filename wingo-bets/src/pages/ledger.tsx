@@ -172,7 +172,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         >
           <div className="bg-gradient-to-br from-[#E6C200] via-[#FFD700] to-[#FFC107] px-5 sm:px-2 py-3 rounded-lg shadow-lg">
             <p className="text-xs sm:text-sm text-gray-900 text-center font-medium">
-              Register for Old Balance Wingate Invitational (Sunday, Sept. 7<span className="hidden sm:inline">, 2025)</span>
+              Register for Old Balance Wingate Invitational (Sunday, Sept. 7<span className="hidden sm:inline">, 2025</span>)
             </p>
           </div>
         </a>

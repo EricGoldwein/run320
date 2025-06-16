@@ -107,7 +107,7 @@ export default function Wager({ user }: WagerProps) {
                   <input
                     type="number"
                     id="betAmount"
-                    value={betAmount}
+                    value={betAmount || ''}
                     onChange={handleBetAmountChange}
                     min="1"
                     step="1"
