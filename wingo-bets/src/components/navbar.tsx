@@ -122,8 +122,8 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <Link to="/daisy-vdot-dash" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Daisy VDot Dash
                     </Link>
-                    <Link to="/wlog" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      WINGO Log
+                    <Link to="/converter" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Wingo Converter
                     </Link>
                   </div>
                 </div>
@@ -173,9 +173,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               </div>
             ) :
               <>
-                <Link to="/login" className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium">
-                  Login
-                </Link>
                 <Link to="/register" className="bg-wingo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-wingo-700">
                   Register
                 </Link>
@@ -197,16 +194,16 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white border-t border-gray-200 shadow-md px-4 py-4 space-y-2">
           <button
+            onClick={() => handleMobileNav('/leaderboard')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Leaderboard
+          </button>
+          <button
             onClick={() => handleMobileNav('/raq')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             RAQ
-          </button>
-          <button
-            onClick={() => handleMobileNav('/ledger')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Leaderboard
           </button>
           <button
             onClick={() => handleMobileNav('/experience')}
@@ -215,10 +212,16 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             Experience
           </button>
           <button
-            onClick={() => handleMobileNav('/vdot-times')}
+            onClick={() => handleMobileNav('/daisy-vdot-dash')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             D<span className="text-[#00bcd4]">AI</span>SY™ VDOT Dashboard
+          </button>
+          <button
+            onClick={() => handleMobileNav('/wlog')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Log
           </button>
           <button
             onClick={() => handleMobileNav('/converter')}
@@ -227,16 +230,16 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             Wingo Converter
           </button>
           <button
-            onClick={() => handleMobileNav('/mine')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Mine
-          </button>
-          <button
             onClick={() => handleMobileNav('/wager')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             Wager
+          </button>
+          <button
+            onClick={() => handleMobileNav('/mine')}
+            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+          >
+            Mine
           </button>
           <button
             onClick={() => handleMobileNav('/vote')}
@@ -244,37 +247,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
           >
             Vote
           </button>
-          {user ? (
-            <>
-              <button
-                onClick={() => handleMobileNav('/wallet')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Wallet
-              </button>
-              <button
-                onClick={onLogout}
-                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded-md"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => handleMobileNav('/login')}
-                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => handleMobileNav('/register')}
-                className="block w-full text-left px-4 py-2 text-white bg-wingo-600 hover:bg-wingo-700 rounded-md"
-              >
-                Register
-              </button>
-            </>
-          )}
         </div>
       )}
     </nav>
