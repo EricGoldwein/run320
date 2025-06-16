@@ -155,11 +155,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <span className="font-bold text-base sm:text-base">{leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0)}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
-              <span className="text-gray-600 text-base sm:text-base">Total <span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>
+              <span className="text-gray-600 text-base sm:text-base">Total <span className="text-[#E6C200] font-bold">W</span> in World:</span>
               <span className="font-bold text-base sm:text-base">{totalWingo.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
-              <span className="text-gray-600 text-base sm:text-base">Distance Covered:</span>
+              <span className="text-gray-600 text-base sm:text-base">Wingo Footprint:</span>
               <span className="font-bold text-base sm:text-base">{totalKilometers} km</span>
             </div>
           </div>
