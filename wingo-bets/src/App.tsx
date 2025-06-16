@@ -176,7 +176,7 @@ function App() {
                 <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/daisy_math" element={<DaisyMath />} />
                 <Route path="/old-balance" element={<OldBalance />} />
-                <Route path="/wingo-log" element={<WingoLog />} />
+                <Route path="/wlog" element={<WingoLog />} />
               </Routes>
             </main>
             <Footer />

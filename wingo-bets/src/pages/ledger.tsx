@@ -301,9 +301,9 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               Updated: {lastUpdated} 🐎🤖🪽8️⃣
             </p>
           )}
-          <a href="/wingo-log" className="text-[10px] sm:text-xs text-wingo-600 hover:text-wingo-700">
-            See WINGO log
-          </a>
+          <Link to="/wlog" className="text-blue-600 hover:text-blue-800">
+            WINGO Log
+          </Link>
         </div>
       </div>
     </div>

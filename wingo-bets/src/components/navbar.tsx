@@ -84,7 +84,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <Link to="/ledger" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Ledger
                     </Link>
-                    <Link to="/wingo-log" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link to="/wlog" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Log
                     </Link>
                     <Link to="/wager" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -122,7 +122,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <Link to="/daisy-vdot-dash" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Daisy VDot Dash
                     </Link>
-                    <Link to="/wingo-log" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link to="/wlog" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       WINGO Log
                     </Link>
                   </div>
