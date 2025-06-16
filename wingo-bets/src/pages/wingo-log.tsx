@@ -185,7 +185,7 @@ const WingoLog = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Page Title */}
         <div className="text-left sm:text-center mb-4 sm:mb-6 relative">
-          <h1 className="text-4xl font-bold text-gray-900 mb-0.5">
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-0.5">
             <span className="inline-flex items-baseline">
               <span className="text-[#E6C200] font-bold">W</span>
               <span>INGO</span>
@@ -195,7 +195,7 @@ const WingoLog = () => {
             Updated: {lastUpdated} 🐎🤖🪽8️⃣
           </p>
           
-          <div className="absolute -top-4 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
+          <div className="absolute -top-2 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
             <div className="flex flex-col text-[8px] sm:text-[10px]">
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (
