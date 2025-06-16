@@ -155,7 +155,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <span className="font-bold text-base sm:text-base">{leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0)}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
-              <span className="text-gray-600 text-base sm:text-base">Total <span className="text-[#E6C200] font-bold">W</span> in World:</span>
+              <span className="text-gray-600 text-base sm:text-base"><span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>
               <span className="font-bold text-base sm:text-base">{totalWingo.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
@@ -301,7 +301,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               Updated: {lastUpdated} 🐎🤖🪽8️⃣
             </p>
           )}
-          <Link to="/wlog" className="text-blue-600 hover:text-blue-800">
+          <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="text-blue-600 hover:text-blue-800">
             WINGO Log
           </Link>
         </div>

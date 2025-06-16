@@ -195,7 +195,7 @@ const WingoLog = () => {
             Updated: {lastUpdated} 🐎🤖🪽8️⃣
           </p>
           
-          <div className="absolute -top-8 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
+          <div className="absolute -top-12 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
             <div className="flex flex-col text-[8px] sm:text-[10px]">
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (

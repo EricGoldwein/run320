@@ -194,7 +194,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white border-t border-gray-200 shadow-md px-4 py-4 space-y-2">
           <button
-            onClick={() => handleMobileNav('/leaderboard')}
+            onClick={() => handleMobileNav('/ledger')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             Leaderboard
@@ -212,7 +212,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             Experience
           </button>
           <button
-            onClick={() => handleMobileNav('/daisy-vdot-dash')}
+            onClick={() => handleMobileNav('/vdot-times')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             D<span className="text-[#00bcd4]">AI</span>SY™ VDOT Dashboard
