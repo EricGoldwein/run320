@@ -26,6 +26,7 @@ import WingoWednesday from './pages/wingo-wednesday';
 import Vote from './pages/vote';
 import DaisyMath from './pages/daisy_math';
 import OldBalance from './components/old_balance';
+import WingoLog from './pages/wingo-log';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -175,6 +176,7 @@ function App() {
                 <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/daisy_math" element={<DaisyMath />} />
                 <Route path="/old-balance" element={<OldBalance />} />
+                <Route path="/wingo-log" element={<WingoLog />} />
               </Routes>
             </main>
             <Footer />

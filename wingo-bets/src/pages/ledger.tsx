@@ -297,10 +297,13 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             to start mining
           </p>
           {lastUpdated && (
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-2 italic">
-              Last updated: {lastUpdated} 🐎🤖🪽8️⃣
+            <p className="text-[10px] sm:text-xs text-gray-500 italic">
+              Updated: {lastUpdated} 🐎🤖🪽8️⃣
             </p>
           )}
+          <a href="/wingo-log" className="text-[10px] sm:text-xs text-wingo-600 hover:text-wingo-700">
+            See WINGO log
+          </a>
         </div>
       </div>
     </div>

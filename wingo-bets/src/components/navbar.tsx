@@ -80,30 +80,23 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               </button>
               {activeDropdown === 'wingo' &&
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <button
-                    onClick={() => handleNavigation('/mine')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Mine
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/ledger')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Ledger
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/wager')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Wager
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/vote')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Vote
-                  </button>
+                  <div className="py-2">
+                    <Link to="/ledger" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Ledger
+                    </Link>
+                    <Link to="/wingo-log" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Log
+                    </Link>
+                    <Link to="/wager" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Wager
+                    </Link>
+                    <Link to="/mine" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Mine
+                    </Link>
+                    <Link to="/vote" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Vote
+                    </Link>
+                  </div>
                 </div>
               }
             </div>
@@ -125,21 +118,14 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               </button>
               {activeDropdown === 'daisy' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                  <button
-                    onClick={() => handleNavigation('/vdot-times')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    VDOT Dashboard
-                  </button>
-                  <button
-                    onClick={() => handleNavigation('/converter')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <span className="inline-flex items-center">
-                      <span className="text-[#E6C200] font-bold">W</span>
-                      <span>INGO</span>
-                    </span> Converter
-                  </button>
+                  <div className="py-2">
+                    <Link to="/daisy-vdot-dash" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Daisy VDot Dash
+                    </Link>
+                    <Link to="/wingo-log" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      WINGO Log
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
