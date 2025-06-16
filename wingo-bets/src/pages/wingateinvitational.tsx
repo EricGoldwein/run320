@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from '../types';
+import type { User } from '../types';
 
 interface RegistrationForm {
   name: string;
@@ -14,7 +14,7 @@ interface RegistrationForm {
 }
 
 interface WingateInvitationalProps {
-  user: User;
+  user: User | null;
 }
 
 const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
@@ -30,6 +30,10 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
     activityProof: '',
     activityType: ''
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
