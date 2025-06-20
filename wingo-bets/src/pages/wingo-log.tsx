@@ -208,7 +208,7 @@ const WingoLog = () => {
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (
                 <span key={index} className="text-gray-600">
-                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date), 'M-d-yy')})
+                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date), 'M.d.yy')})
                 </span>
               ))}
             </div>
@@ -280,8 +280,8 @@ const WingoLog = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredAndSortedEntries.map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                      {format(new Date(entry.date), 'M-dd-yy')}
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
+                      {format(new Date(entry.date), 'M.dd.yy')}
                     </td>
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.username}
