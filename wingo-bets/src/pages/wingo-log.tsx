@@ -253,7 +253,7 @@ const WingoLog = () => {
                     onClick={() => handleSort('wingoMined')}
                   >
                     <span className="hidden sm:inline">Δ WINGO</span>
-                    <span className="sm:hidden">ΔW</span>
+                    <span className="sm:hidden">Δ W</span>
                     {sortField === 'wingoMined' && (
                       <span className="ml-1">
                         {sortDirection === 'asc' ? '↑' : '↓'}
