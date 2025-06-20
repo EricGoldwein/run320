@@ -14,6 +14,23 @@ interface LogEntry {
   category: string;
 }
 
+// Helper function to parse dates with periods (e.g., "6.20.25")
+const parseDateWithPeriods = (dateStr: string): Date => {
+  if (!dateStr) return new Date(0);
+  
+  // Handle dates like "6.20.25" (M.dd.yy format)
+  const parts = dateStr.split('.');
+  if (parts.length === 3) {
+    const month = parseInt(parts[0]) - 1; // Month is 0-indexed
+    const day = parseInt(parts[1]);
+    const year = 2000 + parseInt(parts[2]); // Assume 20xx for yy format
+    return new Date(year, month, day);
+  }
+  
+  // Fallback to regular Date parsing
+  return new Date(dateStr);
+};
+
 const WingoLog = () => {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,8 +129,8 @@ const WingoLog = () => {
   const filteredAndSortedEntries = entries
     .sort((a, b) => {
       if (sortField === 'date') {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
+        const dateA = new Date(a.date.replace(/\./g, '/'));
+        const dateB = new Date(b.date.replace(/\./g, '/'));
         const dateComparison = sortDirection === 'asc' 
           ? dateA.getTime() - dateB.getTime()
           : dateB.getTime() - dateA.getTime();
