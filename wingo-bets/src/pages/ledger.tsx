@@ -141,7 +141,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       else if (sortField === 'totalMined') result = b.totalMined - a.totalMined;
       else if (sortField === 'distance') result = b.distance - a.distance;
       else if (sortField === 'votingShare') result = b.votingShare - a.votingShare;
-      else if (sortField === 'lastMined') result = new Date(b.lastMined.replace(/\./g, '/')).getTime() - new Date(a.lastMined.replace(/\./g, '/')).getTime();
+      else if (sortField === 'lastMined') result = new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
       if (sortDirection === 'asc') result = -result;
       return result;
     });
@@ -208,8 +208,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       }
       
       // If WINGO mined is equal, sort by date (ascending - older dates first)
-      const dateA = new Date(a.date.replace(/\./g, '/'));
-      const dateB = new Date(b.date.replace(/\./g, '/'));
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA.getTime() - dateB.getTime();
       }
@@ -413,9 +413,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                               <span className="hidden sm:inline"> <span className="text-[6px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span></span>
                             </div>
                           </td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
-                            {entry.lastMined ? format(new Date(entry.lastMined.replace(/\./g, '/')), 'M.dd.yy') : '--'}
-                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.lastMined}</td>
                         </tr>
                       ))
                     ) : (
@@ -543,8 +541,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                   {logEntries
                     .sort((a, b) => {
                       if (logSortField === 'date') {
-                        const dateA = new Date(a.date.replace(/\./g, '/'));
-                        const dateB = new Date(b.date.replace(/\./g, '/'));
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
                         const dateComparison = logSortDirection === 'asc' 
                           ? dateA.getTime() - dateB.getTime()
                           : dateB.getTime() - dateA.getTime();
@@ -572,7 +570,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                          {format(new Date(entry.date.replace(/\./g, '/')), 'M.dd.yy')}
+                          {format(new Date(entry.date), 'M.dd.yy')}
                         </td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>

@@ -112,8 +112,8 @@ const WingoLog = () => {
   const filteredAndSortedEntries = entries
     .sort((a, b) => {
       if (sortField === 'date') {
-        const dateA = new Date(a.date.replace(/\./g, '/'));
-        const dateB = new Date(b.date.replace(/\./g, '/'));
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
         const dateComparison = sortDirection === 'asc' 
           ? dateA.getTime() - dateB.getTime()
           : dateB.getTime() - dateA.getTime();
@@ -151,8 +151,8 @@ const WingoLog = () => {
       }
       
       // If WINGO mined is equal, sort by date (ascending - older dates first)
-      const dateA = new Date(a.date.replace(/\./g, '/'));
-      const dateB = new Date(b.date.replace(/\./g, '/'));
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA.getTime() - dateB.getTime();
       }
@@ -208,7 +208,7 @@ const WingoLog = () => {
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (
                 <span key={index} className="text-gray-600">
-                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date.replace(/\./g, '/')), 'M.d.yy')})
+                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date), 'M.d.yy')})
                 </span>
               ))}
             </div>
@@ -281,7 +281,7 @@ const WingoLog = () => {
                 {filteredAndSortedEntries.map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                      {format(new Date(entry.date.replace(/\./g, '/')), 'M.dd.yy')}
+                      {format(new Date(entry.date), 'M.dd.yy')}
                     </td>
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.username}
