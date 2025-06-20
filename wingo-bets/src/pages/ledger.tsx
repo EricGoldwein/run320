@@ -29,23 +29,6 @@ interface LogEntry {
   category: string;
 }
 
-// Helper function to parse dates with periods (e.g., "6.20.25")
-const parseDateWithPeriods = (dateStr: string): Date => {
-  if (!dateStr) return new Date(0);
-  
-  // Handle dates like "6.20.25" (M.dd.yy format)
-  const parts = dateStr.split('.');
-  if (parts.length === 3) {
-    const month = parseInt(parts[0]) - 1; // Month is 0-indexed
-    const day = parseInt(parts[1]);
-    const year = 2000 + parseInt(parts[2]); // Assume 20xx for yy format
-    return new Date(year, month, day);
-  }
-  
-  // Fallback to regular Date parsing
-  return new Date(dateStr);
-};
-
 const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -158,7 +141,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       else if (sortField === 'totalMined') result = b.totalMined - a.totalMined;
       else if (sortField === 'distance') result = b.distance - a.distance;
       else if (sortField === 'votingShare') result = b.votingShare - a.votingShare;
-      else if (sortField === 'lastMined') result = parseDateWithPeriods(b.lastMined).getTime() - parseDateWithPeriods(a.lastMined).getTime();
+      else if (sortField === 'lastMined') result = new Date(b.lastMined.replace(/\./g, '/')).getTime() - new Date(a.lastMined.replace(/\./g, '/')).getTime();
       if (sortDirection === 'asc') result = -result;
       return result;
     });
@@ -225,8 +208,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       }
       
       // If WINGO mined is equal, sort by date (ascending - older dates first)
-      const dateA = parseDateWithPeriods(a.date);
-      const dateB = parseDateWithPeriods(b.date);
+      const dateA = new Date(a.date.replace(/\./g, '/'));
+      const dateB = new Date(b.date.replace(/\./g, '/'));
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA.getTime() - dateB.getTime();
       }
@@ -431,7 +414,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                             </div>
                           </td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
-                            {entry.lastMined ? format(parseDateWithPeriods(entry.lastMined), 'M.dd.yy') : '--'}
+                            {entry.lastMined ? format(new Date(entry.lastMined.replace(/\./g, '/')), 'M.dd.yy') : '--'}
                           </td>
                         </tr>
                       ))
@@ -589,7 +572,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                          {format(parseDateWithPeriods(entry.date), 'M.dd.yy')}
+                          {format(new Date(entry.date.replace(/\./g, '/')), 'M.dd.yy')}
                         </td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>

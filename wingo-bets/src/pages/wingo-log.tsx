@@ -14,23 +14,6 @@ interface LogEntry {
   category: string;
 }
 
-// Helper function to parse dates with periods (e.g., "6.20.25")
-const parseDateWithPeriods = (dateStr: string): Date => {
-  if (!dateStr) return new Date(0);
-  
-  // Handle dates like "6.20.25" (M.dd.yy format)
-  const parts = dateStr.split('.');
-  if (parts.length === 3) {
-    const month = parseInt(parts[0]) - 1; // Month is 0-indexed
-    const day = parseInt(parts[1]);
-    const year = 2000 + parseInt(parts[2]); // Assume 20xx for yy format
-    return new Date(year, month, day);
-  }
-  
-  // Fallback to regular Date parsing
-  return new Date(dateStr);
-};
-
 const WingoLog = () => {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,8 +151,8 @@ const WingoLog = () => {
       }
       
       // If WINGO mined is equal, sort by date (ascending - older dates first)
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+      const dateA = new Date(a.date.replace(/\./g, '/'));
+      const dateB = new Date(b.date.replace(/\./g, '/'));
       if (dateA.getTime() !== dateB.getTime()) {
         return dateA.getTime() - dateB.getTime();
       }
@@ -225,7 +208,7 @@ const WingoLog = () => {
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (
                 <span key={index} className="text-gray-600">
-                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date), 'M.d.yy')})
+                  {record.rank}. {record.username}: {record.wingoMined} W ({format(new Date(record.date.replace(/\./g, '/')), 'M.d.yy')})
                 </span>
               ))}
             </div>
@@ -298,7 +281,7 @@ const WingoLog = () => {
                 {filteredAndSortedEntries.map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                      {format(new Date(entry.date), 'M.dd.yy')}
+                      {format(new Date(entry.date.replace(/\./g, '/')), 'M.dd.yy')}
                     </td>
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.username}
