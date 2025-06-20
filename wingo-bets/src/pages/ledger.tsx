@@ -195,12 +195,14 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 </div>
               </div>
               {/* Title center */}
-              <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0">
-                <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-0.5">
-                  <span className="inline-flex items-baseline">
+              <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0 text-center">
+                <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-0.5">
+                  <span className="hidden sm:inline-flex items-baseline whitespace-nowrap">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> Leaderboard
+                  </span>
+                  <span className="sm:hidden whitespace-nowrap">Leaderboard</span>
+                  <span className="hidden sm:inline"> Leaderboard</span>
                 </h1>
                 <p className="sm:hidden text-[10px] text-gray-500 italic mt-1">
                   <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="hover:text-gray-700 underline decoration-dotted underline-offset-2">
@@ -245,8 +247,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('balance')}
                     >
-                      <span className="hidden sm:inline">WINGO</span>
-                      <span className="sm:hidden">WINGO</span>
+                      <span className="hidden sm:inline">WINGO Balance</span>
+                      <span className="sm:hidden">WINGO Balance</span>
                     </th>
                     <th 
                       scope="col" 
