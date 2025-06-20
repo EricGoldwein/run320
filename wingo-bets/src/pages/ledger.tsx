@@ -37,49 +37,9 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         // Get the last updated time from F2 (row 1, column 5)
         const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
         
-        console.log('Raw last updated cell value:', lastUpdatedCell);
-        
         if (lastUpdatedCell) {
-          // Try to parse the date string - it might be in a specific format
-          let date;
-          
-          // First try parsing as is
-          date = new Date(lastUpdatedCell);
-          
-          // If that doesn't work, try different formats
-          if (isNaN(date.getTime())) {
-            // Try parsing as MM/DD/YYYY HH:MM format
-            const parts = lastUpdatedCell.split(' ');
-            if (parts.length >= 2) {
-              const datePart = parts[0];
-              const timePart = parts[1];
-              const dateParts = datePart.split('/');
-              if (dateParts.length === 3) {
-                const month = parseInt(dateParts[0]) - 1; // JS months are 0-indexed
-                const day = parseInt(dateParts[1]);
-                const year = parseInt(dateParts[2]);
-                const timeParts = timePart.split(':');
-                if (timeParts.length === 2) {
-                  const hours = parseInt(timeParts[0]);
-                  const minutes = parseInt(timeParts[1]);
-                  date = new Date(year, month, day, hours, minutes);
-                }
-              }
-            }
-          }
-          
-          console.log('Final parsed date:', date);
-          
-          if (!isNaN(date.getTime())) {
-            const formattedDate = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear().toString().slice(-2)}`;
-            const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-            console.log('Formatted result:', `${formattedDate}, ${formattedTime} ET`);
-            setLastUpdated(`${formattedDate}, ${formattedTime} ET`);
-          } else {
-            // If we can't parse it, just show the raw value
-            console.log('Could not parse date, showing raw value');
-            setLastUpdated(`Updated: ${lastUpdatedCell}`);
-          }
+          // Just use the raw value from F2 - it's already formatted by the App Script
+          setLastUpdated(lastUpdatedCell);
         }
 
         // Fetch the leaderboard data
@@ -236,13 +196,22 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               </div>
               {/* Title center */}
               <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0">
-                <h2 className="text-base sm:text-2xl font-bold text-gray-900 text-center whitespace-nowrap">WINGO Leaderboard</h2>
-                <a 
-                  href="/raq" 
-                  className="text-xs text-wingo-600 hover:text-wingo-500 italic mt-1 hidden sm:block"
-                >
-                  WTF is WINGO?
-                </a>
+                <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-0.5">
+                  <span className="inline-flex items-baseline">
+                    <span className="text-[#E6C200] font-bold">W</span>
+                    <span>INGO</span>
+                  </span> Leaderboard
+                </h1>
+                <p className="sm:hidden text-[10px] text-gray-500 italic mt-1">
+                  <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="hover:text-gray-700 underline decoration-dotted underline-offset-2">
+                    Latest Ransactions
+                  </Link>
+                </p>
+                <p className="hidden sm:block text-xs text-gray-500 italic mt-1">
+                  <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="hover:text-gray-700 underline decoration-dotted underline-offset-2">
+                    Latest Ransactions
+                  </Link>
+                </p>
               </div>
               {/* DAISY badge right */}
               <div className="flex-1 flex justify-end">
@@ -276,7 +245,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                       onClick={() => handleSort('balance')}
                     >
-                      WINGO
+                      <span className="hidden sm:inline">WINGO</span>
+                      <span className="sm:hidden">WINGO</span>
                     </th>
                     <th 
                       scope="col" 
@@ -336,14 +306,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             </a>{' '}
             to start mining
           </p>
-          {lastUpdated && (
-            <p className="text-[10px] sm:text-xs text-gray-500 italic">
-              Updated: {lastUpdated} 🐎🤖🪽8️⃣
-            </p>
-          )}
-          <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="text-xs text-gray-500 hover:text-gray-700 font-medium underline decoration-dotted underline-offset-2">
-            Latest Ransactions
-          </Link>
+          <p className="text-[10px] sm:text-xs text-gray-500 italic sm:mt-1">
+            {lastUpdated && (
+              <>Updated: {lastUpdated} 🐎🤖🪽8️⃣</>
+            )}
+          </p>
         </div>
       </div>
     </div>

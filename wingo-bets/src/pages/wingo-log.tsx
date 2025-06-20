@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ArrowUpDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface LogEntry {
   id: number;
@@ -51,49 +52,9 @@ const WingoLog = () => {
         // Get the last updated time from F2 (row 1, column 5)
         const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
         
-        console.log('Raw last updated cell value:', lastUpdatedCell);
-        
         if (lastUpdatedCell) {
-          // Try to parse the date string - it might be in a specific format
-          let date;
-          
-          // First try parsing as is
-          date = new Date(lastUpdatedCell);
-          
-          // If that doesn't work, try different formats
-          if (isNaN(date.getTime())) {
-            // Try parsing as MM/DD/YYYY HH:MM format
-            const parts = lastUpdatedCell.split(' ');
-            if (parts.length >= 2) {
-              const datePart = parts[0];
-              const timePart = parts[1];
-              const dateParts = datePart.split('/');
-              if (dateParts.length === 3) {
-                const month = parseInt(dateParts[0]) - 1; // JS months are 0-indexed
-                const day = parseInt(dateParts[1]);
-                const year = parseInt(dateParts[2]);
-                const timeParts = timePart.split(':');
-                if (timeParts.length === 2) {
-                  const hours = parseInt(timeParts[0]);
-                  const minutes = parseInt(timeParts[1]);
-                  date = new Date(year, month, day, hours, minutes);
-                }
-              }
-            }
-          }
-          
-          console.log('Final parsed date:', date);
-          
-          if (!isNaN(date.getTime())) {
-            const formattedDate = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear().toString().slice(-2)}`;
-            const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-            console.log('Formatted result:', `${formattedDate}, ${formattedTime} ET`);
-            setLastUpdated(`${formattedDate}, ${formattedTime} ET`);
-          } else {
-            // If we can't parse it, just show the raw value
-            console.log('Could not parse date, showing raw value');
-            setLastUpdated(`Updated: ${lastUpdatedCell}`);
-          }
+          // Just use the raw value from F2 - it's already formatted by the App Script
+          setLastUpdated(lastUpdatedCell);
         }
 
         // Now fetch the WINGO log data
@@ -243,7 +204,7 @@ const WingoLog = () => {
           </p>
           
           <div className="absolute -top-12 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
-            <div className="flex flex-col text-[8px] sm:text-[10px]">
+            <div className="flex flex-col text-[8px] sm:text-[10px] sm:text-left">
               <span className="text-gray-600 mb-0.5 font-medium border-b border-gray-100 pb-0.5">Top Mining Sessions</span>
               {getTopRecords().slice(0, 3).map((record, index) => (
                 <span key={index} className="text-gray-600">
@@ -251,6 +212,17 @@ const WingoLog = () => {
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Wingo Leaderboard Button - Desktop Only */}
+          <div className="hidden sm:block absolute -top-2 sm:top-6 left-4">
+            <Link 
+              to="/ledger" 
+              onClick={() => window.scrollTo(0, 0)}
+              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            >
+              Wingo Leaderboard
+            </Link>
           </div>
         </div>
 
@@ -260,7 +232,7 @@ const WingoLog = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th 
-                    className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('date')}
                   >
                     Date
@@ -270,18 +242,18 @@ const WingoLog = () => {
                       </span>
                     )}
                   </th>
-                  <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                     W-ID
                   </th>
-                  <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Runner
                   </th>
                   <th 
-                    className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('wingoMined')}
                   >
                     <span className="hidden sm:inline">Δ WINGO</span>
-                    <span className="sm:hidden">WINGO</span>
+                    <span className="sm:hidden">ΔW</span>
                     {sortField === 'wingoMined' && (
                       <span className="ml-1">
                         {sortDirection === 'asc' ? '↑' : '↓'}
@@ -289,7 +261,7 @@ const WingoLog = () => {
                     )}
                   </th>
                   <th 
-                    className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('km')}
                   >
                     <span className="hidden sm:inline">KM Logged</span>
@@ -300,7 +272,7 @@ const WingoLog = () => {
                       </span>
                     )}
                   </th>
-                  <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tag
                   </th>
                 </tr>
@@ -308,25 +280,25 @@ const WingoLog = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredAndSortedEntries.map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                       {format(new Date(entry.date), 'M-dd-yy')}
                     </td>
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                       {entry.fullId}
                       {entry.initiation && (
                         <span className="ml-1 text-[#E6C200]">🚀</span>
                       )}
                     </td>
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-900">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.username}
                     </td>
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-900">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
                     </td>
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                       {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
                     </td>
-                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
+                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                       {entry.category}
                     </td>
                   </tr>
