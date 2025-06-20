@@ -66,8 +66,8 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   <div className="w-16 h-px bg-gray-300 mx-auto lg:mx-0"></div>
                 </div>
                 <div className="space-y-3">
-                  <p className="text-lg sm:text-xl text-gray-600 font-medium">
-                    Sunday, September 7, 2025 at 07:20 AM
+                  <p className="text-base sm:text-xl text-gray-600 font-medium">
+                    Sunday, September 7, 2025 at 7:20 AM
                   </p>
                   <p className="text-base sm:text-lg text-gray-500 italic">
                     Definitely not a mile. Definitely not sold out.
