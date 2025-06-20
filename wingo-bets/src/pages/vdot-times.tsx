@@ -162,7 +162,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     fetch('/vdot_full_race_times.csv')
       .then(res => {
         if (!res.ok) {
-          throw new Error(`Failed to load VDOT data: ${res.status} ${res.statusText}`);
+          throw new Error(`Failed to load DVOT data: ${res.status} ${res.statusText}`);
         }
         return res.text();
       })
@@ -208,7 +208,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     fetch('/vdot_paces.csv')
       .then(res => {
         if (!res.ok) {
-          throw new Error(`Failed to load VDOT paces: ${res.status} ${res.statusText}`);
+          throw new Error(`Failed to load DVOT paces: ${res.status} ${res.statusText}`);
         }
         return res.text();
       })
@@ -307,7 +307,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     // Otherwise validate the direct VDOT input
     const vdot = parseInt(vdotInput);
     if (isNaN(vdot) || vdot < 30 || vdot > 85) {
-      alert('Please enter a valid VDOT between 30 and 85');
+      alert('Please enter a valid DVOT between 30 and 85');
       return;
     }
     setShowCard(true);
@@ -343,7 +343,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
           console.log('Web Share API available, opening share dialog...');
           navigator.share({
             title: `${user && user.username !== 'Guest' ? `${user.username}'s ` : 'Your '}Race & Pace Guide`,
-            text: `Check out my ${vdotInput} VDOT Race & Pace Guide!`,
+            text: `Check out my ${vdotInput} DVOT Race & Pace Guide!`,
             files: [file]
           }).catch((error) => {
             console.error('Share failed:', error);
@@ -541,7 +541,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
   };
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto text-center text-lg py-12">Loading VDOT tables...</div>;
+    return <div className="max-w-7xl mx-auto text-center text-lg py-12">Loading DVOT tables...</div>;
   }
 
   const distances = ['1.6', '3.2', '5', '10', '15', '21.0975', '42.195'];
@@ -552,7 +552,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">D<span className="text-cyan-400">AI</span>SY's VDOT Dashboard</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">D<span className="text-cyan-400">AI</span>SY's DVOT Dashboard</h1>
           <p className="text-xl text-gray-600">Based on J. Daniels-DAISY™ Maths</p>
         </div>
 
@@ -565,7 +565,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                   type="number"
                   value={vdotInput}
                   onChange={(e) => setVdotInput(e.target.value)}
-                  placeholder="VDOT"
+                  placeholder="DVOT"
                   className="w-24 px-3 py-2 border rounded-md"
                   min="30"
                   max="85"
@@ -582,7 +582,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                   onClick={() => setShowVdotFinder(true)}
                   className="text-xs text-gray-600 hover:text-gray-800 italic"
                 >
-                  What's my VDOT?
+                  What's my DVOT?
                 </button>
               </div>
             </div>
@@ -660,7 +660,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                     {user && user.username !== 'Guest' ? `${user.username}'s Wingo Guide` : 'Your Wingo Guide'}
                   </h3>
                   <div className="text-sm text-gray-400 mt-1">
-                    {vdotInput} VDOT
+                    {vdotInput} DVOT
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -996,7 +996,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                     </tr>
                     <tr className="border-b border-gray-200">
                       <th className="sticky left-0 bg-white/30 z-10 px-4 py-2 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 w-16">
-                        VDOT
+                        DVOT
                       </th>
                       {/* Repetition Paces Columns */}
                       <th scope="col" className="px-4 py-3 sm:py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider bg-red-50 border-l border-r border-red-100 fixed-width-column">

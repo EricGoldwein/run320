@@ -70,7 +70,7 @@ const OldBalance: React.FC = () => {
 
                 {/* Features */}
                 <div className="mt-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">⚙️ Key Features</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">🪢 Key Features</h3>
                   <ul className="space-y-4">
                     <li className="block">
                       <span className="font-semibold text-gray-900 block mb-1">DipNet Engine:</span>

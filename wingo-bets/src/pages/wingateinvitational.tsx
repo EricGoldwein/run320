@@ -59,19 +59,23 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
             <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
               <div className="sm:text-center lg:text-left">
                 <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block">Old Balance</span>
-                  <span className="block text-wingo-600">Wingate Invitational</span>
+                  <span className="block text-gray-800">Old Balance</span>
+                  <span className="block text-wingo-600 mt-2">Wingate Invitational</span>
                 </h1>
-                <div className="mt-4 mb-6">
+                <div className="mt-6 mb-8">
+                  <div className="w-16 h-px bg-gray-300 mx-auto lg:mx-0"></div>
                 </div>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Sunday, September 7, 2025 at 07:20 AM
-                </p>
-                <p className="mt-2 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Definitely not a mile. Definitely not sold out.
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold">Old Balance</a>.</p>
+                <div className="space-y-3">
+                  <p className="text-lg sm:text-xl text-gray-600 font-medium">
+                    Sunday, September 7, 2025 at 07:20 AM
+                  </p>
+                  <p className="text-base sm:text-lg text-gray-500 italic">
+                    Definitely not a mile. Definitely not sold out.
+                  </p>
+                  <p className="text-sm text-gray-600 mt-4 font-medium">
+                    Sponsored by <a href="/old-balance" className="text-wingo-600 hover:text-wingo-700 font-bold underline decoration-wingo-600 decoration-2 underline-offset-2">Old Balance</a>.
+                  </p>
+                </div>
               </div>
             </main>
           </div>
@@ -122,7 +126,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                   </span> unlocked at the gate will be reallocated to top finishers. Additional <span className="inline-flex items-center">
                     <span className="text-[#E6C200] font-bold">W</span>
                     <span>INGO</span>
-                  </span> may be gained — or forfeited — through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700">WINGO Wager Market</a>.
+                  </span> may be gained or lost through the <a href="/wager" className="text-wingo-600 hover:text-wingo-700">WINGO Wager Market</a>.
                 </p>
               </div>
             </section>

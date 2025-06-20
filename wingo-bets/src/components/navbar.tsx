@@ -84,9 +84,6 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <Link to="/ledger" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Ledger
                     </Link>
-                    <Link to="/wlog" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Log
-                    </Link>
                     <Link to="/wager" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Wager
                     </Link>
@@ -119,8 +116,8 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               {activeDropdown === 'daisy' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <div className="py-2">
-                    <Link to="/daisy-vdot-dash" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Daisy VDot Dash
+                    <Link to="/vdot-times" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Daisy DVot Dash
                     </Link>
                     <Link to="/converter" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Wingo Converter
@@ -215,13 +212,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             onClick={() => handleMobileNav('/vdot-times')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
-            D<span className="text-[#00bcd4]">AI</span>SY™ VDOT Dashboard
-          </button>
-          <button
-            onClick={() => handleMobileNav('/wlog')}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-          >
-            Log
+            D<span className="text-[#00bcd4]">AI</span>SY™ DVOT Dashboard
           </button>
           <button
             onClick={() => handleMobileNav('/converter')}

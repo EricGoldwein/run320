@@ -310,7 +310,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         }`}
                       >
                         <span className="hidden sm:inline">WINGO Leaderboard</span>
-                        <span className="sm:hidden">WINGO Rank</span>
+                        <span className="sm:hidden">Rank</span>
                       </button>
                       <button
                         onClick={() => setIsLeaderboardView(false)}
@@ -320,17 +320,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        <span className="hidden sm:inline">Transaction Log</span>
+                        <span className="hidden sm:inline">Ransaction Log</span>
                         <span className="sm:hidden">Log</span>
                       </button>
                     </div>
                   </div>
-                  
-                  <p className="text-[10px] sm:text-xs text-gray-500 italic sm:mt-0.5">
-                    {lastUpdated && (
-                      <>Updated: {lastUpdated} 🐎🤖🪽8️⃣</>
-                    )}
-                  </p>
                 </div>
                 {/* DAISY badge right */}
                 <div className="flex-1 flex justify-end">
@@ -340,50 +334,57 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 </div>
               </div>
             </div>
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-              <div className="inline-block min-w-full align-middle">
-                <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200 font-mono">
                   <thead className="bg-gray-50">
                     <tr>
                       <th 
                         scope="col" 
-                        className="pl-6 pr-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="pl-6 pr-4 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('rank')}
                       >
                         Rank
                       </th>
                       <th 
                         scope="col" 
-                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('user')}
                       >
                         Runner
                       </th>
                       <th 
                         scope="col" 
-                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-3 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('balance')}
                       >
-                        <span className="hidden sm:inline">WINGO Balance</span>
-                        <span className="sm:hidden">WINGO Balance</span>
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">WINGO Balance</span>
+                          <span className="sm:hidden">WINGO</span>
+                          <span className="sm:hidden">Balance</span>
+                        </div>
                       </th>
                       <th 
                         scope="col" 
-                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('votingShare')}
                       >
-                        Voting Share
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Voting Share</span>
+                          <span className="sm:hidden">Voting</span>
+                          <span className="sm:hidden">Share</span>
+                        </div>
                       </th>
                       <th 
                         scope="col" 
-                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('totalMined')}
                       >
                         Mined
                       </th>
                       <th 
                         scope="col" 
-                        className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('lastMined')}
                       >
                         Last Mined
@@ -394,14 +395,14 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     {filteredLeaderboard.length > 0 ? (
                       filteredLeaderboard.map((entry) => (
                         <tr key={entry.rank} className="hover:bg-gray-50 transition-colors">
-                          <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.rank}</td>
-                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.user}</td>
-                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.balance}</td>
-                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
-                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {entry.totalMined} <span className="text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span>
+                          <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.rank}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.user}</td>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.balance}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
+                            {entry.totalMined} <span className="text-[6px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span>
                           </td>
-                          <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.lastMined}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.lastMined}</td>
                         </tr>
                       ))
                     ) : (
@@ -450,7 +451,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         }`}
                       >
                         <span className="hidden sm:inline">WINGO Leaderboard</span>
-                        <span className="sm:hidden">WINGO Rank</span>
+                        <span className="sm:hidden">Rank</span>
                       </button>
                       <button
                         onClick={() => setIsLeaderboardView(false)}
@@ -465,12 +466,6 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       </button>
                     </div>
                   </div>
-                  
-                  <p className="text-[10px] sm:text-xs text-gray-500 italic sm:mt-0.5">
-                    {lastUpdated && (
-                      <>Updated: {lastUpdated} 🐎🤖🪽8️⃣</>
-                    )}
-                  </p>
                 </div>
                 {/* DAISY badge right */}
                 <div className="flex-1 flex justify-end">
@@ -566,12 +561,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                           {format(new Date(entry.date), 'M-dd-yy')}
                         </td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
-                          {entry.username}
-                        </td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
-                          {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
-                        </td>
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
                           {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
                         </td>
