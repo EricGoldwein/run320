@@ -193,7 +193,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
               </div>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  You're viewing as a guest. <a href="/login" className="font-medium underline text-yellow-700 hover:text-yellow-600">Log in</a> or <a href="/register" className="font-medium underline text-yellow-700 hover:text-yellow-600">register</a> to save your WINGO balance.
+                  Mining services not yet active. <a href="sms:9299254744" className="underline text-wingo-600 hover:text-wingo-700">Message your receipts to Coach DAISY™</a> at 929-WAK-GRIG to record your WINGO.
                 </p>
               </div>
             </div>
