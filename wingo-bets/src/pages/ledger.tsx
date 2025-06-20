@@ -541,6 +541,12 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {logEntries
+                    .filter(entry => 
+                      searchTerm === '' || 
+                      entry.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      entry.fullId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      entry.category.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
                     .sort((a, b) => {
                       if (logSortField === 'date') {
                         const dateA = new Date(a.date);
