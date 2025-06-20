@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import { Search, ArrowUpDown, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -26,9 +26,63 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   // Mock data - replace with real data later
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch the Summary sheet for last updated time
+        const summaryResponse = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=482134402&single=true&output=csv`, { cache: 'no-store' });
+        const summaryText = await summaryResponse.text();
+        const summaryRows = summaryText.trim().split('\n');
+        
+        // Get the last updated time from F2 (row 1, column 5)
+        const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
+        
+        console.log('Raw last updated cell value:', lastUpdatedCell);
+        
+        if (lastUpdatedCell) {
+          // Try to parse the date string - it might be in a specific format
+          let date;
+          
+          // First try parsing as is
+          date = new Date(lastUpdatedCell);
+          
+          // If that doesn't work, try different formats
+          if (isNaN(date.getTime())) {
+            // Try parsing as MM/DD/YYYY HH:MM format
+            const parts = lastUpdatedCell.split(' ');
+            if (parts.length >= 2) {
+              const datePart = parts[0];
+              const timePart = parts[1];
+              const dateParts = datePart.split('/');
+              if (dateParts.length === 3) {
+                const month = parseInt(dateParts[0]) - 1; // JS months are 0-indexed
+                const day = parseInt(dateParts[1]);
+                const year = parseInt(dateParts[2]);
+                const timeParts = timePart.split(':');
+                if (timeParts.length === 2) {
+                  const hours = parseInt(timeParts[0]);
+                  const minutes = parseInt(timeParts[1]);
+                  date = new Date(year, month, day, hours, minutes);
+                }
+              }
+            }
+          }
+          
+          console.log('Final parsed date:', date);
+          
+          if (!isNaN(date.getTime())) {
+            const formattedDate = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear().toString().slice(-2)}`;
+            const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            console.log('Formatted result:', `${formattedDate}, ${formattedTime} ET`);
+            setLastUpdated(`${formattedDate}, ${formattedTime} ET`);
+          } else {
+            // If we can't parse it, just show the raw value
+            console.log('Could not parse date, showing raw value');
+            setLastUpdated(`Updated: ${lastUpdatedCell}`);
+          }
+        }
+
+        // Fetch the leaderboard data
         const res = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=0&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
         const text = await res.text();
         const rows = text.trim().split('\n');
@@ -60,23 +114,6 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
       
         setLeaderboardData(parsed);
-        
-        // Get the date from J5 and time from J6
-        console.log('All rows:', rows);
-        console.log('Row 4 (J5):', rows[4]);
-        console.log('Row 5 (J6):', rows[5]);
-        
-        const dateStr = rows[4]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
-        const timeStr = rows[5]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
-        
-        console.log('Date from J5:', dateStr);
-        console.log('Time from J6:', timeStr);
-        
-        if (dateStr && timeStr) {
-          setLastUpdated(`${dateStr} at ${timeStr}`);
-        } else {
-          console.log('Missing date or time:', { dateStr, timeStr });
-        }
       } catch (error) {
         console.error('Failed to fetch or parse leaderboard:', error);
       }
@@ -95,13 +132,14 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
 
   // Calculate total WINGO first
   const totalWingo = leaderboardData.reduce((sum, entry) => sum + entry.balance, 0);
+  const totalMined = leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0);
 
   // Sort by balance and update ranks
   const sortedLeaderboard = [...leaderboardData]
     .sort((a, b) => b.balance - a.balance);
 
-  // Calculate total kilometers after distances are calculated
-  const totalKilometers = Number((sortedLeaderboard.reduce((sum, entry) => sum + entry.distance, 0)).toFixed(1));
+  // Calculate total kilometers as 0.32 * totalMined
+  const totalKilometers = Number((totalMined * 0.32).toFixed(1));
 
   const handleSort = (field: keyof LeaderboardEntry) => {
     if (field === sortField) {
@@ -152,7 +190,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           <div className="flex flex-col sm:flex-row items-center justify-between text-sm">
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
               <span className="text-gray-600 text-base sm:text-base">Total <span className="text-[#E6C200] font-bold">W</span> Mined:</span>
-              <span className="font-bold text-base sm:text-base">{leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0)}</span>
+              <span className="font-bold text-base sm:text-base">{totalMined.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
               <span className="text-gray-600 text-base sm:text-base"><span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>

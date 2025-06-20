@@ -4,11 +4,13 @@ import { ArrowUpDown } from 'lucide-react';
 
 interface LogEntry {
   id: number;
+  fullId: string;
   username: string;
   date: string;
   wingoMined: number;
   kmLogged: number;
   initiation: boolean;
+  category: string;
 }
 
 const WingoLog = () => {
@@ -41,16 +43,57 @@ const WingoLog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=0&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
-        const text = await res.text();
-        const rows = text.trim().split('\n');
+        // Fetch the Summary sheet for last updated time
+        const summaryResponse = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=482134402&single=true&output=csv`, { cache: 'no-store' });
+        const summaryText = await summaryResponse.text();
+        const summaryRows = summaryText.trim().split('\n');
         
-        // Get the date from J5 and time from J6
-        const dateStr = rows[4]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
-        const timeStr = rows[5]?.split(',')[9]?.trim().replace(/^["']|["']$/g, '') || '';
+        // Get the last updated time from F2 (row 1, column 5)
+        const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
         
-        if (dateStr && timeStr) {
-          setLastUpdated(`${dateStr} at ${timeStr}`);
+        console.log('Raw last updated cell value:', lastUpdatedCell);
+        
+        if (lastUpdatedCell) {
+          // Try to parse the date string - it might be in a specific format
+          let date;
+          
+          // First try parsing as is
+          date = new Date(lastUpdatedCell);
+          
+          // If that doesn't work, try different formats
+          if (isNaN(date.getTime())) {
+            // Try parsing as MM/DD/YYYY HH:MM format
+            const parts = lastUpdatedCell.split(' ');
+            if (parts.length >= 2) {
+              const datePart = parts[0];
+              const timePart = parts[1];
+              const dateParts = datePart.split('/');
+              if (dateParts.length === 3) {
+                const month = parseInt(dateParts[0]) - 1; // JS months are 0-indexed
+                const day = parseInt(dateParts[1]);
+                const year = parseInt(dateParts[2]);
+                const timeParts = timePart.split(':');
+                if (timeParts.length === 2) {
+                  const hours = parseInt(timeParts[0]);
+                  const minutes = parseInt(timeParts[1]);
+                  date = new Date(year, month, day, hours, minutes);
+                }
+              }
+            }
+          }
+          
+          console.log('Final parsed date:', date);
+          
+          if (!isNaN(date.getTime())) {
+            const formattedDate = `${date.getMonth() + 1}.${date.getDate()}.${date.getFullYear().toString().slice(-2)}`;
+            const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            console.log('Formatted result:', `${formattedDate}, ${formattedTime} ET`);
+            setLastUpdated(`${formattedDate}, ${formattedTime} ET`);
+          } else {
+            // If we can't parse it, just show the raw value
+            console.log('Could not parse date, showing raw value');
+            setLastUpdated(`Updated: ${lastUpdatedCell}`);
+          }
         }
 
         // Now fetch the WINGO log data
@@ -60,16 +103,18 @@ const WingoLog = () => {
         const data = logRows.slice(1); // skip header row
         
         const parsed = data
-          .filter(row => row.trim() && row.split(',').length >= 8)
+          .filter(row => row.trim() && row.split(',').length >= 13)
           .map((row) => {
             const columns = row.split(',');
             return {
               id: parseInt(columns[0]) || 0,
+              fullId: columns[12]?.trim() || '',
               username: columns[1]?.trim() || '',
               date: columns[2]?.trim() || '',
               wingoMined: parseInt(columns[3]) || 0,
               kmLogged: parseFloat(columns[4]) || 0,
-              initiation: columns[7]?.trim() === 'Yes'
+              initiation: columns[7]?.trim() === 'Yes',
+              category: columns[10]?.trim() || ''
             };
           })
           .filter(entry => entry.username && entry.username !== '');
@@ -192,7 +237,9 @@ const WingoLog = () => {
             </span> Log
           </h1>
           <p className="text-[10px] sm:text-xs text-gray-500 italic sm:mt-1">
-            Updated: {lastUpdated} 🐎🤖🪽8️⃣
+            {lastUpdated && (
+              <>Updated: {lastUpdated} 🐎🤖🪽8️⃣</>
+            )}
           </p>
           
           <div className="absolute -top-12 sm:-top-6 right-0 sm:right-24 bg-white rounded-lg shadow-sm border border-gray-200 p-2">
@@ -224,7 +271,7 @@ const WingoLog = () => {
                     )}
                   </th>
                   <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    WINGO ID
+                    W-ID
                   </th>
                   <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Runner
@@ -233,7 +280,7 @@ const WingoLog = () => {
                     className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('wingoMined')}
                   >
-                    <span className="hidden sm:inline">WINGO Δ</span>
+                    <span className="hidden sm:inline">Δ WINGO</span>
                     <span className="sm:hidden">WINGO</span>
                     {sortField === 'wingoMined' && (
                       <span className="ml-1">
@@ -253,6 +300,9 @@ const WingoLog = () => {
                       </span>
                     )}
                   </th>
+                  <th className="px-2 sm:px-6 py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tag
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -262,7 +312,7 @@ const WingoLog = () => {
                       {format(new Date(entry.date), 'M-dd-yy')}
                     </td>
                     <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
-                      {getPrefixForId(entry.id)}{entry.id.toString().padStart(1, '0')}
+                      {entry.fullId}
                       {entry.initiation && (
                         <span className="ml-1 text-[#E6C200]">🚀</span>
                       )}
@@ -271,10 +321,13 @@ const WingoLog = () => {
                       {entry.username}
                     </td>
                     <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-900">
-                      +{entry.wingoMined}
+                      {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
                     </td>
                     <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
-                      {entry.kmLogged.toFixed(2)}
+                      {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
+                    </td>
+                    <td className="px-2 sm:px-6 py-4 whitespace-nowrap text-[10px] sm:text-sm text-gray-500">
+                      {entry.category}
                     </td>
                   </tr>
                 ))}
