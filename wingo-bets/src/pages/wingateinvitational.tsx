@@ -86,6 +86,7 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
                 className="h-full w-full object-cover"
                 src="/old_balance.png"
                 alt="Old Balance"
+                style={{ objectPosition: 'center 30%' }}
               />
             </a>
           </div>
