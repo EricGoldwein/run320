@@ -413,7 +413,9 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                               <span className="hidden sm:inline"> <span className="text-[6px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span></span>
                             </div>
                           </td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.lastMined}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                            {entry.lastMined.replace(/-/g, '.')}
+                          </td>
                         </tr>
                       ))
                     ) : (
