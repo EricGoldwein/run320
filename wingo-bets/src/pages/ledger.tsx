@@ -32,7 +32,7 @@ interface LogEntry {
 const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState<keyof LeaderboardEntry>('balance');
+  const [sortField, setSortField] = useState<keyof LeaderboardEntry>('rank');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [isLeaderboardView, setIsLeaderboardView] = useState(true);
@@ -338,24 +338,24 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200 font-mono">
                   <thead className="bg-gray-50">
-                    <tr>
+                    <tr className="border-b border-gray-200">
                       <th 
                         scope="col" 
-                        className="pl-6 pr-4 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="pl-6 pr-4 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('rank')}
                       >
                         Rank
                       </th>
                       <th 
                         scope="col" 
-                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('user')}
                       >
                         Runner
                       </th>
                       <th 
                         scope="col" 
-                        className="px-3 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-3 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('balance')}
                       >
                         <div className="flex flex-col sm:block">
@@ -366,7 +366,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       </th>
                       <th 
                         scope="col" 
-                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('votingShare')}
                       >
                         <div className="flex flex-col sm:block">
@@ -377,32 +377,39 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       </th>
                       <th 
                         scope="col" 
-                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('totalMined')}
                       >
-                        Mined
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Mined</span>
+                          <span className="sm:hidden text-center">Mined</span>
+                        </div>
                       </th>
                       <th 
                         scope="col" 
-                        className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('lastMined')}
                       >
-                        Last Mined
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Last Mined</span>
+                          <span className="sm:hidden">Last</span>
+                          <span className="sm:hidden">Mined</span>
+                        </div>
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {filteredLeaderboard.length > 0 ? (
-                      filteredLeaderboard.map((entry) => (
-                        <tr key={entry.rank} className="hover:bg-gray-50 transition-colors">
-                          <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.rank}</td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.user}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.balance}</td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
-                            {entry.totalMined} <span className="text-[6px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span>
+                      filteredLeaderboard.map((entry, index) => (
+                        <tr key={entry.rank} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
+                          <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.user}</td>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.balance}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900 text-center sm:text-left">
+                            {entry.totalMined} <span className="text-[7px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span>
                           </td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.lastMined}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.lastMined}</td>
                         </tr>
                       ))
                     ) : (
@@ -481,7 +488,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th 
-                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                       onClick={() => handleLogSort('date')}
                     >
                       Date
