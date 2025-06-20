@@ -168,7 +168,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         {/* Wingate Invitational Alert */}
         <a 
           href="/wingate-invitational" 
-          className="block mb-6 sm:max-w-[700px] max-w-[280px] mx-auto transform hover:scale-[1.02] transition-all duration-200"
+          className="inline-block mb-6 sm:max-w-[700px] max-w-[280px] mx-auto transform hover:scale-[1.02] transition-all duration-200"
         >
           <div className="bg-gradient-to-br from-[#E6C200] via-[#FFD700] to-[#FFC107] px-5 sm:px-2 py-3 rounded-lg shadow-lg">
             <p className="text-xs sm:text-sm text-gray-900 text-center font-medium">
@@ -301,8 +301,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               Updated: {lastUpdated} 🐎🤖🪽8️⃣
             </p>
           )}
-          <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="text-blue-600 hover:text-blue-800">
-            WINGO Log
+          <Link to="/wlog" onClick={() => window.scrollTo(0, 0)} className="text-xs text-gray-500 hover:text-gray-700 font-medium underline decoration-dotted underline-offset-2">
+            Latest Ransactions
           </Link>
         </div>
       </div>
