@@ -281,7 +281,7 @@ const WingoLog = () => {
                 {filteredAndSortedEntries.map((entry) => (
                   <tr key={entry.id} className="hover:bg-gray-50">
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                      {format(new Date(entry.date), 'M.dd.yy')}
+                      {format(new Date(entry.date), 'M-dd-yy')}
                     </td>
                     <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
                       {entry.username}

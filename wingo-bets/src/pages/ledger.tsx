@@ -408,13 +408,13 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900 text-center sm:text-left">
                             <div className="flex flex-col sm:block">
-                              <span>{entry.totalMined}</span>
-                              <span className="text-[7px] sm:text-xs text-gray-500 sm:hidden">({entry.distance.toFixed(1)}km)</span>
-                              <span className="hidden sm:inline"> <span className="text-[6px] sm:text-xs text-gray-500 align-middle">({entry.distance.toFixed(1)}km)</span></span>
+                              <span className="sm:hidden">{entry.totalMined}</span>
+                              <span className="text-[7px] sm:text-xs text-gray-500 sm:hidden">{entry.distance.toFixed(1)}km</span>
+                              <span className="hidden sm:inline">{entry.totalMined} <span className="text-[6px] sm:text-xs text-gray-500">({entry.distance.toFixed(1)}km)</span></span>
                             </div>
                           </td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
-                            {entry.lastMined.replace(/-/g, '.')}
+                            {entry.lastMined}
                           </td>
                         </tr>
                       ))
@@ -577,8 +577,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     })
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                          {format(new Date(entry.date), 'M.dd.yy')}
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {format(new Date(entry.date), 'M-dd-yy')}
                         </td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>
