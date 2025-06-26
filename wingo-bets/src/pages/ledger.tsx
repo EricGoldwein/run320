@@ -42,6 +42,53 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [logSortField, setLogSortField] = useState<'date' | 'wingoMined' | 'km' | 'initiation' | 'username'>('date');
   const [logSortDirection, setLogSortDirection] = useState<'asc' | 'desc'>('desc');
 
+  // Username to avatar mapping
+  const getAvatarForUser = (username: string): string => {
+    const avatarMap: { [key: string]: string } = {
+      'madminer': '/avatars/madminer.png',
+      'job': '/avatars/job.png',
+      'kat': '/avatars/kat.png',
+      'melathon': '/avatars/melathon.png',
+      'scar': '/avatars/scar.png',
+      'willy_wingo': '/avatars/willy_wingo.png',
+      'erock': '/avatars/erock.png'
+    };
+    
+    // Debug logging
+    console.log('Username received:', username);
+    console.log('Available avatars:', Object.keys(avatarMap));
+    
+    // Try exact match first
+    if (avatarMap[username]) {
+      console.log('Exact match found:', avatarMap[username]);
+      return avatarMap[username];
+    }
+    
+    // Try case-insensitive match
+    const lowerUsername = username.toLowerCase();
+    if (avatarMap[lowerUsername]) {
+      console.log('Lowercase match found:', avatarMap[lowerUsername]);
+      return avatarMap[lowerUsername];
+    }
+    
+    // Try matching with underscores instead of spaces
+    const underscoreUsername = username.replace(/\s+/g, '_').toLowerCase();
+    if (avatarMap[underscoreUsername]) {
+      console.log('Underscore match found:', avatarMap[underscoreUsername]);
+      return avatarMap[underscoreUsername];
+    }
+    
+    // Try matching without spaces
+    const noSpaceUsername = username.replace(/\s+/g, '').toLowerCase();
+    if (avatarMap[noSpaceUsername]) {
+      console.log('No space match found:', avatarMap[noSpaceUsername]);
+      return avatarMap[noSpaceUsername];
+    }
+    
+    console.log('No match found, using generic');
+    return '/avatars/generic.png';
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -348,7 +395,13 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       </th>
                       <th 
                         scope="col" 
-                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="w-12 py-3 text-center text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="pl-0 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('user')}
                       >
                         Runner
@@ -403,7 +456,84 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       filteredLeaderboard.map((entry, index) => (
                         <tr key={entry.rank} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
                           <td className="pl-2 sm:pl-6 pr-2 sm:pr-4 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.user}</td>
+                          <td className="w-10 py-4 flex justify-center">
+                            <div className="flex-shrink-0" style={{ width: '2.5rem', height: '3rem' }}>
+                              <svg
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 40 48"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ display: 'block' }}
+                              >
+                                <defs>
+                                  <clipPath id={`avatar-clip-${index}`}>
+                                    <path d="M 2 16 A 14 14 0 0 1 16 2 L 24 2 A 14 14 0 0 1 38 16 L 38 32 A 14 14 0 0 1 24 46 L 16 46 A 14 14 0 0 1 2 32 Z" />
+                                  </clipPath>
+                                  <linearGradient id={`border-gradient-${index}`} x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stopColor="#B02E0C" />
+                                    <stop offset="25%" stopColor="#FF7A00" />
+                                    <stop offset="50%" stopColor="#FFA733" />
+                                    <stop offset="75%" stopColor="#FF7A00" />
+                                    <stop offset="100%" stopColor="#B02E0C" />
+                                  </linearGradient>
+                                  <linearGradient id={`shine-gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="rgba(255, 167, 51, 0.9)" />
+                                    <stop offset="25%" stopColor="rgba(255, 167, 51, 0.6)" />
+                                    <stop offset="50%" stopColor="rgba(255, 167, 51, 0.3)" />
+                                    <stop offset="75%" stopColor="rgba(255, 167, 51, 0.6)" />
+                                    <stop offset="100%" stopColor="rgba(255, 167, 51, 0.9)" />
+                                  </linearGradient>
+                                  <filter id={`oval-glow-${index}`}>
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                    <feMerge> 
+                                      <feMergeNode in="coloredBlur"/>
+                                      <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                  </filter>
+                                </defs>
+                                {/* Shimmering semi-gloss orange ring */}
+                                <path
+                                  d="M 2 16 A 14 14 0 0 1 16 2 L 24 2 A 14 14 0 0 1 38 16 L 38 32 A 14 14 0 0 1 24 46 L 16 46 A 14 14 0 0 1 2 32 Z"
+                                  stroke={`url(#border-gradient-${index})`}
+                                  strokeWidth="3"
+                                  fill="white"
+                                />
+                                {/* Enhanced shine effect at top-right */}
+                                <path
+                                  d="M 25 8 A 18 18 0 0 1 32 18"
+                                  stroke={`url(#shine-gradient-${index})`}
+                                  strokeWidth="3"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  opacity="0.9"
+                                />
+                                {/* Enhanced shine effect at bottom-left */}
+                                <path
+                                  d="M 15 40 A 18 18 0 0 1 8 30"
+                                  stroke={`url(#shine-gradient-${index})`}
+                                  strokeWidth="2.5"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  opacity="0.8"
+                                />
+                                {/* Avatar image, clipped to stadium */}
+                                <image
+                                  href={getAvatarForUser(entry.user)}
+                                  x="2"
+                                  y="2"
+                                  width="36"
+                                  height="44"
+                                  clipPath={`url(#avatar-clip-${index})`}
+                                  preserveAspectRatio="xMidYMid slice"
+                                />
+                              </svg>
+                              
+                            </div>
+                          </td>
+                          <td className="pl-0 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                            {entry.user}
+                          </td>
                           <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.balance}</td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900 text-center sm:text-left">
