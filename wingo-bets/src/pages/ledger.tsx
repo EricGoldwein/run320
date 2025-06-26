@@ -388,20 +388,20 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     <tr className="border-b border-gray-200">
                       <th 
                         scope="col" 
-                        className="pl-2 sm:pl-6 pr-2 sm:pr-4 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="pl-1 sm:pl-6 pr-1 sm:pr-4 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('rank')}
                       >
                         Rank
                       </th>
                       <th 
                         scope="col" 
-                        className="w-12 py-3 text-center text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="w-8 sm:w-10 py-3 text-center text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
                         
                       </th>
                       <th 
                         scope="col" 
-                        className="pl-0 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        className="pl-2 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                         onClick={() => handleSort('user')}
                       >
                         Runner
@@ -455,8 +455,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     {filteredLeaderboard.length > 0 ? (
                       filteredLeaderboard.map((entry, index) => (
                         <tr key={entry.rank} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
-                          <td className="pl-2 sm:pl-6 pr-2 sm:pr-4 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
-                          <td className="w-10 py-4 flex justify-center">
+                          <td className="pl-1 sm:pl-6 pr-0 sm:pr-4 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
+                          <td className="w-8 sm:w-10 py-4 flex justify-center">
                             <div className="flex-shrink-0" style={{ width: '2.5rem', height: '3rem' }}>
                               <svg
                                 width="100%"
@@ -501,7 +501,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                                 />
                                 {/* Enhanced shine effect at top-right */}
                                 <path
-                                  d="M 25 8 A 18 18 0 0 1 32 18"
+                                  d="M 25 8 A 14 14 0 0 1 32 16"
                                   stroke={`url(#shine-gradient-${index})`}
                                   strokeWidth="3"
                                   fill="none"
@@ -510,7 +510,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                                 />
                                 {/* Enhanced shine effect at bottom-left */}
                                 <path
-                                  d="M 15 40 A 18 18 0 0 1 8 30"
+                                  d="M 15 40 A 14 14 0 0 1 8 32"
                                   stroke={`url(#shine-gradient-${index})`}
                                   strokeWidth="2.5"
                                   fill="none"
@@ -531,7 +531,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                               
                             </div>
                           </td>
-                          <td className="pl-0 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                          <td className="pl-2 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
                             {entry.user}
                           </td>
                           <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.balance}</td>
