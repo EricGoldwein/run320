@@ -141,6 +141,23 @@ export default function Register({ onRegister }: RegisterProps) {
           <p className="mt-2 text-center text-gray-600">
             Must complete 1 Wingo to join
           </p>
+          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
+            <p className="text-sm text-yellow-700">
+              Account services not yet active. <a href="sms:9299254744" className="font-medium underline text-yellow-700 hover:text-yellow-600">Text DAISY</a> to join the 320 Track Club and <button onClick={() => onRegister({
+                id: 'guest',
+                email: '',
+                username: 'Guest',
+                name: 'Guest User',
+                wingo_balance: 0,
+                total_wingos: 0,
+                created_at: new Date().toISOString(),
+                last_activity: new Date().toISOString(),
+                balance: 0,
+                isActive: true,
+                createdAt: new Date()
+              })} className="font-medium underline text-yellow-700 hover:text-yellow-600">continue as guest</button> to explore Wingo World.
+            </p>
+          </div>
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a 
               href="/login" 
@@ -318,7 +335,7 @@ export default function Register({ onRegister }: RegisterProps) {
               {isLoading ? 'Registering...' : 'Find Your Kick'}
             </button>
             <a 
-              href="/faq" 
+              href="/raq" 
               className="mt-4 text-sm text-wingo-600 hover:text-wingo-500 block text-center"
             >
               WTF is{' '}

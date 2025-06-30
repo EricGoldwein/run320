@@ -193,7 +193,7 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
               </div>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  You're viewing as a guest. <a href="/login" className="font-medium underline text-yellow-700 hover:text-yellow-600">Log in</a> or <a href="/register" className="font-medium underline text-yellow-700 hover:text-yellow-600">register</a> to save your WINGO balance.
+                  Mining services not yet active. <a href="sms:9299254744" className="underline text-wingo-600 hover:text-wingo-700">Message your receipts to Coach DAISY™</a> at 929-WAK-GRIG to record your WINGO.
                 </p>
               </div>
             </div>
@@ -334,12 +334,12 @@ export default function MineWingo({ user, onMineWingo }: MineWingoProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">Record WINGOs automatically via Strava API</h3>
+                  <h3 className="text-sm font-medium text-blue-800">Automatic Wingo recording via Strava API</h3>
                   <div className="mt-2 text-sm text-blue-700">
-                    <p>Sync your Strava account with Coach DAISY™ and <span className="inline-flex items-baseline">
+                    <p>Sync Strava account with Coach DAISY™ and <span className="inline-flex items-baseline">
             <span className="text-[#E6C200] font-bold">W</span>
             <span>INGO</span>
-          </span>s will be automatically uploaded to your account.</p>
+          </span> will be automatically uploaded to your account.</p>
                     <ol className="list-decimal list-inside space-y-2 mt-2">
                       <li>Go to <a href="https://www.strava.com/settings/api" target="_blank" rel="noopener noreferrer" className="underline">Strava API Settings</a></li>
                       <li>Create a new application or use an existing one</li>

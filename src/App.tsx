@@ -18,13 +18,16 @@ import Wager from './pages/wager';
 import CreateBet from './pages/createbet';
 import BetBoard from './pages/betboard';
 import WingateInvitational from './pages/wingateinvitational';
-import FAQ from './pages/faq';
+import FAQ from './pages/raq';
 import Experience from './pages/experience';
 import WingoConverter from './components/WingoConverter';
 import VDOTTimes from './pages/vdot-times';
 import WingoWednesday from './pages/wingo-wednesday';
 import Vote from './pages/vote';
 import DaisyMath from './pages/daisy_math';
+import OldBalance from './components/old_balance';
+import WingoLog from './pages/wingo-log';
+import WingoStage from './pages/wingo-stage';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,12 +68,36 @@ function App() {
             <Navbar user={user} onLogout={handleLogout} />
             <main className="container mx-auto px-4 py-8 flex-grow">
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/wallet" />} />
-                <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/wallet" />} />
+                <Route path="/" element={<Ledger user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
+                <Route path="/login" element={!user ? <Login onLogin={setUser} /> : <Navigate to="/" />} />
+                <Route path="/register" element={!user ? <Register onRegister={setUser} /> : <Navigate to="/" />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/wallet" element={user ? <Wallet user={user} /> : <Navigate to="/login" />} />
+                <Route path="/wallet" element={<Wallet user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
                 <Route path="/mine" element={<MineWingo user={user || {
                   id: 'guest',
                   email: '',
@@ -115,16 +142,43 @@ function App() {
                   createdAt: new Date()
                 }} />} />
                 <Route path="/vote" element={user ? <Vote /> : <Navigate to="/login" />} />
-                <Route path="/create-bet" element={user ? <CreateBet user={user} onCreateBet={() => {}} /> : <Navigate to="/login" />} />
+                <Route path="/create-bet" element={<CreateBet user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} onCreateBet={() => {}} />} />
                 <Route path="/bet-board" element={user ? <BetBoard user={user} bets={[]} onAcceptBet={() => {}} /> : <Navigate to="/login" />} />
-                <Route path="/wingate-invitational" element={user ? <WingateInvitational user={user} /> : <Navigate to="/login" />} />
-                <Route path="/experience" element={user ? <Experience /> : <Navigate to="/login" />} />
+                <Route path="/wingate-invitational" element={<WingateInvitational user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
+                <Route path="/experience" element={<Experience />} />
                 <Route path="/wingo-wednesday" element={<WingoWednesday />} />
-                <Route path="/faq" element={<FAQ />} />
+                <Route path="/raq" element={<FAQ />} />
                 <Route path="/converter" element={<WingoConverter />} />
                 <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/daisy_math" element={<DaisyMath />} />
+                <Route path="/old-balance" element={<OldBalance />} />
+                <Route path="/wlog" element={<WingoLog />} />
+                <Route path="/wingo-stage" element={<WingoStage />} />
               </Routes>
             </main>
             <Footer />

@@ -39,8 +39,8 @@ const Vote: React.FC = () => {
         setActiveVotes([
           {
             id: '1',
-            title: 'Next Track Event',
-            description: 'Vote for the next track event location',
+            title: 'Wingo Website',
+            description: 'Change website to Wingo320',
             votes: 150,
             imageUrl: '/wingate1.jpg',
             cost: 10,

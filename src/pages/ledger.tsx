@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import { Search, ArrowUpDown, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 interface LedgerProps {
   user: User;
@@ -17,84 +18,159 @@ interface LeaderboardEntry {
   votingShare: number;
 }
 
-const Ledger: React.FC<LedgerProps> = ({ user }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState<keyof LeaderboardEntry>('balance');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+interface LogEntry {
+  id: number;
+  fullId: string;
+  username: string;
+  date: string;
+  wingoMined: number;
+  kmLogged: number;
+  initiation: boolean;
+  category: string;
+}
 
-  // Mock data - replace with real data later
-  const leaderboardData: LeaderboardEntry[] = [
-    { 
-      user: 'ERock', 
-      totalMined: 30, 
-      balance: 30,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '6-1-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Willy Wingo', 
-      totalMined: 24, 
-      balance: 24,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'KAT', 
-      totalMined: 15, 
-      balance: 15,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'MadMiner', 
-      totalMined: 15, 
-      balance: 15,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Melathon', 
-      totalMined: 15, 
-      balance: 15,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
-    },
-    { 
-      user: 'Job', 
-      totalMined: 16, 
-      balance: 16,
-      distance: 0, // Will be calculated in sorting
-      lastMined: '5-28-25',
-      rank: 0, // Will be set by sorting
-      votingShare: 0 // Will be calculated in sorting
+const Ledger: React.FC<LedgerProps> = ({ user }) => {
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState<keyof LeaderboardEntry>('rank');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [lastUpdated, setLastUpdated] = useState<string>('');
+  const [isLeaderboardView, setIsLeaderboardView] = useState(true);
+  
+  // Avatar modal state
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState<{username: string, avatarUrl: string, balance: number, totalMined: number, distance: number} | null>(null);
+  
+  // Log data state
+  const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
+  const [logSortField, setLogSortField] = useState<'date' | 'wingoMined' | 'km' | 'initiation' | 'username'>('date');
+  const [logSortDirection, setLogSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // Username to avatar mapping
+  const getAvatarForUser = (username: string): string => {
+    const avatarMap: { [key: string]: string } = {
+      'madminer': '/avatars/madminer.png',
+      'job': '/avatars/job.png',
+      'kat': '/avatars/kat.png',
+      'melathon': '/avatars/melathon.png',
+      'scar': '/avatars/scar.png',
+      'willy_wingo': '/avatars/willy_wingo.png',
+      'erock': '/avatars/erock.png'
+    };
+    
+    // Debug logging
+    console.log('Username received:', username);
+    console.log('Available avatars:', Object.keys(avatarMap));
+    
+    // Try exact match first
+    if (avatarMap[username]) {
+      console.log('Exact match found:', avatarMap[username]);
+      return avatarMap[username];
     }
-  ];
+    
+    // Try case-insensitive match
+    const lowerUsername = username.toLowerCase();
+    if (avatarMap[lowerUsername]) {
+      console.log('Lowercase match found:', avatarMap[lowerUsername]);
+      return avatarMap[lowerUsername];
+    }
+    
+    // Try matching with underscores instead of spaces
+    const underscoreUsername = username.replace(/\s+/g, '_').toLowerCase();
+    if (avatarMap[underscoreUsername]) {
+      console.log('Underscore match found:', avatarMap[underscoreUsername]);
+      return avatarMap[underscoreUsername];
+    }
+    
+    // Try matching without spaces
+    const noSpaceUsername = username.replace(/\s+/g, '').toLowerCase();
+    if (avatarMap[noSpaceUsername]) {
+      console.log('No space match found:', avatarMap[noSpaceUsername]);
+      return avatarMap[noSpaceUsername];
+    }
+    
+    console.log('No match found, using generic');
+    return '/avatars/generic.png';
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch the Summary sheet for last updated time
+        const summaryResponse = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=482134402&single=true&output=csv`, { cache: 'no-store' });
+        const summaryText = await summaryResponse.text();
+        const summaryRows = summaryText.trim().split('\n');
+        
+        // Get the last updated time from F2 (row 1, column 5)
+        const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
+        
+        if (lastUpdatedCell) {
+          // Just use the raw value from F2 - it's already formatted by the App Script
+          setLastUpdated(lastUpdatedCell);
+        }
+
+        // Fetch leaderboard data
+        const response = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=0&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
+        const text = await response.text();
+        const rows = text.trim().split('\n');
+        const data = rows.slice(1); // skip header row
+        
+        const parsed = data
+          .filter(row => row.trim() && row.split(',').length >= 5)
+          .map((row) => {
+            const columns = row.split(',');
+            // Parse the values correctly
+            const username = columns[0].trim();
+            const balance = parseFloat(columns[1]) || 0;
+            const mined = parseFloat(columns[2]) || 0;
+            const distance = parseFloat(columns[3]) || 0;
+            const lastMined = columns[4]?.trim() || '';
+            const votingShare = parseFloat(columns[5]) || 0;
+            const rank = parseInt(columns[6]) || 0;
+            
+            return {
+              user: username,
+              balance: balance,
+              totalMined: mined,
+              distance: distance,
+              lastMined: lastMined,
+              votingShare: votingShare,
+              rank: rank
+            };
+          })
+          .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
+      
+        setLeaderboardData(parsed);
+      } catch (err) {
+        console.error('Failed to fetch or parse leaderboard:', err);
+      }
+    };
+
+    // Fetch both leaderboard and log data
+    fetchData();
+    fetchLogData();
+
+    // Set up auto-refresh every 30 seconds
+    const intervalId = setInterval(() => {
+      fetchData();
+      fetchLogData();
+    }, 30000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+  
 
   // Calculate total WINGO first
   const totalWingo = leaderboardData.reduce((sum, entry) => sum + entry.balance, 0);
+  const totalMined = leaderboardData.reduce((sum, entry) => sum + entry.totalMined, 0);
 
   // Sort by balance and update ranks
   const sortedLeaderboard = [...leaderboardData]
-    .sort((a, b) => b.balance - a.balance)
-    .map((entry, index) => ({
-      ...entry,
-      rank: index + 1,
-      distance: Number((entry.totalMined * 0.32).toFixed(1)), // Calculate distance based on totalMined
-      votingShare: Number(((entry.balance / totalWingo) * 100).toFixed(1)) // Calculate voting share as percentage
-    }));
+    .sort((a, b) => b.balance - a.balance);
 
-  // Calculate total kilometers after distances are calculated
-  const totalKilometers = sortedLeaderboard.reduce((sum, entry) => sum + entry.distance, 0);
+  // Calculate total kilometers as 0.32 * totalMined
+  const totalKilometers = Number((totalMined * 0.32).toFixed(1));
 
   const handleSort = (field: keyof LeaderboardEntry) => {
     if (field === sortField) {
@@ -121,157 +197,562 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       return result;
     });
 
+  const fetchLogData = async () => {
+    try {
+      // Fetch the Summary sheet for last updated time
+      const summaryResponse = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=482134402&single=true&output=csv`, { cache: 'no-store' });
+      const summaryText = await summaryResponse.text();
+      const summaryRows = summaryText.trim().split('\n');
+      
+      // Get the last updated time from F2 (row 1, column 5)
+      const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
+      
+      if (lastUpdatedCell) {
+        // Just use the raw value from F2 - it's already formatted by the App Script
+        setLastUpdated(lastUpdatedCell);
+      }
+
+      // Now fetch the WINGO log data
+      const logRes = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=270601813&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
+      const logText = await logRes.text();
+      const logRows = logText.trim().split('\n');
+      const data = logRows.slice(1); // skip header row
+      
+      const parsed = data
+        .filter(row => row.trim() && row.split(',').length >= 13)
+        .map((row) => {
+          const columns = row.split(',');
+          return {
+            id: parseInt(columns[0]) || 0,
+            fullId: columns[12]?.trim() || '',
+            username: columns[1]?.trim() || '',
+            date: columns[2]?.trim() || '',
+            wingoMined: parseInt(columns[3]) || 0,
+            kmLogged: parseFloat(columns[4]) || 0,
+            initiation: columns[7]?.trim() === 'Yes',
+            category: columns[10]?.trim() || ''
+          };
+        })
+        .filter(entry => entry.username && entry.username !== '');
+    
+      setLogEntries(parsed);
+    } catch (err) {
+      console.error('Failed to fetch or parse log:', err);
+    }
+  };
+
+  const handleLogSort = (field: 'date' | 'wingoMined' | 'km' | 'initiation' | 'username') => {
+    if (logSortField === field) {
+      setLogSortDirection(logSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setLogSortField(field);
+      setLogSortDirection('desc');
+    }
+  };
+
+  const getTopRecords = () => {
+    // Sort by WINGO mined (desc), then by date (asc), then by ID (asc)
+    const sortedByWingo = [...logEntries].sort((a, b) => {
+      // First sort by WINGO mined (descending)
+      if (b.wingoMined !== a.wingoMined) {
+        return b.wingoMined - a.wingoMined;
+      }
+      
+      // If WINGO mined is equal, sort by date (ascending - older dates first)
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA.getTime() !== dateB.getTime()) {
+        return dateA.getTime() - dateB.getTime();
+      }
+      
+      // If dates are equal, sort by ID (ascending - older IDs first)
+      return a.id - b.id;
+    });
+
+    // Take top 3 and format them
+    return sortedByWingo.slice(0, 3).map((entry, index) => ({
+      rank: (index + 1).toString(),
+      username: entry.username,
+      date: entry.date,
+      wingoMined: entry.wingoMined
+    }));
+  };
+
+  // Handle avatar click
+  const handleAvatarClick = (entry: LeaderboardEntry) => {
+    const avatarUrl = getAvatarForUser(entry.user);
+    setSelectedAvatar({ 
+      username: entry.user, 
+      avatarUrl, 
+      balance: entry.balance, 
+      totalMined: entry.totalMined, 
+      distance: entry.distance 
+    });
+    setShowAvatarModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-4 sm:mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             <span className="inline-flex items-baseline">
               <span className="text-[#E6C200] font-bold">W</span>
               <span>INGO</span>
             </span> Ledger
           </h1>
-          {user.id === 'guest' && (
-            <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 max-w-2xl mx-auto">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-yellow-700">
-                    You're viewing as a guest. <a href="/login" className="font-medium underline text-yellow-700 hover:text-yellow-600">Log in</a> or <a href="/register" className="font-medium underline text-yellow-700 hover:text-yellow-600">register</a> to track your WINGO balance.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          <a 
+            href="/raq" 
+            className="text-xs text-wingo-600 hover:text-wingo-500 italic sm:hidden -mt-1 mb-2 block"
+          >
+            WTF is WINGO?
+          </a>
         </div>
 
         {/* Stats Overview */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 mb-6 sm:max-w-[700px] max-w-[280px] mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between text-sm">
-            <div className="flex items-center gap-1">
-              <span className="text-gray-600">Your <span className="text-[#E6C200] font-bold">W</span> Balance:</span>
-              <span className="font-bold">{user.balance || 0}</span>
+            <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
+              <span className="text-gray-600 text-base sm:text-base">Total <span className="text-[#E6C200] font-bold">W</span> Mined:</span>
+              <span className="font-bold text-base sm:text-base">{totalMined.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray-600">Total <span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>
-              <span className="font-bold">{totalWingo.toLocaleString()}</span>
+            <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
+              <span className="text-gray-600 text-base sm:text-base"><span className="text-[#E6C200] font-bold">W</span> in Circulation:</span>
+              <span className="font-bold text-base sm:text-base">{totalWingo.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-gray-600">Distance Covered:</span>
-              <span className="font-bold">{totalKilometers.toFixed(1)} km</span>
+            <div className="flex items-center gap-1 sm:gap-2 sm:px-2 sm:py-2">
+              <span className="text-gray-600 text-base sm:text-base">Wingo Footprint:</span>
+              <span className="font-bold text-base sm:text-base">{totalKilometers} km</span>
             </div>
           </div>
         </div>
 
+        {/* Wingate Invitational Alert */}
+        <div className="flex justify-center mb-6">
+          <a 
+            href="/wingate-invitational" 
+            className="inline-block transform hover:scale-[1.02] transition-all duration-200"
+          >
+            <div className="bg-gradient-to-br from-[#E6C200] via-[#FFD700] to-[#FFC107] px-4 sm:px-4 py-3 rounded-lg shadow-lg">
+              <p className="text-xs sm:text-sm text-gray-900 text-center font-medium">
+                Register for Old Balance Wingate Invitational (Sunday, Sept. 7<span className="hidden sm:inline"></span>)
+              </p>
+            </div>
+          </a>
+        </div>
+
         {/* Leaderboard */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-            <div className="flex items-center justify-between gap-4">
-              {/* Search left */}
-              <div className="flex-1 min-w-0 hidden sm:block">
-                <div className="relative w-full max-w-[120px]">
-                  <input
-                    type="text"
-                    placeholder=""
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
-                  />
-                  <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+        {isLeaderboardView && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-4 sm:px-6 py-3 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+              <div className="flex items-center justify-between gap-4">
+                {/* Search left */}
+                <div className="flex-1 min-w-0 hidden sm:block">
+                  <div className="relative w-full max-w-[160px]">
+                    <input
+                      type="text"
+                      placeholder=""
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
+                    />
+                    <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  </div>
+                </div>
+                {/* Title center */}
+                <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0 text-center">
+                  {/* Toggle Button */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-1 mb-1">
+                    <div className="flex">
+                      <button
+                        onClick={() => setIsLeaderboardView(true)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          isLeaderboardView
+                            ? 'bg-[#E6C200] text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <span className="hidden sm:inline">WINGO Leaderboard</span>
+                        <span className="sm:hidden">Rank</span>
+                      </button>
+                      <button
+                        onClick={() => setIsLeaderboardView(false)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          !isLeaderboardView
+                            ? 'bg-[#E6C200] text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <span className="hidden sm:inline">Ransaction Log</span>
+                        <span className="sm:hidden">Log</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* DAISY badge right */}
+                <div className="flex-1 flex justify-end">
+                  <span className="inline-block px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
+                    D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+                  </span>
                 </div>
               </div>
-              {/* Title center */}
-              <div className="flex-1 flex justify-center items-center min-w-0 pl-6 sm:pl-0">
-                <h2 className="text-base sm:text-2xl font-bold text-gray-900 text-center whitespace-nowrap">WINGO Leaderboard</h2>
-              </div>
-              {/* DAISY badge right */}
-              <div className="flex-1 flex justify-end">
-                <span className="inline-block px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
-                  D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
-                </span>
+            </div>
+            <div className="overflow-x-auto">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200 font-mono">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b border-gray-200">
+                      <th 
+                        scope="col" 
+                        className="pl-1 sm:pl-6 pr-1 sm:pr-4 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('rank')}
+                      >
+                        Rank
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="w-8 sm:w-10 py-3 text-center text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="pl-2 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('user')}
+                      >
+                        Runner
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-3 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('balance')}
+                      >
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">WINGO Balance</span>
+                          <span className="sm:hidden">WINGO</span>
+                          <span className="sm:hidden">Balance</span>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('votingShare')}
+                      >
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Voting Share</span>
+                          <span className="sm:hidden">Voting</span>
+                          <span className="sm:hidden">Share</span>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('totalMined')}
+                      >
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Mined</span>
+                          <span className="sm:hidden text-center">Mined</span>
+                        </div>
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSort('lastMined')}
+                      >
+                        <div className="flex flex-col sm:block">
+                          <span className="hidden sm:inline">Last Mined</span>
+                          <span className="sm:hidden">Last</span>
+                          <span className="sm:hidden">Mined</span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-100">
+                    {filteredLeaderboard.length > 0 ? (
+                      filteredLeaderboard.map((entry, index) => (
+                        <tr key={entry.rank} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
+                          <td className="pl-1 sm:pl-6 pr-0 sm:pr-4 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
+                          <td className="w-8 sm:w-10 py-4 flex justify-center">
+                            <div 
+                              className="flex-shrink-0 cursor-pointer hover:scale-110 transition-transform duration-200" 
+                              style={{ width: '2.5rem', height: '3rem' }}
+                              onClick={() => handleAvatarClick(entry)}
+                            >
+                              <svg
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 40 48"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ display: 'block' }}
+                              >
+                                <defs>
+                                  <clipPath id={`avatar-clip-${entry.rank}`}>
+                                    <path d="M 2 16 A 14 14 0 0 1 16 2 L 24 2 A 14 14 0 0 1 38 16 L 38 32 A 14 14 0 0 1 24 46 L 16 46 A 14 14 0 0 1 2 32 Z" />
+                                  </clipPath>
+                                  <linearGradient id={`border-gradient-${entry.rank}`} x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stopColor="#B02E0C" />
+                                    <stop offset="25%" stopColor="#FF7A00" />
+                                    <stop offset="50%" stopColor="#FFA733" />
+                                    <stop offset="75%" stopColor="#FF7A00" />
+                                    <stop offset="100%" stopColor="#B02E0C" />
+                                  </linearGradient>
+                                  <linearGradient id={`shine-gradient-${entry.rank}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="rgba(255, 167, 51, 0.9)" />
+                                    <stop offset="25%" stopColor="rgba(255, 167, 51, 0.6)" />
+                                    <stop offset="50%" stopColor="rgba(255, 167, 51, 0.3)" />
+                                    <stop offset="75%" stopColor="rgba(255, 167, 51, 0.6)" />
+                                    <stop offset="100%" stopColor="rgba(255, 167, 51, 0.9)" />
+                                  </linearGradient>
+                                  <filter id={`oval-glow-${entry.rank}`}>
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                    <feMerge> 
+                                      <feMergeNode in="coloredBlur"/>
+                                      <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                  </filter>
+                                </defs>
+                                {/* Shimmering semi-gloss orange ring */}
+                                <path
+                                  d="M 2 16 A 14 14 0 0 1 16 2 L 24 2 A 14 14 0 0 1 38 16 L 38 32 A 14 14 0 0 1 24 46 L 16 46 A 14 14 0 0 1 2 32 Z"
+                                  stroke={`url(#border-gradient-${entry.rank})`}
+                                  strokeWidth="3"
+                                  fill="white"
+                                />
+                                {/* Enhanced shine effect at top-right */}
+                                <path
+                                  d="M 25 8 A 14 14 0 0 1 32 16"
+                                  stroke={`url(#shine-gradient-${entry.rank})`}
+                                  strokeWidth="3"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  opacity="0.9"
+                                />
+                                {/* Enhanced shine effect at bottom-left */}
+                                <path
+                                  d="M 15 40 A 14 14 0 0 1 8 32"
+                                  stroke={`url(#shine-gradient-${entry.rank})`}
+                                  strokeWidth="2.5"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  opacity="0.8"
+                                />
+                                {/* Avatar image, clipped to stadium */}
+                                <image
+                                  href={getAvatarForUser(entry.user)}
+                                  x="2"
+                                  y="2"
+                                  width="36"
+                                  height="44"
+                                  clipPath={`url(#avatar-clip-${entry.rank})`}
+                                  preserveAspectRatio="xMidYMid slice"
+                                />
+                              </svg>
+                              
+                            </div>
+                          </td>
+                          <td className="pl-2 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                            {entry.user}
+                          </td>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.balance}</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900 text-center sm:text-left">
+                            <div className="flex flex-col sm:block">
+                              <span className="sm:hidden">{entry.totalMined}</span>
+                              <span className="text-[7px] sm:text-xs text-gray-500 sm:hidden">{entry.distance.toFixed(1)}km</span>
+                              <span className="hidden sm:inline">{entry.totalMined} <span className="text-[6px] sm:text-xs text-gray-500">({entry.distance.toFixed(1)}km)</span></span>
+                            </div>
+                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                            {entry.lastMined}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="px-4 sm:px-6 py-4 text-center text-gray-500">
+                          {searchTerm ? 'No matching users found' : 'No Wingo activity yet'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div className="overflow-x-auto -mx-4 sm:mx-0">
-            <div className="inline-block min-w-full align-middle">
-              <table className="min-w-full divide-y divide-gray-200">
+        )}
+        
+        {/* Log View */}
+        {!isLeaderboardView && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-4 sm:px-6 py-3 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+              <div className="flex items-center justify-between gap-4">
+                {/* Search left */}
+                <div className="flex-1 min-w-0 hidden sm:block">
+                  <div className="relative w-full max-w-[160px]">
+                    <input
+                      type="text"
+                      placeholder=""
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E6C200] focus:border-transparent"
+                    />
+                    <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  </div>
+                </div>
+                {/* Title center */}
+                <div className="flex-1 flex flex-col justify-center items-center min-w-0 pl-6 sm:pl-0 text-center">
+                  {/* Toggle Button */}
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-1 mb-1">
+                    <div className="flex">
+                      <button
+                        onClick={() => setIsLeaderboardView(true)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          isLeaderboardView
+                            ? 'bg-[#E6C200] text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <span className="hidden sm:inline">WINGO Leaderboard</span>
+                        <span className="sm:hidden">Rank</span>
+                      </button>
+                      <button
+                        onClick={() => setIsLeaderboardView(false)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          !isLeaderboardView
+                            ? 'bg-[#E6C200] text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <span className="hidden sm:inline">Transaction Log</span>
+                        <span className="sm:hidden">Log</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* DAISY badge right */}
+                <div className="flex-1 flex justify-end">
+                  <span className="inline-block px-3 py-1 bg-gray-900 text-white rounded-md text-sm font-medium">
+                    D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 font-mono">
                 <thead className="bg-gray-50">
                   <tr>
                     <th 
-                      scope="col" 
-                      className="pl-6 pr-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('rank')}
+                      className="px-1 sm:px-6 py-3 text-left text-[9px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleLogSort('date')}
                     >
-                      Rank
+                      Date
+                      {logSortField === 'date' && logSortDirection && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
-                    <th 
-                      scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('user')}
-                    >
+                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Runner
                     </th>
                     <th 
-                      scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('balance')}
+                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleLogSort('wingoMined')}
                     >
-                      WINGO
+                      <span className="hidden sm:inline">Δ WINGO</span>
+                      <span className="sm:hidden">Δ WINGO</span>
+                      {logSortField === 'wingoMined' && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
                     <th 
-                      scope="col" 
-                      className="px-2 sm:px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('totalMined')}
+                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => handleLogSort('km')}
                     >
-                      Mined
+                      <span className="hidden sm:inline">KM Logged</span>
+                      <span className="sm:hidden">KM</span>
+                      {logSortField === 'km' && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
-                    <th 
-                      scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('votingShare')}
-                    >
-                      Voting Share
+                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tag
                     </th>
-                    <th 
-                      scope="col" 
-                      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSort('lastMined')}
-                    >
-                      Last Mined
+                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      W-ID
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredLeaderboard.length > 0 ? (
-                    filteredLeaderboard.map((entry) => (
-                      <tr key={entry.rank} className="hover:bg-gray-50 transition-colors">
-                        <td className="pl-6 pr-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.rank}</td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.user}</td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.balance}</td>
-                        <td className="px-2 sm:px-3 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {entry.totalMined} <span className="text-xs text-gray-500 align-middle">({entry.distance}km)</span>
+                  {logEntries
+                    .filter(entry => 
+                      searchTerm === '' || 
+                      entry.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      entry.fullId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      entry.category.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .sort((a, b) => {
+                      if (logSortField === 'date') {
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
+                        const dateComparison = logSortDirection === 'asc' 
+                          ? dateA.getTime() - dateB.getTime()
+                          : dateB.getTime() - dateA.getTime();
+                        
+                        if (dateComparison === 0) {
+                          return logSortDirection === 'asc'
+                            ? a.id - b.id
+                            : b.id - a.id;
+                        }
+                        return dateComparison;
+                      } else if (logSortField === 'wingoMined') {
+                        return logSortDirection === 'asc'
+                          ? a.wingoMined - b.wingoMined
+                          : b.wingoMined - a.wingoMined;
+                      } else if (logSortField === 'km') {
+                        return logSortDirection === 'asc'
+                          ? a.kmLogged - b.kmLogged
+                          : b.kmLogged - a.kmLogged;
+                      } else {
+                        return logSortDirection === 'asc'
+                          ? (a.initiation === b.initiation ? 0 : a.initiation ? 1 : -1)
+                          : (a.initiation === b.initiation ? 0 : a.initiation ? -1 : 1);
+                      }
+                    })
+                    .map((entry) => (
+                      <tr key={entry.id} className="hover:bg-gray-50">
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {format(new Date(entry.date), 'M-dd-yy')}
                         </td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.votingShare}%</td>
-                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.lastMined}</td>
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
+                        </td>
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {entry.category}
+                        </td>
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {entry.fullId}
+                          {entry.initiation && (
+                            <span className="ml-1 text-[#E6C200]">🚀</span>
+                          )}
+                        </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={6} className="px-4 sm:px-6 py-4 text-center text-gray-500">
-                        {searchTerm ? 'No matching users found' : 'No Wingo activity yet'}
-                      </td>
-                    </tr>
-                  )}
+                    ))}
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
+        )}
+        
         {/* Text Coach DAISY™ Link */}
         <div className="mt-8 text-center">
           <p className="text-[13px] sm:text-lg text-gray-600">
@@ -279,9 +760,73 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             <a href="sms:9299254744" className="text-wingo-600 hover:text-wingo-700 font-medium">
               929-WAK-GRIG
             </a>{' '}
-            to begin mining
+            to start mining
+          </p>
+          <p className="text-[10px] sm:text-xs text-gray-500 italic sm:mt-1">
+            {lastUpdated && (
+              <>Updated: {lastUpdated} 🐎🤖🪽8️⃣</>
+            )}
           </p>
         </div>
+
+        {/* Avatar Modal */}
+        {showAvatarModal && selectedAvatar && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden">
+              {/* Avatar Image with Username Overlay */}
+              <div className="relative">
+                <img
+                  src={selectedAvatar.avatarUrl}
+                  alt={`${selectedAvatar.username}'s avatar`}
+                  className="w-full h-72 object-cover"
+                  style={{ objectPosition: 'center 30%' }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/avatars/generic.png';
+                  }}
+                />
+                {/* Username Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                    {selectedAvatar.username}
+                  </h3>
+                </div>
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowAvatarModal(false)}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold bg-black/30 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-sm"
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Stats Section */}
+              <div className="p-4">
+                <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                  {/* WINGO Balance */}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#E6C200] to-[#FFD700] rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">W</span>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-500 font-medium">Balance</div>
+                      <div className="text-xl font-bold text-gray-900">{selectedAvatar.balance.toLocaleString()}</div>
+                    </div>
+                  </div>
+                  
+                  {/* Mined Stats */}
+                  <div className="text-left">
+                    <div className="text-sm text-gray-500 font-medium">Mined</div>
+                    <div className="text-xl font-bold text-gray-900">
+                      {selectedAvatar.totalMined.toLocaleString()} <span className="text-sm text-gray-500 font-normal">({selectedAvatar.distance.toFixed(1)} km)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
