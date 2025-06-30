@@ -39,7 +39,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   
   // Avatar modal state
   const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState<{username: string, avatarUrl: string, balance: number, totalMined: number, distance: number} | null>(null);
+  const [selectedAvatar, setSelectedAvatar] = useState<{username: string, avatarUrl: string, balance: number, totalMined: number, distance: number, rank: number} | null>(null);
   
   // Log data state
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
@@ -286,7 +286,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       avatarUrl, 
       balance: entry.balance, 
       totalMined: entry.totalMined, 
-      distance: entry.distance 
+      distance: entry.distance, 
+      rank: entry.rank
     });
     setShowAvatarModal(true);
   };
@@ -728,7 +729,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     })
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[7px] sm:text-sm text-gray-500">
                           {format(new Date(entry.date), 'M-dd-yy')}
                         </td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
@@ -778,8 +779,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                 <img
                   src={selectedAvatar.avatarUrl}
                   alt={`${selectedAvatar.username}'s avatar`}
-                  className="w-full h-72 object-cover"
-                  style={{ objectPosition: 'center 30%' }}
+                  className="w-full h-96 object-cover"
+                  style={{ objectPosition: 'center 25%' }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = '/avatars/generic.png';
@@ -802,24 +803,32 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               </div>
               
               {/* Stats Section */}
-              <div className="p-4">
-                <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
-                  {/* WINGO Balance */}
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#E6C200] to-[#FFD700] rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">W</span>
+              <div className="p-2">
+                <div className="bg-gray-50 rounded-lg p-2 flex flex-row items-center justify-start w-full">
+                  {/* WINGO Balance with Rank */}
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[#E6C200] to-[#FFD700] rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">W</span>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500 font-medium">Balance</div>
-                      <div className="text-xl font-bold text-gray-900">{selectedAvatar.balance.toLocaleString()}</div>
+                      <div className="text-xs text-gray-500 font-medium">Balance</div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {selectedAvatar.balance.toLocaleString()} <span className="text-xs text-gray-500 font-normal">(Rank: {leaderboardData.find(e => e.user === selectedAvatar?.username)?.rank ?? '--'})</span>
+                      </div>
                     </div>
                   </div>
-                  
+                  {/* Voting Share */}
+                  <div className="text-left ml-6">
+                    <div className="text-xs text-gray-500 font-medium">Voting Share</div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {leaderboardData.find(e => e.user === selectedAvatar?.username)?.votingShare.toFixed(1) ?? '--'}%
+                    </div>
+                  </div>
                   {/* Mined Stats */}
-                  <div className="text-left">
-                    <div className="text-sm text-gray-500 font-medium">Mined</div>
-                    <div className="text-xl font-bold text-gray-900">
-                      {selectedAvatar.totalMined.toLocaleString()} <span className="text-sm text-gray-500 font-normal">({selectedAvatar.distance.toFixed(1)} km)</span>
+                  <div className="text-left ml-6">
+                    <div className="text-xs text-gray-500 font-medium">Mined</div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {selectedAvatar.totalMined.toLocaleString()} <span className="text-xs text-gray-500 font-normal">({selectedAvatar.distance.toFixed(1)} km)</span>
                     </div>
                   </div>
                 </div>

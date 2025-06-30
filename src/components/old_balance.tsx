@@ -106,21 +106,24 @@ const OldBalance: React.FC = () => {
                     
                     {/* Product Details */}
                     <div className="lg:w-3/5 p-8 lg:p-10">
-                      <div className="flex items-start justify-between mb-6">
-                        <div>
-                          <h3 className="text-3xl font-bold text-gray-900 mb-2">DivotAware Pro</h3>
-                          <p className="text-gray-600 text-sm">AI-Powered Lacing System</p>
+                      <div className="flex flex-col mb-6">
+                        <div className="mb-4">
+                          <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">DivotAware Pro</h3>
+                          <p className="text-gray-600 text-sm">AI-Powered Lacing</p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-4xl font-bold text-gray-900"><span className="text-yellow-500">W</span> 320</p>
-                          <p className="text-sm text-gray-500 line-through"><span className="text-yellow-500">W</span> 352</p>
-                          <p className="text-xs text-green-600 font-medium">Save <span className="text-yellow-500">W</span> 32</p>
+                        <div className="flex items-center justify-between">
+                          <div className="text-left">
+                            <p className="text-4xl font-bold text-gray-900">
+                              <span className="text-yellow-500">W</span> 320
+                              <span className="text-2xl font-normal text-gray-400 line-through ml-2">352</span>
+                            </p>
+                          </div>
                         </div>
                       </div>
                       
                       <div className="mb-8">
-                        <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
-                          🔓 Use code <span className="font-mono font-bold ml-1">DAISY320</span> for W 32 off
+                        <span className="inline-block px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
+                          🔓 Use code <span className="font-mono font-bold ml-1">DAISY320</span> for <span className="text-yellow-500">W</span> 32 off
                         </span>
                       </div>
 
@@ -132,7 +135,6 @@ const OldBalance: React.FC = () => {
                           >
                             Get Laced
                           </button>
-                          <p className="text-xs text-gray-500 text-center">Free shipping</p>
                         </div>
                       ) : !isSubmitted ? (
                         <div className="space-y-6">
