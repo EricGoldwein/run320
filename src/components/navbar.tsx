@@ -14,6 +14,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
   const navigate = useNavigate();
   const wingoRef = useRef<HTMLDivElement>(null);
   const daisyRef = useRef<HTMLDivElement>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -23,6 +24,8 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
       if (activeDropdown === 'wingo' && wingoRef.current && !wingoRef.current.contains(target)) {
         setActiveDropdown(null);
       } else if (activeDropdown === 'daisy' && daisyRef.current && !daisyRef.current.contains(target)) {
+        setActiveDropdown(null);
+      } else if (activeDropdown === 'experience' && experienceRef.current && !experienceRef.current.contains(target)) {
         setActiveDropdown(null);
       } else if (activeDropdown === 'user' && userRef.current && !userRef.current.contains(target)) {
         setActiveDropdown(null);
@@ -97,12 +100,29 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                 </div>
               }
             </div>
-            <Link 
-              to="/experience" 
-              className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Experience
-            </Link>
+            <div className="relative" ref={experienceRef}>
+              <button
+                onClick={() => handleDropdownClick('experience')}
+                className="text-gray-600 hover:text-wingo-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+              >
+                Experience
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {activeDropdown === 'experience' && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  <div className="py-2">
+                    <Link to="/wingate-invitational" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Wingate Invitational
+                    </Link>
+                    <Link to="/experience" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      All Experiences
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="relative" ref={daisyRef}>
               <button
                 onClick={() => handleDropdownClick('daisy')}
@@ -203,10 +223,10 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             RAQ
           </button>
           <button
-            onClick={() => handleMobileNav('/experience')}
+            onClick={() => handleMobileNav('/wingate-invitational')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
-            Experience
+            Old Balance Wingate Invitational
           </button>
           <button
             onClick={() => handleMobileNav('/vdot-times')}

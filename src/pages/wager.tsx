@@ -1,18 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { User } from '../types';
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface WagerProps {
   user: User;
 }
 
+interface LeaderboardEntry {
+  rank: number;
+  user: string;
+  balance: number;
+  totalMined: number;
+  distance: number;
+  lastMined: string;
+  votingShare: number;
+}
+
 export default function Wager({ user }: WagerProps) {
+  usePageTitle("The DAISY™ Degenerate Dashboard");
   const [selectedOption, setSelectedOption] = useState<'willy' | 'british'>('willy');
   const [betAmount, setBetAmount] = useState<number>(0);
   const [betSlip, setBetSlip] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('');
   const [showDecimalPopup, setShowDecimalPopup] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+
+  // Fetch leaderboard data to get usernames
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        const response = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=0&single=true&output=csv&t=${Date.now()}`, { cache: 'no-store' });
+        const text = await response.text();
+        const rows = text.trim().split('\n');
+        const data = rows.slice(1); // skip header row
+        
+        const parsed = data
+          .filter(row => row.trim() && row.split(',').length >= 5)
+          .map((row) => {
+            const columns = row.split(',');
+            const username = columns[0].trim();
+            const balance = parseFloat(columns[1]) || 0;
+            const mined = parseFloat(columns[2]) || 0;
+            const distance = parseFloat(columns[3]) || 0;
+            const lastMined = columns[4]?.trim() || '';
+            const votingShare = parseFloat(columns[5]) || 0;
+            const rank = parseInt(columns[6]) || 0;
+            
+            return {
+              user: username,
+              balance: balance,
+              totalMined: mined,
+              distance: distance,
+              lastMined: lastMined,
+              votingShare: votingShare,
+              rank: rank
+            };
+          })
+          .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
+      
+        setLeaderboardData(parsed);
+      } catch (err) {
+        console.error('Failed to fetch leaderboard data:', err);
+      }
+    };
+
+    fetchLeaderboardData();
+  }, []);
 
   const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -90,14 +145,19 @@ export default function Wager({ user }: WagerProps) {
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
                   User:
                 </label>
-                <input
-                  type="text"
+                <select
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-wingo-500 focus:border-wingo-500"
-                  placeholder="Enter name"
-                />
+                >
+                  <option value="">Select user</option>
+                  {leaderboardData.map((entry) => (
+                    <option key={entry.user} value={entry.user}>
+                      {entry.user}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex-1">
                 <label htmlFor="betAmount" className="block text-sm font-medium text-gray-700 mb-1">

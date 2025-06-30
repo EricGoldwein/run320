@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { User } from '../types';
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface RegistrationForm {
   name: string;
@@ -34,6 +35,8 @@ const WingateInvitational: React.FC<WingateInvitationalProps> = ({ user }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  usePageTitle("Old Balance Wingate Invitational: Definitely not a mile, definitely not sold out");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

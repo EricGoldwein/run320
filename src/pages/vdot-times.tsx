@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './vdot-times.module.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface VDOTTimesProps {
   initialView?: 'pace' | 'race';
@@ -128,6 +129,7 @@ const useSyncScroll = () => {
 };
 
 const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => {
+  usePageTitle("Find Your DVOT: A Daisy-Daniels Collaboration");
   const [raceTimesTable, setRaceTimesTable] = useState<{ [vdot: string]: { [distance: string]: number } }>({});
   const [pacesTable, setPacesTable] = useState<{ [vdot: string]: { [pace: string]: string } }>({});
   const [loading, setLoading] = useState(true);
@@ -593,7 +595,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-gray-50 rounded-xl p-6 max-w-md w-full mx-4 vdot-finder-modal">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-semibold">Find Your VDOT</h3>
+                  <h3 className="text-lg font-semibold">Find Your DVOT</h3>
                   <button
                     onClick={() => setShowVdotFinder(false)}
                     className="text-gray-400 hover:text-gray-600"

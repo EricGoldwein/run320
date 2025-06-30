@@ -4,6 +4,21 @@ import { Link } from 'react-router-dom';
 const Experiences: React.FC = () => {
   const experiences = [
     {
+      id: 'wingate-invitational',
+      title: 'Old Balance Wingate Invitational',
+      date: 'Sunday, September 7, 2025 at 7:20 AM',
+      location: 'Wingate Track, Brooklyn',
+      description: (
+        <>
+          Definitely not a mile and definitely not sold out. {' '}
+          <span className="inline-flex items-center">
+          </span>
+        </>
+      ),
+      image: '/wingatebw1.jpg',
+      link: '/wingate-invitational'
+    },
+    {
       id: 'wingo-wednesday',
       title: 'WINGO Wednesdays',
       date: 'Some Wednesdays, 2025',
@@ -19,21 +34,6 @@ const Experiences: React.FC = () => {
       ),
       image: '/wingate1.jpg',
       link: '/wingo-wednesday'
-    },
-    {
-      id: 'wingate-invitational',
-      title: 'Old Balance Wingate Invitational',
-      date: 'Sunday, September 7, 2025 at 7:20 AM',
-      location: 'Wingate Track, Brooklyn',
-      description: (
-        <>
-          Definitely not a mile and definitely not sold out. {' '}
-          <span className="inline-flex items-center">
-          </span>
-        </>
-      ),
-      image: '/wingatebw1.jpg',
-      link: '/wingate-invitational'
     },
     {
       id: '320-day',

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const OldBalance: React.FC = () => {
+  usePageTitle("Old Balance: Lace yourself. Before you face yourself.");
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -123,7 +125,7 @@ const OldBalance: React.FC = () => {
                       
                       <div className="mb-8">
                         <span className="inline-block px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
-                          🔓 Use code <span className="font-mono font-bold ml-1">DAISY320</span> for <span className="text-yellow-500">W</span> 32 off
+                          🔓 Use code <span className="font-mono font-bold ml-1">DAISY</span> for <span className="text-yellow-500">W</span> 32 off
                         </span>
                       </div>
 
@@ -147,7 +149,7 @@ const OldBalance: React.FC = () => {
                               </div>
                               <div className="ml-4">
                                 <p className="text-sm text-yellow-800 font-semibold">
-                                  Sold out! Join the waitlist to be notified when we restock.
+                                  Sold out! Join waitlist to be notified when we restock.
                                 </p>
                               </div>
                             </div>
@@ -155,7 +157,7 @@ const OldBalance: React.FC = () => {
                           <form onSubmit={handleWaitlistSubmit} className="space-y-5">
                             <div>
                               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-3">
-                                Email Address
+                                Email
                               </label>
                               <input
                                 type="email"

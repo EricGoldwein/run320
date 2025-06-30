@@ -3,6 +3,7 @@ import { User } from '../types';
 import { Search, ArrowUpDown, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { usePageTitle } from "../hooks/usePageTitle";
 
 interface LedgerProps {
   user: User;
@@ -30,12 +31,14 @@ interface LogEntry {
 }
 
 const Ledger: React.FC<LedgerProps> = ({ user }) => {
+  usePageTitle("WINGO World: Where workout Independence is always 320 meters away");
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<keyof LeaderboardEntry>('rank');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [isLeaderboardView, setIsLeaderboardView] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Avatar modal state
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -141,8 +144,10 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
           .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
       
         setLeaderboardData(parsed);
+        setIsLoading(false);
       } catch (err) {
         console.error('Failed to fetch or parse leaderboard:', err);
+        setIsLoading(false);
       }
     };
 
@@ -554,7 +559,12 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                             </div>
                           </td>
                           <td className="pl-2 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
-                            {entry.user}
+                            <span 
+                              className="cursor-pointer hover:text-[#E6C200] transition-colors"
+                              onClick={() => handleAvatarClick(entry)}
+                            >
+                              {entry.user}
+                            </span>
                           </td>
                           <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.balance}</td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.votingShare.toFixed(1)}%</td>
@@ -565,15 +575,15 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                               <span className="hidden sm:inline">{entry.totalMined} <span className="text-[6px] sm:text-xs text-gray-500">({entry.distance.toFixed(1)}km)</span></span>
                             </div>
                           </td>
-                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[7px] sm:text-sm text-gray-900">
                             {entry.lastMined}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6} className="px-4 sm:px-6 py-4 text-center text-gray-500">
-                          {searchTerm ? 'No matching users found' : 'No Wingo activity yet'}
+                        <td colSpan={7} className="px-4 sm:px-6 py-4 text-center text-gray-500">
+                          {isLoading ? 'Loading...' : (searchTerm ? 'No matching users found' : 'No Wingo activity yet')}
                         </td>
                       </tr>
                     )}
@@ -626,7 +636,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        <span className="hidden sm:inline">Transaction Log</span>
+                        <span className="hidden sm:inline">Ransaction Log</span>
                         <span className="sm:hidden">Log</span>
                       </button>
                     </div>
@@ -730,7 +740,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[7px] sm:text-sm text-gray-500">
-                          {format(new Date(entry.date), 'M-dd-yy')}
+                          {format(new Date(entry.date), 'M.dd.yy')}
                         </td>
                         <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>
