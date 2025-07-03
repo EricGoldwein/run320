@@ -59,7 +59,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       'melathon': '/avatars/melathon.png',
       'scar': '/avatars/scar.png',
       'willy_wingo': '/avatars/willy_wingo.png',
-      'erock': '/avatars/erock.png'
+      'erock': '/avatars/erock.png',
+      'jimmy': '/avatars/jimmy.png'
     };
     
     // Debug logging
@@ -93,8 +94,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       return avatarMap[noSpaceUsername];
     }
     
-    console.log('No match found, using generic');
-    return '/avatars/generic.png';
+    console.log('No match found, using taytay');
+    return '/avatars/taytay.png';
   };
 
   useEffect(() => {
@@ -862,7 +863,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                   style={{ objectPosition: 'center 25%' }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = '/avatars/generic.png';
+                    target.src = '/avatars/taytay.png';
                   }}
                 />
                 {/* Username Overlay */}
