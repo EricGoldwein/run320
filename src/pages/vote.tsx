@@ -189,7 +189,7 @@ const Vote: React.FC = () => {
           <div className="max-w-3xl mx-auto space-y-6 text-left">
             <p className="text-lg text-gray-600">
               <span className="inline-flex items-baseline">
-                <span>WINGO</span></span> World is a democracy. Sort of. All 320 Track Club members have voting rights, so long as they hold <span className="inline-flex items-baseline">
+                <span>WINGO</span></span> World is a wingocracy. All 320 Track Club members have voting rights, so long as they hold <span className="inline-flex items-baseline">
                 <span className="text-[#E6C200] font-bold">W</span>
                 <span>INGO</span>
               </span>.
@@ -207,9 +207,9 @@ const Vote: React.FC = () => {
               </span> in circulation, your vote counts for 4%. The current <Link to="/ledger" className="text-wingo-600 hover:text-wingo-700">ledger</Link> determines total supply and individual holdings. There are no caps, no delegation, and no pooling. Your balance is your influence.
             </p>
             <p className="text-lg text-gray-600">
-              Membership (10 <span className="inline-flex items-baseline">
+              Membership (1 <span className="inline-flex items-baseline">
                 <span className="text-[#E6C200] font-bold">W</span>
-              </span>) is the only threshold. Once in, your voice scales with your loops (and your wagers).
+              </span>) is the only threshold. Once in, your voice scales with your WINGO.
             </p>
             <p className="text-lg text-gray-600">
               <span className="inline-flex items-baseline">

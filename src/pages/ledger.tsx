@@ -39,6 +39,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [isLeaderboardView, setIsLeaderboardView] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   
   // Avatar modal state
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -46,7 +47,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   
   // Log data state
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
-  const [logSortField, setLogSortField] = useState<'date' | 'wingoMined' | 'km' | 'initiation' | 'username'>('date');
+  const [logSortField, setLogSortField] = useState<'date' | 'wingoMined' | 'km' | 'initiation' | 'username' | 'category' | 'fullId'>('date');
   const [logSortDirection, setLogSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Username to avatar mapping
@@ -97,7 +98,12 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchData = async () => {
+      if (!isMounted || isFetching) return;
+      
+      setIsFetching(true);
       try {
         // Fetch the Summary sheet for last updated time
         const summaryResponse = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/pub?gid=482134402&single=true&output=csv`, { cache: 'no-store' });
@@ -107,7 +113,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         // Get the last updated time from F2 (row 1, column 5)
         const lastUpdatedCell = summaryRows[1]?.split(',')[5]?.trim().replace(/^["']|["']$/g, '') || '';
         
-        if (lastUpdatedCell) {
+        if (lastUpdatedCell && isMounted) {
           // Just use the raw value from F2 - it's already formatted by the App Script
           setLastUpdated(lastUpdatedCell);
         }
@@ -141,13 +147,25 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
               rank: rank
             };
           })
-          .filter(entry => entry.user && entry.user !== ''); // Filter out empty entries
+          .filter(entry => entry.user && entry.user !== '') // Filter out empty entries
+          // Remove duplicates by username, keeping the first occurrence
+          .filter((entry, index, self) => 
+            index === self.findIndex(e => e.user.toLowerCase() === entry.user.toLowerCase())
+          );
       
-        setLeaderboardData(parsed);
-        setIsLoading(false);
+        if (isMounted) {
+          setLeaderboardData(parsed);
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error('Failed to fetch or parse leaderboard:', err);
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      } finally {
+        if (isMounted) {
+          setIsFetching(false);
+        }
       }
     };
 
@@ -157,12 +175,17 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
 
     // Set up auto-refresh every 30 seconds
     const intervalId = setInterval(() => {
-      fetchData();
-      fetchLogData();
+      if (isMounted) {
+        fetchData();
+        fetchLogData();
+      }
     }, 30000);
 
     // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
   
 
@@ -199,6 +222,12 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       else if (sortField === 'votingShare') result = b.votingShare - a.votingShare;
       else if (sortField === 'lastMined') result = new Date(b.lastMined).getTime() - new Date(a.lastMined).getTime();
       if (sortDirection === 'asc') result = -result;
+      
+      // Add stable secondary sort by username to prevent duplicates when primary values are equal
+      if (result === 0) {
+        result = a.user.localeCompare(b.user);
+      }
+      
       return result;
     });
 
@@ -238,7 +267,11 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             category: columns[10]?.trim() || ''
           };
         })
-        .filter(entry => entry.username && entry.username !== '');
+        .filter(entry => entry.username && entry.username !== '')
+        // Remove duplicates by ID, keeping the first occurrence
+        .filter((entry, index, self) => 
+          index === self.findIndex(e => e.id === entry.id)
+        );
     
       setLogEntries(parsed);
     } catch (err) {
@@ -246,7 +279,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     }
   };
 
-  const handleLogSort = (field: 'date' | 'wingoMined' | 'km' | 'initiation' | 'username') => {
+  const handleLogSort = (field: 'date' | 'wingoMined' | 'km' | 'initiation' | 'username' | 'category' | 'fullId') => {
     if (logSortField === field) {
       setLogSortDirection(logSortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -477,7 +510,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                   <tbody className="bg-white divide-y divide-gray-100">
                     {filteredLeaderboard.length > 0 ? (
                       filteredLeaderboard.map((entry, index) => (
-                        <tr key={entry.rank} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
+                        <tr key={`${entry.user}-${entry.rank}`} className={`hover:bg-gray-50 transition-colors border-b border-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : ''}`}>
                           <td className="pl-1 sm:pl-6 pr-0 sm:pr-4 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-900">{entry.rank}</td>
                           <td className="w-8 sm:w-10 py-4 flex justify-center">
                             <div 
@@ -666,8 +699,16 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         </span>
                       )}
                     </th>
-                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th 
+                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleLogSort('username')}
+                    >
                       Runner
+                      {logSortField === 'username' && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
                     <th 
                       className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -693,11 +734,27 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         </span>
                       )}
                     </th>
-                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th 
+                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleLogSort('category')}
+                    >
                       Tag
+                      {logSortField === 'category' && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
-                    <th className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th 
+                      className="px-1 sm:px-6 py-3 text-left text-[8px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleLogSort('fullId')}
+                    >
                       W-ID
+                      {logSortField === 'fullId' && (
+                        <span className="ml-1">
+                          {logSortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
                     </th>
                   </tr>
                 </thead>
@@ -731,6 +788,18 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                         return logSortDirection === 'asc'
                           ? a.kmLogged - b.kmLogged
                           : b.kmLogged - a.kmLogged;
+                      } else if (logSortField === 'username') {
+                        return logSortDirection === 'asc'
+                          ? a.username.localeCompare(b.username)
+                          : b.username.localeCompare(a.username);
+                      } else if (logSortField === 'category') {
+                        return logSortDirection === 'asc'
+                          ? a.category.localeCompare(b.category)
+                          : b.category.localeCompare(a.category);
+                      } else if (logSortField === 'fullId') {
+                        return logSortDirection === 'asc'
+                          ? a.fullId.localeCompare(b.fullId)
+                          : b.fullId.localeCompare(a.fullId);
                       } else {
                         return logSortDirection === 'asc'
                           ? (a.initiation === b.initiation ? 0 : a.initiation ? 1 : -1)
@@ -808,7 +877,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                   onClick={() => setShowAvatarModal(false)}
                   className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold bg-black/30 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-sm"
                 >
-                  ×
+                  <span className="-mt-0.5">×</span>
                 </button>
               </div>
               

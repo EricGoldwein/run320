@@ -57,7 +57,7 @@ const FAQ: React.FC = () => {
                   <span dangerouslySetInnerHTML={{ __html: 'Placement in the <a href="/ledger" class="text-wingo-600 hover:text-wingo-500"><span class="font-bold">W</span>INGO Ledger</a> — updated live(ish) by Coach DAISY™' }} />,
                   <span dangerouslySetInnerHTML={{ __html: 'Access to exclusive experiences like the <a href="/wingate-invitational" class="text-wingo-600 hover:text-wingo-500">Old Balance Wingate Invitational</a> and 320 Day' }} />,
                   <span dangerouslySetInnerHTML={{ __html: '<a href="/vdot" class="text-wingo-600 hover:text-wingo-500">DAISY™-Daniels-powered</a> race projections, pace generator tools, and custom workouts' }} />,
-                  <span dangerouslySetInnerHTML={{ __html: '<a href="/vote" class="text-wingo-600 hover:text-wingo-500">Democracy</a>: voting rights on club decisions — 1 <span class="text-[#E6C200] font-bold">W</span> = 1 vote' }} />,
+                  <span dangerouslySetInnerHTML={{ __html: '<a href="/vote" class="text-wingo-600 hover:text-wingo-500">Wingocracy</a>: voting rights on club decisions — 1 <span class="text-[#E6C200] font-bold">W</span> = 1 vote' }} />,
                   <span dangerouslySetInnerHTML={{ __html: '<a href="/wager" class="text-wingo-600 hover:text-wingo-500"><span class="font-bold">W</span>INGO Wager World</a>: bet on friends using the proprietary DAISY™-degenerate formula' }} />
                 ].map((item, index) => (
                   <li key={index} className="grid grid-cols-[auto_1fr] gap-2">
