@@ -694,7 +694,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                       onClick={() => handleLogSort('date')}
                     >
                       Date
-                      {logSortField === 'date' && logSortDirection && (
+                      {logSortField === 'date' && (
                         <span className="ml-1">
                           {logSortDirection === 'asc' ? '↑' : '↓'}
                         </span>
