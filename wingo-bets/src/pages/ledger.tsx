@@ -60,7 +60,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
       'scar': '/avatars/scar.png',
       'willy_wingo': '/avatars/willy_wingo.png',
       'erock': '/avatars/erock.png',
-      'jimmy': '/avatars/jimmy.png'
+      'jimmy': '/avatars/jimmy.png',
+      'kirkland': '/avatars/kirkland.png'
     };
     
     // Debug logging
