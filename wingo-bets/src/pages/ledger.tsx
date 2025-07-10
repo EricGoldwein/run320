@@ -65,36 +65,24 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     };
     
     // Debug logging
-    console.log('Username received:', username);
-    console.log('Available avatars:', Object.keys(avatarMap));
-    
-    // Try exact match first
-    if (avatarMap[username]) {
-      console.log('Exact match found:', avatarMap[username]);
-      return avatarMap[username];
+    const cleanUsername = username.trim().toLowerCase();
+    console.log('getAvatarForUser called with:', username, '| cleaned:', cleanUsername);
+    if (avatarMap[cleanUsername]) {
+      console.log('Cleaned match found:', avatarMap[cleanUsername]);
+      return avatarMap[cleanUsername];
     }
-    
-    // Try case-insensitive match
-    const lowerUsername = username.toLowerCase();
-    if (avatarMap[lowerUsername]) {
-      console.log('Lowercase match found:', avatarMap[lowerUsername]);
-      return avatarMap[lowerUsername];
-    }
-    
     // Try matching with underscores instead of spaces
-    const underscoreUsername = username.replace(/\s+/g, '_').toLowerCase();
+    const underscoreUsername = cleanUsername.replace(/\s+/g, '_');
     if (avatarMap[underscoreUsername]) {
       console.log('Underscore match found:', avatarMap[underscoreUsername]);
       return avatarMap[underscoreUsername];
     }
-    
     // Try matching without spaces
-    const noSpaceUsername = username.replace(/\s+/g, '').toLowerCase();
+    const noSpaceUsername = cleanUsername.replace(/\s+/g, '');
     if (avatarMap[noSpaceUsername]) {
       console.log('No space match found:', avatarMap[noSpaceUsername]);
       return avatarMap[noSpaceUsername];
     }
-    
     console.log('No match found, using taytay');
     return '/avatars/taytay.png';
   };
