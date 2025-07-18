@@ -27,6 +27,7 @@ import Vote from './pages/vote';
 import DaisyMath from './pages/daisy_math';
 import OldBalance from './components/old_balance';
 import WingoLog from './pages/wingo-log';
+import Wingonomics from './pages/wingonomics';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -190,6 +191,7 @@ function App() {
                 <Route path="/daisy_math" element={<DaisyMath />} />
                 <Route path="/old-balance" element={<OldBalance />} />
                 <Route path="/wlog" element={<WingoLog />} />
+                <Route path="/wingonomics" element={<Wingonomics />} />
               </Routes>
             </main>
             <Footer />

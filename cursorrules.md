@@ -199,7 +199,101 @@ D<span className="text-cyan-600">AI</span>SY™
 3. **Keep the same file structure** and naming conventions
 4. **Don't break existing functionality** without confirmation
 
+### Critical Debugging & Development Rules
+
+#### Directory Management
+- **ALWAYS verify working directory** before running commands
+- **Frontend**: Must run `npm run dev` from `wingo-bets/` directory
+- **Backend**: Must run from `backend/` directory
+- **Error "Failed to load url /src/main.tsx"** = wrong directory
+- **Check current path** with `pwd` or `Get-Location` before running dev servers
+
+#### String Matching & Input Handling
+- **ALWAYS use robust string matching** for user data lookups
+- **Standard pattern**: `username.trim().toLowerCase()` before comparisons
+- **Handle case sensitivity**: User data may have mixed case
+- **Handle whitespace**: Trim input to prevent matching failures
+- **Add debug logging** when troubleshooting string matching issues
+- **Example avatar lookup**:
+  ```js
+  const cleanUsername = username.trim().toLowerCase();
+  if (avatarMap[cleanUsername]) {
+    return avatarMap[cleanUsername];
+  }
+  ```
+
+#### Troubleshooting Priority
+1. **Check working directory first** - most common cause of build failures
+2. **Verify file paths** - ensure files exist where expected
+3. **Add console logging** for debugging string/data issues
+4. **Stop and think** when user shows frustration - likely missing obvious issue
+5. **Don't repeat failed approaches** - identify root cause instead
+
+#### Development Server Setup
+- **Frontend**: 
+  ```bash
+  cd wingo-bets
+  npm run dev
+  ```
+  (runs on port 5173)
+- **Backend**: 
+  ```bash
+  cd backend
+  python -m uvicorn main:app --reload --host 127.0.0.1 --port 3000
+  ```
+- **PowerShell**: Use `;` for command chaining, not `&&`
+- **Verify server starts** before proceeding with debugging
+
 ### Common Implementation Patterns
+
+#### Date Handling Best Practices
+**CRITICAL LESSON**: When dealing with dates in charts/data visualization, avoid timezone conversions entirely unless absolutely necessary.
+
+**The Problem**: Date objects introduce timezone complexity that can cause off-by-one errors:
+```js
+// BAD - causes timezone issues
+const date = new Date('2025-05-28'); // May become 2025-05-27 in some timezones
+const dateStr = date.toISOString().split('T')[0]; // UTC conversion
+```
+
+**The Solution**: Use pure date strings for business logic:
+```js
+// GOOD - timezone-agnostic
+const parseMDYYtoISO = (dateStr) => {
+  const [m, d, y] = dateStr.split('/');
+  const yyyy = y.length === 2 ? '20' + y.padStart(2, '0') : y;
+  const mm = m.padStart(2, '0');
+  const dd = d.padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`; // Pure date string
+};
+
+// Use string comparison for business logic
+const isAfterDate = (date1, date2) => date1 > date2; // Works perfectly
+```
+
+**Key Rules**:
+1. **Parse dates to ISO strings**: `"5/28/25"` → `"2025-05-28"`
+2. **Use string operations for all business logic**: comparisons, filtering, grouping
+3. **Only create Date objects for timestamps**: When chart libraries need milliseconds
+4. **Avoid timezone validation**: Don't add `T12:00:00` unless absolutely necessary
+5. **String comparison is reliable**: `"2025-05-28" > "2025-05-27"` works without timezone issues
+
+**Pattern for chart data**:
+```js
+// Data processing - pure strings
+const dailyData = {};
+sorted.forEach(row => {
+  const dateStr = row.date; // Already in YYYY-MM-DD format
+  // Use dateStr directly for all operations
+});
+
+// Chart rendering - only create Date objects for timestamps
+const chartData = dailyData.map(dateStr => ({
+  date: dateStr,
+  timestamp: new Date(dateStr + 'T12:00:00').getTime(), // Only for chart library
+  value: dailyData[dateStr].value
+}));
+```
 
 #### User Authentication Flow
 ```tsx
@@ -388,6 +482,48 @@ Before suggesting any code changes, ensure:
 - Update rules based on team feedback
 - Keep examples current with codebase
 - Document breaking changes
+
+## 🚀 Deployment Lessons Learned
+
+### Critical Deployment Rules
+**NEVER use git submodules for Vercel deployments.** The deployment will fail with "Could not read package.json" errors.
+
+### What We Learned (July 2025)
+1. **Submodule Issues**: Vercel cannot properly fetch git submodules during deployment
+   - Error: `npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/vercel/path0/wingo-bets/package.json'`
+   - Solution: Convert submodules to regular directories
+
+2. **File Structure Requirements**: All deployment files must be in the configured root directory
+   - Vercel project settings specify root directory (e.g., "wingo-bets")
+   - All config files (`package.json`, `vite.config.ts`, etc.) must be in that directory
+   - No nested git repositories allowed
+
+3. **Git Submodule vs Regular Directory**:
+   - **Submodule**: `160000 commit` - Vercel can't access
+   - **Regular Directory**: `100644` files - Vercel can access
+
+### Deployment Checklist
+Before pushing to production:
+- [ ] Ensure all config files are in the correct root directory
+- [ ] Verify no nested `.git` directories exist
+- [ ] Check that `package.json` is accessible in the deployment path
+- [ ] Confirm Vercel project settings match the actual file structure
+
+### Emergency Fixes
+If deployment fails due to submodule issues:
+1. Remove submodule reference: `git rm --cached wingo-bets`
+2. Remove nested git: `Remove-Item -Recurse -Force wingo-bets/.git`
+3. Add as regular directory: `git add wingo-bets/`
+4. Commit and push: `git commit -m "Convert to regular directory" && git push`
+
+### PowerShell Commands
+```powershell
+# Use semicolons instead of && for command chaining
+git add .; git commit -m "message"; git push origin main
+
+# Remove git lock files if needed
+Remove-Item .git/index.lock -Force
+```
 
 ---
 

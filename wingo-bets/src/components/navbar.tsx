@@ -116,6 +116,9 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     <Link to="/obwi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Wingate Invitational
                     </Link>
+                    <Link to="/wingonomics" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Wingonomics
+                    </Link>
                     <Link to="/experience" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       All Experiences
                     </Link>
