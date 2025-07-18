@@ -188,6 +188,8 @@ function App() {
                 <Route path="/raq" element={<FAQ />} />
                 <Route path="/converter" element={<WingoConverter />} />
                 <Route path="/vdot-paces" element={<VDOTTimes initialView="pace" user={user} />} />
+                <Route path="/vdot" element={<VDOTTimes initialView="pace" user={user} />} />
+                <Route path="/dvot" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/vdot-times" element={<VDOTTimes initialView="pace" user={user} />} />
                 <Route path="/daisy_math" element={<DaisyMath />} />
                 <Route path="/old-balance" element={<OldBalance />} />
