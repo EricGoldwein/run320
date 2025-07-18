@@ -134,7 +134,7 @@ const LaneConverter: React.FC = () => {
         <div className="text-center mb-4">
           <h1 className={styles['brand-heading']}>Stay in Yo Lane</h1>
           <p className={styles['subheading']}>
-            Stuck in Lane 4 with no clue how fast you're moving? Find your Lane 1 {distance === '320' ? 'Wingo' : `${distance}m`} time with DAISY's SIYL System.
+            Stuck in Lane 4 with no clue how fast you're moving? Find your Lane 1 {distance === '320' ? 'Wingo' : `${distance}m`} time with <strong>DAISY's</strong> <strong>SIYL System</strong>.
           </p>
           <p className="text-xs text-gray-500 mt-2 px-2 py-1 bg-gray-50 border border-gray-200 rounded inline-block">
             Brought to you by{' '}

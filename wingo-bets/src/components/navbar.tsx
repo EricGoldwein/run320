@@ -136,7 +136,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               {activeDropdown === 'daisy' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <div className="py-2">
-                    <Link to="/vdot-times" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link to="/dvot" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Daisy DVot Dash
                     </Link>
                     <Link to="/converter" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -229,7 +229,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             Old Balance Wingate Invitational
           </button>
           <button
-            onClick={() => handleMobileNav('/vdot-times')}
+            onClick={() => handleMobileNav('/dvot')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             D<span className="text-[#00bcd4]">AI</span>SY™ DVOT Dashboard

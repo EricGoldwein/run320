@@ -13,6 +13,11 @@
     margin-top: 0.5rem;
 }
 
+.subheading strong {
+    color: #000000;
+    font-weight: 700;
+}
+
 .converter-container {
     max-width: 800px;
     margin: 2rem auto;

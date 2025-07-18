@@ -125,7 +125,7 @@ const OldBalance: React.FC = () => {
                       
                       <div className="mb-8">
                         <span className="inline-block px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
-                          🔓 Use code <span className="font-mono font-bold ml-1">DAISY</span> for <span className="text-yellow-500">W</span> 32 off
+                          🔓 Code <span className="font-mono font-bold ml-1">DAISY</span> for <span className="text-yellow-500">W</span> 32 off
                         </span>
                       </div>
 
