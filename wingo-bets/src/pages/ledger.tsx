@@ -910,7 +910,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                               <span className="ml-1">{getMedalEmoji(topRank)}</span>
                             )}
                             {isLowestMiningSession && (
-                              <span className="ml-1">💩</span>
+                              <span className="ml-1">🪙</span>
                             )}
                           </td>
                           <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
