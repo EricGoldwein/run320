@@ -319,6 +319,14 @@ select.form-control option {
     .table-title {
         font-size: 1.1rem;
     }
+    
+    .daisy-badge {
+        margin-top: 1rem;
+    }
+    
+    .text-center {
+        margin-top: 0.5rem;
+    }
 }
 
 /* Desktop-specific lane select styles - must come after mobile styles */
