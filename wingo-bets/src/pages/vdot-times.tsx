@@ -937,7 +937,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
               <div className="inline-flex rounded-md shadow-sm">
                 <button
                   onClick={() => setViewMode('pace')}
-                  className={`px-2 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-l-md ${
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 text-sm font-medium rounded-l-md ${
                     viewMode === 'pace'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
@@ -948,7 +948,7 @@ const VDOTTimes: React.FC<VDOTTimesProps> = ({ initialView = 'pace', user }) => 
                 </button>
                 <button
                   onClick={() => setViewMode('race')}
-                  className={`px-2 sm:px-3 py-1.5 sm:py-2 text-sm font-medium rounded-r-md ${
+                  className={`px-2 sm:px-3 py-1 sm:py-1.5 text-sm font-medium rounded-r-md ${
                     viewMode === 'race'
                       ? 'bg-gray-900 text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
