@@ -36,6 +36,7 @@ const Wingonomics: React.FC = () => {
   const [log, setLog] = useState<LogRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chartHeight, setChartHeight] = useState(300);
 
   // Chart data
   const [balanceByDay, setBalanceByDay] = useState<any[]>([]);
@@ -46,6 +47,17 @@ const Wingonomics: React.FC = () => {
   const [sessionStats, setSessionStats] = useState<{ mean: number; median: number; std: number }>({ mean: 0, median: 0, std: 0 });
   const [boxPlotData, setBoxPlotData] = useState<any[]>([]);
   const [kdeData, setKdeData] = useState<{ x: number; y: number }[]>([]);
+
+  // Responsive chart height
+  useEffect(() => {
+    const updateHeight = () => {
+      setChartHeight(window.innerWidth >= 768 ? 500 : 220);
+    };
+    
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   useEffect(() => {
     // Fetch and parse the Google Sheet log
@@ -315,125 +327,108 @@ const Wingonomics: React.FC = () => {
 
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-2">World Wide WINGO</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={balanceByDay} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            {/* X-axis: use timestamps for proper time scaling */}
-            <XAxis
-              dataKey="timestamp"
-              type="number"
-              domain={['dataMin', 'dataMax']}
-              tickFormatter={timestamp => {
-                const d = new Date(timestamp);
-                return `${d.getMonth() + 1}/${d.getDate()}`;
-              }}
-              minTickGap={3}
-              tick={{ fontSize: 10 }}
-              className="md:minTickGap-10 md:tick-fontSize-12"
-              ticks={(() => {
-                // Generate ticks every 7 days starting from 5/28/2025
-                const startDate = new Date('2025-05-28T12:00:00').getTime();
-                
-                // Find the most recent WINGO logging date
-                const lastWingoDateStr = balanceByDay.length > 0 ? 
-                  balanceByDay[balanceByDay.length - 1].date : 
-                  '2025-05-28';
-                
-                // Find the most recent Wednesday (or the last WINGO date if it's a Wednesday)
-                const lastWingoDate = new Date(lastWingoDateStr + 'T12:00:00');
-                const lastWingoDay = lastWingoDate.getDay(); // 0=Sunday, 3=Wednesday
-                let lastTickDate;
-                if (lastWingoDay === 3) { // If last WINGO was on a Wednesday
-                  lastTickDate = lastWingoDate.getTime();
-                } else {
-                  // Find the most recent Wednesday before or on the last WINGO date
-                  const daysSinceWednesday = (lastWingoDay + 4) % 7; // Days since last Wednesday
-                  lastTickDate = lastWingoDate.getTime() - (daysSinceWednesday * 24 * 60 * 60 * 1000);
-                }
-                
-                const ticks = [];
-                let currentDate = startDate;
-                while (currentDate <= lastTickDate) {
-                  ticks.push(currentDate);
-                  currentDate += 7 * 24 * 60 * 60 * 1000; // Add 7 days in milliseconds
-                }
-                console.log('Generated ticks:', ticks.map(t => new Date(t).toLocaleDateString()));
-                return ticks;
-              })()}
-            />
-            <YAxis 
-              label={{ value: 'WINGO', angle: -90, position: 'insideLeft', offset: 10 }} 
-              tick={{ fontSize: 10 }}
-              className="md:tick-fontSize-12"
-            />
-            <Tooltip labelFormatter={timestamp => {
-              const d = new Date(timestamp as number);
-              return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-            }} />
-            <Legend />
-            <Line type="monotone" dataKey="balance" name="Total Circulating" stroke="#E6C200" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey="mined" name="Total Mined" stroke="#00bcd4" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-2">WINGO per Session</h2>
-        <div className="mb-2 text-gray-700 text-sm">
-          <span className="mr-4">Mean: <span className="font-bold">{sessionStats.mean.toFixed(2)}</span></span>
-          <span className="mr-4">Median: <span className="font-bold">{sessionStats.median.toFixed(2)}</span></span>
-          <span>Std Dev: <span className="font-bold">{sessionStats.std.toFixed(2)}</span></span>
+        <div className="relative">
+          <div className="absolute top-12 left-16 md:left-20 z-10">
+            <div className="inline-flex flex-col md:flex-row items-start md:items-center max-w-fit px-2 py-0.5 bg-white/95 border border-gray-300 shadow-md rounded-md text-xs gap-1 md:gap-3 backdrop-blur-sm">
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1">W Circulating:</span>
+                <span className="font-semibold text-gray-900">{balanceByDay.length > 0 ? balanceByDay[balanceByDay.length - 1].balance.toLocaleString() : '0'}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1">W Mined:</span>
+                <span className="font-semibold text-gray-900">{balanceByDay.length > 0 ? balanceByDay[balanceByDay.length - 1].mined.toLocaleString() : '0'}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1">Leader:</span>
+                <span className="font-semibold text-gray-900">
+                  {(() => {
+                    const userBalances: Record<string, number> = {};
+                    log.forEach(row => {
+                      if (!userBalances[row.user]) userBalances[row.user] = 0;
+                      userBalances[row.user] += row.amount;
+                    });
+                    const sortedUsers = Object.entries(userBalances).sort(([,a], [,b]) => b - a);
+                    return sortedUsers.length > 0 ? sortedUsers[0][0] : 'N/A';
+                  })()}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-[300px] md:h-[600px] [&_*]:focus:outline-none [&_*]:focus:ring-0 [&_*]:select-none [&_svg]:focus:outline-none [&_svg]:focus:ring-0" style={{ userSelect: 'none' }}>
+            <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
+              <LineChart data={balanceByDay} margin={{ top: 20, right: 30, left: 0, bottom: 0 }} style={{ outline: 'none', userSelect: 'none' }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                {/* X-axis: use timestamps for proper time scaling */}
+                <XAxis
+                  dataKey="timestamp"
+                  type="number"
+                  domain={['dataMin', 'dataMax']}
+                  tickFormatter={timestamp => {
+                    const d = new Date(timestamp);
+                    return `${d.getMonth() + 1}/${d.getDate()}`;
+                  }}
+                  minTickGap={3}
+                  tick={{ fontSize: 10 }}
+                  className="md:minTickGap-10 md:tick-fontSize-12"
+                  ticks={(() => {
+                    // Generate ticks every 7 days starting from 5/28/2025
+                    const startDate = new Date('2025-05-28T12:00:00').getTime();
+                    
+                    // Find the most recent WINGO logging date
+                    const lastWingoDateStr = balanceByDay.length > 0 ? 
+                      balanceByDay[balanceByDay.length - 1].date : 
+                      '2025-05-28';
+                    
+                    // Find the most recent Wednesday (or the last WINGO date if it's a Wednesday)
+                    const lastWingoDate = new Date(lastWingoDateStr + 'T12:00:00');
+                    const lastWingoDay = lastWingoDate.getDay(); // 0=Sunday, 3=Wednesday
+                    let lastTickDate;
+                    if (lastWingoDay === 3) { // If last WINGO was on a Wednesday
+                      lastTickDate = lastWingoDate.getTime();
+                    } else {
+                      // Find the most recent Wednesday before or on the last WINGO date
+                      const daysSinceWednesday = (lastWingoDay + 4) % 7; // Days since last Wednesday
+                      lastTickDate = lastWingoDate.getTime() - (daysSinceWednesday * 24 * 60 * 60 * 1000);
+                    }
+                    
+                    const ticks = [];
+                    let currentDate = startDate;
+                    while (currentDate <= lastTickDate) {
+                      ticks.push(currentDate);
+                      currentDate += 7 * 24 * 60 * 60 * 1000; // Add 7 days in milliseconds
+                    }
+                    console.log('Generated ticks:', ticks.map(t => new Date(t).toLocaleDateString()));
+                    return ticks;
+                  })()}
+                />
+                <YAxis 
+                  label={{ value: 'WINGO', angle: -90, position: 'insideLeft', offset: 10 }} 
+                  tick={{ fontSize: 10 }}
+                  className="md:tick-fontSize-12"
+                />
+                <Tooltip labelFormatter={timestamp => {
+                  const d = new Date(timestamp as number);
+                  return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+                }} contentStyle={{ lineHeight: '1.0' }} />
+                <Legend wrapperStyle={{ lineHeight: '1.2' }} />
+                <Line type="monotone" dataKey="balance" name="Circulating" stroke="#E6C200" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="mined" name="Mined" stroke="#00bcd4" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="relative">
+            <div className="absolute bottom-2 right-6 bg-gray-900 text-white rounded-md px-2 py-0 text-sm font-medium">
+              D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+            </div>
+          </div>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
-          {/* ComposedChart: histogram bars touch, KDE curve overlays */}
-          <ComposedChart data={histogramData} margin={{ top: 30, right: 30, left: 0, bottom: 10 }}>
-            <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
-            {/* X-axis: show all bins, label bins as '1-4', '5-8', ... */}
-            <XAxis
-              dataKey="bin"
-              tick={{ fontSize: 10 }}
-              type="category"
-              domain={['dataMin', 'dataMax']}
-              allowDecimals={false}
-              tickFormatter={(_bin, idx) => histogramData[idx]?.label || _bin}
-              className="md:tick-fontSize-14"
-            />
-            <YAxis 
-              yAxisId="left" 
-              allowDecimals={false} 
-              label={{ value: 'Sessions', angle: -90, position: 'insideLeft', offset: 10, dy: 20 }} 
-              tick={{ fontSize: 10 }}
-              className="md:tick-fontSize-14"
-            />
-            <YAxis yAxisId="right" orientation="right" hide />
-            <Tooltip 
-              formatter={(value, name) => {
-                if (name === 'KDE Curve') {
-                  return [Number(value).toFixed(2), name];
-                }
-                if (name === 'Sessions') {
-                  return [value, name];
-                }
-                return [value, name];
-              }}
-              labelFormatter={(value) => {
-                // Find the bin that contains this value
-                const bin = histogramData.find(b => b.bin === value);
-                return bin ? bin.label : value;
-              }}
-            />
-            <Bar yAxisId="left" dataKey="count" fill="#4F8EF7" fillOpacity={0.85} name="Sessions" barSize={100} />
-            <Line yAxisId="right" type="monotone" dataKey="density" stroke="#ff7300" strokeWidth={3} dot={false} name="KDE Curve" />
-          </ComposedChart>
-        </ResponsiveContainer>
-        <div className="text-center -mt-2 text-gray-600">WINGO per Session</div>
       </section>
 
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-2">Winequality Index</h2>
+        <h2 className="text-xl font-semibold mb-2">WINGO Distribution</h2>
         <div className="relative">
           <div className="absolute top-1/2 transform -translate-y-1/2 -rotate-90 text-gray-600 z-10 md:left-[-60px] left-[-60px]" style={{ top: '50%' }}>WINGO Holdings</div>
-          <ResponsiveContainer width="100%" height={400} className="md:h-[400px] h-[200px]">
+          <ResponsiveContainer width="100%" height={400} className="md:h-[400px] h-[150px]" style={{ outline: 'none' }}>
             <LineChart data={lorenzData} margin={{ top: 20, right: 30, left: 0, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
               {/* X and Y axes: start at 0, custom labels, more padding */}
@@ -452,7 +447,11 @@ const Wingonomics: React.FC = () => {
                 className="md:tick-fontSize-10"
               />
               <Tooltip 
-                formatter={(value, name) => {
+                formatter={(value, name, props) => {
+                  // Skip the first observation (0,0 point)
+                  if (props.payload && props.payload.pctUsers === 0 && props.payload.pctWingo === 0) {
+                    return null;
+                  }
                   if (name === 'Lorenz Curve') {
                     return [`${Math.round(Number(value) * 100)}%`, 'WINGO Equality'];
                   }
@@ -461,6 +460,8 @@ const Wingonomics: React.FC = () => {
                   }
                   return null; // Hide Area components from tooltip
                 }}
+                labelFormatter={() => ''}
+                contentStyle={{ lineHeight: '1.2' }}
               />
               {/* Shade the area between equality line and Lorenz curve */}
               <Area 
@@ -484,7 +485,7 @@ const Wingonomics: React.FC = () => {
             </LineChart>
           </ResponsiveContainer>
           {/* Add text annotation for Wingi Index in a shaded box - positioned within chart */}
-          <div className="absolute top-16 bg-yellow-500 bg-opacity-90 rounded p-3 text-white md:left-40 md:text-base left-32 text-sm">
+          <div className="absolute top-16 bg-yellow-500 bg-opacity-90 rounded p-3 text-white md:left-40 md:text-base left-20 text-sm">
             <div className="font-bold">
               Wingi Index: {wingiCoefficient !== null ? wingiCoefficient.toFixed(2) : 'N/A'}
             </div>
@@ -499,6 +500,79 @@ const Wingonomics: React.FC = () => {
             </div>
           </div>
           <div className="text-center -mt-2 text-gray-600 ml-4">% 320 Population</div>
+        </div>
+        <div className="relative">
+          <div className="absolute bottom-2 right-6 bg-gray-900 text-white rounded-md px-2 py-0 text-sm font-medium">
+            D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-xl font-semibold mb-2">WINGO Rate</h2>
+        <div className="relative">
+          <div className="absolute top-12 left-16 md:left-20 z-10">
+            <div className="inline-flex flex-col md:flex-row items-start md:items-center max-w-fit px-2 py-0.5 bg-white/90 border border-gray-200 shadow-sm rounded text-xs gap-1 md:gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1">Mean:</span>
+                <span className="font-semibold text-gray-900">{sessionStats.mean.toFixed(1)}</span>
+                <span className="text-gray-500 ml-1">(σ = {sessionStats.std.toFixed(1)})</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1">Median:</span>
+                <span className="font-semibold text-gray-900">{sessionStats.median.toFixed(1)}</span>
+              </div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={300} style={{ outline: 'none' }}>
+            {/* ComposedChart: histogram bars touch, KDE curve overlays */}
+            <ComposedChart data={histogramData} margin={{ top: 30, right: 30, left: 0, bottom: 10 }}>
+              <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+              {/* X-axis: show all bins, label bins as '1-4', '5-8', ... */}
+              <XAxis
+                dataKey="bin"
+                tick={{ fontSize: 10 }}
+                type="category"
+                domain={['dataMin', 'dataMax']}
+                allowDecimals={false}
+                tickFormatter={(_bin, idx) => histogramData[idx]?.label || _bin}
+                className="md:tick-fontSize-14"
+              />
+              <YAxis 
+                yAxisId="left" 
+                allowDecimals={false} 
+                label={{ value: 'Sessions', angle: -90, position: 'insideLeft', offset: 10, dy: 20 }} 
+                tick={{ fontSize: 10 }}
+                className="md:tick-fontSize-14"
+              />
+              <YAxis yAxisId="right" orientation="right" hide />
+              <Tooltip 
+                formatter={(value, name) => {
+                  if (name === 'KDE Curve') {
+                    return [Number(value).toFixed(2), name];
+                  }
+                  if (name === 'Sessions') {
+                    return [value, name];
+                  }
+                  return [value, name];
+                }}
+                labelFormatter={(value) => {
+                  // Find the bin that contains this value
+                  const bin = histogramData.find(b => b.bin === value);
+                  return bin ? bin.label + ' W' : value;
+                }}
+                contentStyle={{ lineHeight: '1.0' }}
+              />
+              <Bar yAxisId="left" dataKey="count" fill="#4F8EF7" fillOpacity={0.85} name="Sessions" barSize={100} />
+              <Line yAxisId="right" type="monotone" dataKey="density" stroke="#ff7300" strokeWidth={3} dot={false} name="KDE Curve" />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="text-center -mt-2 text-gray-600">Number of WINGO Mined</div>
+        <div className="relative">
+          <div className="absolute bottom-2 right-6 bg-gray-900 text-white rounded-md px-2 py-0 text-sm font-medium">
+            D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
+          </div>
         </div>
       </section>
     </div>
