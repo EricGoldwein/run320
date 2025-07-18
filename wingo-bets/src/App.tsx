@@ -168,6 +168,19 @@ function App() {
                   isActive: true,
                   createdAt: new Date()
                 }} />} />
+                <Route path="/obwi" element={<WingateInvitational user={user || {
+                  id: 'guest',
+                  email: '',
+                  username: 'Guest',
+                  name: 'Guest User',
+                  wingo_balance: 0,
+                  total_wingos: 0,
+                  created_at: new Date().toISOString(),
+                  last_activity: new Date().toISOString(),
+                  balance: 0,
+                  isActive: true,
+                  createdAt: new Date()
+                }} />} />
                 <Route path="/experience" element={<Experience />} />
                 <Route path="/wingo-wednesday" element={<WingoWednesday />} />
                 <Route path="/raq" element={<FAQ />} />

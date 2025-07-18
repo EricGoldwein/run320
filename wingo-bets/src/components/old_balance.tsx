@@ -201,7 +201,7 @@ const OldBalance: React.FC = () => {
                 <div className="mt-12 pt-8 border-t border-gray-200">
                   <p className="text-gray-600 text-sm">
                     Old Balance is a proud sponsor of the{' '}
-                    <Link to="/wingate-invitational" className="text-wingo-600 hover:text-wingo-700 font-medium">
+                    <Link to="/obwi" className="text-wingo-600 hover:text-wingo-700 font-medium">
                       Old Balance Wingate Invitational
                     </Link>
                     , held Sunday, September 7 at 7:20 a.m. Definitely not a m*le. Definitely not sold out.

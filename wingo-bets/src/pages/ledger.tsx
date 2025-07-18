@@ -28,6 +28,7 @@ interface LogEntry {
   kmLogged: number;
   initiation: boolean;
   category: string;
+  activityLink: string;
 }
 
 const Ledger: React.FC<LedgerProps> = ({ user }) => {
@@ -254,7 +255,8 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
             wingoMined: parseInt(columns[3]) || 0,
             kmLogged: parseFloat(columns[4]) || 0,
             initiation: columns[7]?.trim() === 'Yes',
-            category: columns[10]?.trim() || ''
+            category: columns[10]?.trim() || '',
+            activityLink: columns[5]?.trim() || '' // Column F (index 5) - Activity Link
           };
         })
         .filter(entry => entry.username && entry.username !== '')
@@ -306,6 +308,53 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     }));
   };
 
+  // Get top 3 mining session IDs for medal emojis
+  const getTopMiningSessionIds = () => {
+    const sortedByWingo = [...logEntries].sort((a, b) => {
+      if (b.wingoMined !== a.wingoMined) {
+        return b.wingoMined - a.wingoMined;
+      }
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA.getTime() !== dateB.getTime()) {
+        return dateA.getTime() - dateB.getTime();
+      }
+      return a.id - b.id;
+    });
+    
+    return sortedByWingo.slice(0, 3).map(entry => entry.id);
+  };
+
+  // Get lowest mining session ID for poop emoji
+  const getLowestMiningSessionId = () => {
+    const miningEntries = logEntries.filter(entry => entry.wingoMined > 0);
+    if (miningEntries.length === 0) return null;
+    
+    const sortedByWingo = [...miningEntries].sort((a, b) => {
+      if (a.wingoMined !== b.wingoMined) {
+        return a.wingoMined - b.wingoMined;
+      }
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA.getTime() !== dateB.getTime()) {
+        return dateB.getTime() - dateA.getTime(); // Newer dates first for ties
+      }
+      return b.id - a.id; // Newer IDs first for ties
+    });
+    
+    return sortedByWingo[0].id;
+  };
+
+  // Get medal emoji for rank
+  const getMedalEmoji = (rank: number) => {
+    switch (rank) {
+      case 1: return '🥇';
+      case 2: return '🥈';
+      case 3: return '🥉';
+      default: return '';
+    }
+  };
+
   // Handle avatar click
   const handleAvatarClick = (entry: LeaderboardEntry) => {
     const avatarUrl = getAvatarForUser(entry.user);
@@ -319,6 +368,52 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
     });
     setShowAvatarModal(true);
   };
+
+  // Replace gearQuotes and getGearQuote with new lists and logic
+  const gearList = [
+    'Divot Awareness Pro',
+    'LaceLoop Sync XT',
+    'HeelLock 9™',
+    'The Aglet Beacon',
+    'TongueTamer Core',
+    'LaceOS v4.7',
+    'LoopPredictor Nano',
+    'HitchAware Hybrid',
+    'AIglet+ Cloud Lace',
+    'ThreadLock Modulator',
+    'Forefoot Lace Governor',
+    'Autolace Recall Band',
+    'Tempo Tug™ ProSeries',
+    'The Obsessive Knot System (OKS)',
+    'Carbon Weft Companion',
+    'Midsole Lace Anchor Pro',
+    'Instep Signal Syncer',
+    'TensionSync 320',
+    'GhostLace Obfuscator',
+    'Pronation-Responsive Aglet Dock',
+  ];
+  const quoteList = [
+    'Don’t trust a loop you didn’t tie.',
+    'Pain is just uncompressed effort.',
+    'You don’t win the WINGO. You earn her favor.',
+    'Left foot for pace. Right foot for grace.',
+    'Lace yourself. Before you face yourself.',
+    'Never raced with a clean tongue.',
+    'Each knot holds a memory.',
+    'I stopped tying my shoes. I started listening to them.',
+    'He brought flats to a PentaWingo.',
+    'Wind from the east? DAISY’s teeth.',
+    'My laces were taught by monks. Or maybe ghosts.',
+    'I don’t train. I foreshadow.',
+  ];
+  function getGearQuote(username: string) {
+    // Deterministic hash for consistent assignment
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) hash += username.charCodeAt(i);
+    const gear = gearList[hash % gearList.length];
+    const quote = quoteList[hash % quoteList.length];
+    return { gear, quote };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -360,7 +455,7 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         {/* Wingate Invitational Alert */}
         <div className="flex justify-center mb-6">
           <a 
-            href="/wingate-invitational" 
+            href="/obwi" 
             className="inline-block transform hover:scale-[1.02] transition-all duration-200"
           >
             <div className="bg-gradient-to-br from-[#E6C200] via-[#FFD700] to-[#FFC107] px-4 sm:px-4 py-3 rounded-lg shadow-lg">
@@ -796,27 +891,54 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
                           : (a.initiation === b.initiation ? 0 : a.initiation ? -1 : 1);
                       }
                     })
-                    .map((entry) => (
-                      <tr key={entry.id} className="hover:bg-gray-50">
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[7px] sm:text-sm text-gray-500">
-                          {format(new Date(entry.date), 'M.dd.yy')}
-                        </td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}</td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                          {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
-                        </td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                          {entry.category}
-                        </td>
-                        <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                          {entry.fullId}
-                          {entry.initiation && (
-                            <span className="ml-1 text-[#E6C200]">🚀</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                    .map((entry) => {
+                      const topMiningSessionIds = getTopMiningSessionIds();
+                      const lowestMiningSessionId = getLowestMiningSessionId();
+                      const isTopMiningSession = topMiningSessionIds.includes(entry.id);
+                      const isLowestMiningSession = entry.id === lowestMiningSessionId;
+                      const topRank = isTopMiningSession ? topMiningSessionIds.indexOf(entry.id) + 1 : 0;
+                      
+                      return (
+                        <tr key={entry.id} className="hover:bg-gray-50">
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[7px] sm:text-sm text-gray-500">
+                            {format(new Date(entry.date), 'M.dd.yy')}
+                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">{entry.username}</td>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
+                            {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
+                            {isTopMiningSession && (
+                              <span className="ml-1">{getMedalEmoji(topRank)}</span>
+                            )}
+                            {isLowestMiningSession && (
+                              <span className="ml-1">💩</span>
+                            )}
+                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                            {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
+                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                            {entry.category}
+                          </td>
+                          <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                            {entry.category === 'Gate Unlock' ? (
+                              <a 
+                                href={entry.activityLink || "https://docs.google.com/spreadsheets/d/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/edit#gid=270601813"} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-wingo-600 hover:text-wingo-700 hover:underline cursor-pointer"
+                              >
+                                {entry.fullId}
+                              </a>
+                            ) : (
+                              entry.fullId
+                            )}
+                            {entry.initiation && (
+                              <span className="ml-1 text-[#E6C200]">🚀</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>
@@ -842,65 +964,91 @@ const Ledger: React.FC<LedgerProps> = ({ user }) => {
         {/* Avatar Modal */}
         {showAvatarModal && selectedAvatar && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden">
-              {/* Avatar Image with Username Overlay */}
-              <div className="relative">
-                <img
-                  src={selectedAvatar.avatarUrl}
-                  alt={`${selectedAvatar.username}'s avatar`}
-                  className="w-full h-96 object-cover"
-                  style={{ objectPosition: 'center 25%' }}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/avatars/taytay.png';
-                  }}
-                />
-                {/* Username Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                    {selectedAvatar.username}
-                  </h3>
-                </div>
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowAvatarModal(false)}
-                  className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold bg-black/30 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-sm"
-                >
-                  <span className="-mt-0.5">×</span>
-                </button>
-              </div>
-              
-              {/* Stats Section */}
-              <div className="p-2">
-                <div className="bg-gray-50 rounded-lg p-2 flex flex-row items-center justify-start w-full">
-                  {/* WINGO Balance with Rank */}
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-[#E6C200] to-[#FFD700] rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">W</span>
+            <div className="relative w-full max-w-sm perspective-1000">
+              <div className="relative w-full h-96 transform-style-preserve-3d transition-transform duration-700" id="avatarCard">
+                {/* Front Side - Keep exactly as is */}
+                <div className="absolute inset-0 w-full h-full backface-hidden">
+                  <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden">
+                    {/* Avatar Image with Username Overlay */}
+                    <div className="relative">
+                      <img
+                        src={selectedAvatar.avatarUrl}
+                        alt={`${selectedAvatar.username}'s avatar`}
+                        className="w-full h-96 object-cover"
+                        style={{ objectPosition: 'center 25%' }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/avatars/taytay.png';
+                        }}
+                      />
+                      {/* Username Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                          {selectedAvatar.username}
+                        </h3>
+                      </div>
+                      {/* Close Button */}
+                      <button
+                        onClick={() => setShowAvatarModal(false)}
+                        className="absolute top-4 right-4 text-white hover:text-gray-300 text-2xl font-bold bg-black/30 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-sm"
+                      >
+                        <span className="-mt-0.5">×</span>
+                      </button>
+                      {/* Stats Button (disabled, back card removed) */}
+                      {/*
+                      <button
+                        onClick={() => {
+                          const card = document.getElementById('avatarCard');
+                          if (card) {
+                            card.style.transform = card.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
+                          }
+                        }}
+                        className="absolute top-4 left-4 text-white hover:text-gray-300 text-sm font-bold bg-black/30 rounded-lg px-3 py-1 flex items-center justify-center backdrop-blur-sm"
+                      >
+                        Stats
+                      </button>
+                      */}
                     </div>
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium">Balance</div>
-                      <div className="text-lg font-bold text-gray-900">
-                        {selectedAvatar.balance.toLocaleString()} <span className="text-xs text-gray-500 font-normal">(Rank: {leaderboardData.find(e => e.user === selectedAvatar?.username)?.rank ?? '--'})</span>
+                    {/* Stats Section */}
+                    <div className="p-2">
+                      <div className="bg-gray-50 rounded-lg p-2 flex flex-row items-center justify-start w-full">
+                        {/* WINGO Balance with Rank */}
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#E6C200] to-[#FFD700] rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">W</span>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500 font-medium">Balance</div>
+                            <div className="text-lg font-bold text-gray-900">
+                              {selectedAvatar.balance.toLocaleString()} <span className="text-xs text-gray-500 font-normal">(Rank: {leaderboardData.find(e => e.user === selectedAvatar?.username)?.rank ?? '--'})</span>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Voting Share */}
+                        <div className="text-left ml-6">
+                          <div className="text-xs text-gray-500 font-medium">Voting Share</div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {leaderboardData.find(e => e.user === selectedAvatar?.username)?.votingShare.toFixed(1) ?? '--'}%
+                          </div>
+                        </div>
+                        {/* Mined Stats */}
+                        <div className="text-left ml-6">
+                          <div className="text-xs text-gray-500 font-medium">Mined</div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {selectedAvatar.totalMined.toLocaleString()} <span className="text-xs text-gray-500 font-normal">({selectedAvatar.distance.toFixed(1)} km)</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {/* Voting Share */}
-                  <div className="text-left ml-6">
-                    <div className="text-xs text-gray-500 font-medium">Voting Share</div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {leaderboardData.find(e => e.user === selectedAvatar?.username)?.votingShare.toFixed(1) ?? '--'}%
-                    </div>
-                  </div>
-                  {/* Mined Stats */}
-                  <div className="text-left ml-6">
-                    <div className="text-xs text-gray-500 font-medium">Mined</div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {selectedAvatar.totalMined.toLocaleString()} <span className="text-xs text-gray-500 font-normal">({selectedAvatar.distance.toFixed(1)} km)</span>
-                    </div>
-                  </div>
                 </div>
+                {/* Back Side - Baseball Card Style (removed, see ledger-back-card-backup.tsx for backup) */}
+                {/*
+                <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
+                  ... (see backup file)
+                </div>
+                */}
               </div>
             </div>
           </div>

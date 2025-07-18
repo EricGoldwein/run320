@@ -16,7 +16,7 @@ const Experiences: React.FC = () => {
         </>
       ),
       image: '/wingatebw1.jpg',
-      link: '/wingate-invitational'
+      link: '/obwi'
     },
     {
       id: 'wingo-wednesday',

@@ -25,6 +25,7 @@ export default function Wager({ user }: WagerProps) {
   const [error, setError] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('');
   const [showDecimalPopup, setShowDecimalPopup] = useState(false);
+  const [showMaxWagerPopup, setShowMaxWagerPopup] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
 
   // Fetch leaderboard data to get usernames
@@ -77,7 +78,17 @@ export default function Wager({ user }: WagerProps) {
       setTimeout(() => setShowDecimalPopup(false), 2000); // Hide popup after 2 seconds
       return;
     }
-    setBetAmount(Number(value) || 0);
+    
+    const numValue = Number(value) || 0;
+    if (numValue > 32) {
+      setShowMaxWagerPopup(true);
+      e.target.value = '32'; // Set to max value
+      setTimeout(() => setShowMaxWagerPopup(false), 2000); // Hide popup after 2 seconds
+      setBetAmount(32);
+      return;
+    }
+    
+    setBetAmount(numValue);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -200,6 +211,10 @@ export default function Wager({ user }: WagerProps) {
             >
               Generate Wager Slip
             </button>
+            
+            <p className="text-[9px] text-gray-500 mt-2 text-center">
+              Wagers subject to D<span className="text-cyan-400">AI</span>SY™ approval and may be voided at any time for any reason. Max wager: <span className="text-[#E6C200] font-bold">W</span> 32.
+            </p>
           </form>
         </div>
 
@@ -246,7 +261,18 @@ export default function Wager({ user }: WagerProps) {
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-white border-2 border-wingo-600 rounded-lg shadow-lg p-4 animate-fade-in-out">
               <div className="flex items-center">
-                <span className="text-wingo-600 font-medium">DAISY™ doesn't do decimals</span>
+                <span className="text-wingo-600 font-medium">DAISY™ don't do decimals</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Max Wager Warning Popup */}
+        {showMaxWagerPopup && (
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white border-2 border-wingo-600 rounded-lg shadow-lg p-4 animate-fade-in-out">
+              <div className="flex items-center">
+                <span className="text-wingo-600 font-medium">DAISY™ says 32 tops.</span>
               </div>
             </div>
           </div>

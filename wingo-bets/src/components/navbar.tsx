@@ -113,7 +113,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
               {activeDropdown === 'experience' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <div className="py-2">
-                    <Link to="/wingate-invitational" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link to="/obwi" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Wingate Invitational
                     </Link>
                     <Link to="/experience" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -223,7 +223,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
             RAQ
           </button>
           <button
-            onClick={() => handleMobileNav('/wingate-invitational')}
+            onClick={() => handleMobileNav('/obwi')}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
           >
             Old Balance Wingate Invitational

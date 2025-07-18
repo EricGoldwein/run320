@@ -12,6 +12,7 @@ interface LogEntry {
   kmLogged: number;
   initiation: boolean;
   category: string;
+  activityLink: string;
 }
 
 const WingoLog = () => {
@@ -75,7 +76,8 @@ const WingoLog = () => {
               wingoMined: parseInt(columns[3]) || 0,
               kmLogged: parseFloat(columns[4]) || 0,
               initiation: columns[7]?.trim() === 'Yes',
-              category: columns[10]?.trim() || ''
+              category: columns[10]?.trim() || '',
+              activityLink: columns[5]?.trim() || '' // Column F (index 5) - Activity Link
             };
           })
           .filter(entry => entry.username && entry.username !== '');
@@ -168,6 +170,53 @@ const WingoLog = () => {
       date: entry.date,
       wingoMined: entry.wingoMined
     }));
+  };
+
+  // Get top 3 mining session IDs for medal emojis
+  const getTopMiningSessionIds = () => {
+    const sortedByWingo = [...entries].sort((a, b) => {
+      if (b.wingoMined !== a.wingoMined) {
+        return b.wingoMined - a.wingoMined;
+      }
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA.getTime() !== dateB.getTime()) {
+        return dateA.getTime() - dateB.getTime();
+      }
+      return a.id - b.id;
+    });
+    
+    return sortedByWingo.slice(0, 3).map(entry => entry.id);
+  };
+
+  // Get lowest mining session ID for poop emoji
+  const getLowestMiningSessionId = () => {
+    const miningEntries = entries.filter(entry => entry.wingoMined > 0);
+    if (miningEntries.length === 0) return null;
+    
+    const sortedByWingo = [...miningEntries].sort((a, b) => {
+      if (a.wingoMined !== b.wingoMined) {
+        return a.wingoMined - b.wingoMined;
+      }
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA.getTime() !== dateB.getTime()) {
+        return dateB.getTime() - dateA.getTime(); // Newer dates first for ties
+      }
+      return b.id - a.id; // Newer IDs first for ties
+    });
+    
+    return sortedByWingo[0].id;
+  };
+
+  // Get medal emoji for rank
+  const getMedalEmoji = (rank: number) => {
+    switch (rank) {
+      case 1: return '🥇';
+      case 2: return '🥈';
+      case 3: return '🥉';
+      default: return '';
+    }
   };
 
   if (loading) {
@@ -278,31 +327,56 @@ const WingoLog = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredAndSortedEntries.map((entry) => (
-                  <tr key={entry.id} className="hover:bg-gray-50">
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
-                      {format(new Date(entry.date), 'M-dd-yy')}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
-                      {entry.username}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
-                      {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                      {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                      {entry.category}
-                    </td>
-                    <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
-                      {entry.fullId}
-                      {entry.initiation && (
-                        <span className="ml-1 text-[#E6C200]">🚀</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {filteredAndSortedEntries.map((entry) => {
+                  const topMiningSessionIds = getTopMiningSessionIds();
+                  const lowestMiningSessionId = getLowestMiningSessionId();
+                  const isTopMiningSession = topMiningSessionIds.includes(entry.id);
+                  const isLowestMiningSession = entry.id === lowestMiningSessionId;
+                  const topRank = isTopMiningSession ? topMiningSessionIds.indexOf(entry.id) + 1 : 0;
+                  
+                  return (
+                    <tr key={entry.id} className="hover:bg-gray-50">
+                      <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[9px] sm:text-sm text-gray-500">
+                        {format(new Date(entry.date), 'M-dd-yy')}
+                      </td>
+                      <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
+                        {entry.username}
+                      </td>
+                      <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-900">
+                        {entry.wingoMined > 0 ? '+' : ''}{entry.wingoMined}
+                        {isTopMiningSession && (
+                          <span className="ml-1">{getMedalEmoji(topRank)}</span>
+                        )}
+                        {isLowestMiningSession && (
+                          <span className="ml-1">💩</span>
+                        )}
+                      </td>
+                      <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                        {entry.category === 'Mining' ? entry.kmLogged.toFixed(2) : '--'}
+                      </td>
+                      <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                        {entry.category}
+                      </td>
+                                              <td className="px-1 sm:px-6 py-4 whitespace-nowrap text-[8px] sm:text-sm text-gray-500">
+                          {entry.category === 'Gate Unlock' ? (
+                            <a 
+                              href={entry.activityLink || "https://docs.google.com/spreadsheets/d/2PACX-1vTM_V9eYpvCBXC4rsa77WJeTGKaU4WF2KhwO-51jn99FWCAi2LlILTPkm_IN5UVvUXBajxAQmvDyVn4/edit#gid=270601813"} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-wingo-600 hover:text-wingo-700 hover:underline cursor-pointer"
+                            >
+                              {entry.fullId}
+                            </a>
+                          ) : (
+                            entry.fullId
+                          )}
+                          {entry.initiation && (
+                            <span className="ml-1 text-[#E6C200]">🚀</span>
+                          )}
+                        </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
