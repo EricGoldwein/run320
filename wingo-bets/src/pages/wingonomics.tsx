@@ -328,7 +328,7 @@ const Wingonomics: React.FC = () => {
       <section className="mb-12">
         <h2 className="text-xl font-semibold mb-2">World Wide WINGO</h2>
         <div className="relative">
-          <div className="absolute top-12 left-16 md:left-20 z-10">
+          <div className="absolute top-12 left-20 md:left-20 z-10">
             <div className="inline-flex flex-col md:flex-row items-start md:items-center max-w-fit px-2 py-0.5 bg-white/95 border border-gray-300 shadow-md rounded-md text-xs gap-1 md:gap-3 backdrop-blur-sm">
               <div className="flex items-center">
                 <span className="text-gray-500 mr-1">W Circulating:</span>
@@ -568,7 +568,7 @@ const Wingonomics: React.FC = () => {
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-        <div className="text-center -mt-2 text-gray-600">Number of WINGO Mined</div>
+        <div className="text-center -mt-2 text-gray-600">WINGO Mined</div>
         <div className="relative">
           <div className="absolute bottom-2 right-6 bg-gray-900 text-white rounded-md px-2 py-0 text-sm font-medium">
             D<span className="!text-[#00bcd4] font-semibold">AI</span>SY™
