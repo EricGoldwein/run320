@@ -312,10 +312,9 @@ const Wingonomics: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6 text-wingo-600">Wingonomics</h1>
-      <p className="mb-8 text-gray-700">WINGO World stats, mining trends, and winequality index.</p>
 
       <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-2">WINGO Over Time</h2>
+        <h2 className="text-xl font-semibold mb-2">World Wide WINGO</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={balanceByDay} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -328,8 +327,9 @@ const Wingonomics: React.FC = () => {
                 const d = new Date(timestamp);
                 return `${d.getMonth() + 1}/${d.getDate()}`;
               }}
-              minTickGap={5}
-              className="md:minTickGap-10"
+              minTickGap={3}
+              tick={{ fontSize: 10 }}
+              className="md:minTickGap-10 md:tick-fontSize-12"
               ticks={(() => {
                 // Generate ticks every 7 days starting from 5/28/2025
                 const startDate = new Date('2025-05-28T12:00:00').getTime();
@@ -361,13 +361,17 @@ const Wingonomics: React.FC = () => {
                 return ticks;
               })()}
             />
-            <YAxis label={{ value: 'WINGO', angle: -90, position: 'insideLeft', offset: 10 }} />
+            <YAxis 
+              label={{ value: 'WINGO', angle: -90, position: 'insideLeft', offset: 10 }} 
+              tick={{ fontSize: 10 }}
+              className="md:tick-fontSize-12"
+            />
             <Tooltip labelFormatter={timestamp => {
               const d = new Date(timestamp as number);
               return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
             }} />
             <Legend />
-            <Line type="monotone" dataKey="balance" name="Total Balance" stroke="#E6C200" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="balance" name="Total Circulating" stroke="#E6C200" strokeWidth={2} dot={false} />
             <Line type="monotone" dataKey="mined" name="Total Mined" stroke="#00bcd4" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
@@ -387,13 +391,20 @@ const Wingonomics: React.FC = () => {
             {/* X-axis: show all bins, label bins as '1-4', '5-8', ... */}
             <XAxis
               dataKey="bin"
-              tick={{ fontSize: 14 }}
+              tick={{ fontSize: 10 }}
               type="category"
               domain={['dataMin', 'dataMax']}
               allowDecimals={false}
               tickFormatter={(_bin, idx) => histogramData[idx]?.label || _bin}
+              className="md:tick-fontSize-14"
             />
-            <YAxis yAxisId="left" allowDecimals={false} label={{ value: 'Sessions', angle: -90, position: 'insideLeft', offset: 10, dy: 20 }} tick={{ fontSize: 14 }} />
+            <YAxis 
+              yAxisId="left" 
+              allowDecimals={false} 
+              label={{ value: 'Sessions', angle: -90, position: 'insideLeft', offset: 10, dy: 20 }} 
+              tick={{ fontSize: 10 }}
+              className="md:tick-fontSize-14"
+            />
             <YAxis yAxisId="right" orientation="right" hide />
             <Tooltip 
               formatter={(value, name) => {
@@ -426,8 +437,20 @@ const Wingonomics: React.FC = () => {
             <LineChart data={lorenzData} margin={{ top: 20, right: 30, left: 0, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
               {/* X and Y axes: start at 0, custom labels, more padding */}
-              <XAxis dataKey="pctUsers" domain={[0, 1]} type="number" tickFormatter={(v: number) => `${Math.round(v * 100)}%`} tick={{ fontSize: 10 }} />
-              <YAxis domain={[0, 1]} tickFormatter={(v: number) => v === 0 ? '' : `${Math.round(v * 100)}%`} tick={{ fontSize: 10 }} />
+              <XAxis 
+                dataKey="pctUsers" 
+                domain={[0, 1]} 
+                type="number" 
+                tickFormatter={(v: number) => `${Math.round(v * 100)}%`} 
+                tick={{ fontSize: 8 }}
+                className="md:tick-fontSize-10"
+              />
+              <YAxis 
+                domain={[0, 1]} 
+                tickFormatter={(v: number) => v === 0 ? '' : `${Math.round(v * 100)}%`} 
+                tick={{ fontSize: 8 }}
+                className="md:tick-fontSize-10"
+              />
               <Tooltip 
                 formatter={(value, name) => {
                   if (name === 'Lorenz Curve') {
